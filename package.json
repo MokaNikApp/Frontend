@@ -1,5 +1,5 @@
 {
-  "name": "mokanik",
+  "name": "my-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,8 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.2.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-icons": "^5.6.0",
+    "react-router-dom": "^7.13.1",
+    "tailwindcss": "^4.2.1"
+  },
+  "overrides": {
+    "@tailwindcss/vite": {
+      "vite": "^8.0.0"
+    }
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
