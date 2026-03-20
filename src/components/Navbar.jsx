@@ -7,11 +7,11 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 
 const Navbar = () => {
   return (
-    <nav className="px-6 py-3 bg-white shadow-md sm:px-6 md:px-16">
+    <nav className="sticky top-0 z-50 w-full bg-white shadow-sm py-4 px-6 lg:px-24">
       <div className="flex items-center justify-between mx-auto max-w-7xl">
 
         {/* Logo on the left */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           {logo ? (
             <img
               src={logo}

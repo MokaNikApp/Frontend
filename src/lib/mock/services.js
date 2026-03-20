@@ -1,0 +1,38 @@
+export const services = [
+  {
+    id: "1",
+    title: "Synthetic Oil Change",
+    price: 79.99,
+    image: "/images/service3.png",
+    category: "Available Today",
+    rating: 4.9,
+    reviews: "250+",
+  },
+  {
+    id: "2",
+    title: "Brake Pad Replacement",
+    price: 189.50,
+    image: "/images/service2.png",
+    category: "Best Seller",
+    rating: 4.8,
+    reviews: "85+",
+  },
+  {
+    id: "3",
+    title: "Brake Pad Replacement",
+    price: 189.50,
+    image: "/images/service2.png",
+    category: "Best Seller",
+    rating: 4.8,
+    reviews: "85+",
+  },
+  {
+    id: "4",
+    title: "Engine Diagnostic Scan",
+    price: 49.99,
+    image: "/images/service1.png",
+    category: "Diagnostics",
+    rating: 5.0,
+    reviews: "120+",
+  },
+];

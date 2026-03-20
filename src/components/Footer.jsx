@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="flex flex-col items-center justify-between gap-4 mx-auto max-w-7xl sm:flex-row">
         {/* Left side: copyright */}
         <div className="text-sm text-center text-gray-600 sm:text-left">
-          © 2024 MokaNik Inc. All rights reserved.
+          © 2026 MokaNik Inc. All rights reserved.
         </div>
 
         {/* Right side: links */}
