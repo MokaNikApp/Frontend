@@ -25,7 +25,7 @@ const items = [
 
 export default function ServiceIncludes() {
   return (
-    <section className="px-6 bg-gray-200 ml-20 lg:mr-120 lg:px-12 py-8 border-gray-200 rounded-2xl">
+    <section className="px-6 bg-gray-200 ml-20 lg:mr-24 lg:px-12 py-8 border-gray-200 rounded-2xl">
       <h2 className="text-xl text-slate-800 mb-6">
         What's Included
       </h2>

@@ -55,7 +55,7 @@ export default function ServiceHero() {
           <p className="text-sm text-gray-500">Estimated Price</p>
 
           <h2 className="text-2xl font-bold text-slate-800 mt-1">
-            ${selectedService.price}
+            {selectedService.price}
           </h2>
 
           <p className="text-xs text-gray-400">All inclusive</p>
@@ -110,7 +110,7 @@ export default function ServiceHero() {
             <h2 className="text-xl text-slate-800 mb-4">
                 About this Service
             </h2>
-            <p className="text-gray-500 lg:pr-100 leading-relaxed">
+            <p className="text-gray-500 lg:pr-24 leading-relaxed">
                 Our premium oil change isn't just a simple fluid swap. It's a comprehensive 
                 engine health check performed by certified technicians. We use only high-grade 
                 synthetic oils that are engineered to provide maximum performance for modern 

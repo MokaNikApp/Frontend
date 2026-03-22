@@ -3,7 +3,7 @@ import { FaCheckCircle } from "react-icons/fa";
 
 export default function ServiceExtra() {
   return (
-    <section className="pl-20 lg:mr-120 py-16">
+    <section className="pl-20 lg:mr-24 py-16">
 
       {/* TITLE */}
       <h2 className="text-center text-gray-600 mb-10">
@@ -14,7 +14,7 @@ export default function ServiceExtra() {
       <div className="flex flex-col md:flex-row items-center justify-between relative">
 
         {/* LINE */}
-        <div className="hidden md:block absolute top-10 left-1/6 right-1/6 border-t border-gray-400 border-dashed"></div>
+        <div className="hidden md:block absolute top-10 left-1/9 right-1/9 border-t border-gray-400 border-dashed"></div>
 
         {/* STEP 1 */}
         <div className="flex flex-col items-center text-center relative z-10">
