@@ -41,7 +41,7 @@ export default function SearchBar() {
         </div>
 
         {/* BUTTON */}
-        <button className="bg-blue-700 hover:bg-blue-600 text-white px-8 py-4 text-sm font-medium">
+        <button className="bg-blue-800 hover:bg-blue-700 text-white px-8 py-4 text-sm font-medium">
           Search
         </button>
 

@@ -2,7 +2,7 @@ import { FaGlobe, FaEnvelope, FaBell } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-16 px-6 lg:px-24">
+    <footer className="bg-white text-black py-16 px-6 lg:px-24">
       
       <div className="max-w-6xl mx-auto">
 
@@ -25,7 +25,7 @@ export default function Footer() {
 
           {/* COLUMN 1 */}
           <div>
-            <h3 className="text-white font-semibold mb-4">
+            <h3 className="text-gray-300 font-semibold mb-4">
               For Customers
             </h3>
             <ul className="space-y-2 text-sm">
@@ -39,7 +39,7 @@ export default function Footer() {
 
           {/* COLUMN 2 */}
           <div>
-            <h3 className="text-white font-semibold mb-4">
+            <h3 className="text-gray-300 font-semibold mb-4">
               For Mechanics
             </h3>
             <ul className="space-y-2 text-sm">
@@ -52,7 +52,7 @@ export default function Footer() {
 
           {/* COLUMN 3 */}
           <div>
-            <h3 className="text-white font-semibold mb-4">
+            <h3 className="text-gray-300 font-semibold mb-4">
               Support
             </h3>
             <ul className="space-y-2 text-sm">
@@ -75,15 +75,15 @@ export default function Footer() {
           {/* ICONS */}
           <div className="flex space-x-4 mt-4 md:mt-0">
             
-            <div className="p-2 bg-gray-800 rounded-full cursor-pointer hover:bg-gray-700">
+            <div className="p-2 bg-white rounded-full cursor-pointer hover:bg-gray-700">
               <FaGlobe size={14} />
             </div>
 
-            <div className="p-2 bg-gray-800 rounded-full cursor-pointer hover:bg-gray-700">
+            <div className="p-2 bg-white rounded-full cursor-pointer hover:bg-gray-700">
               <FaEnvelope size={14} />
             </div>
 
-            <div className="p-2 bg-gray-800 rounded-full cursor-pointer hover:bg-gray-700">
+            <div className="p-2 bg-white rounded-full cursor-pointer hover:bg-gray-700">
               <FaBell size={14} />
             </div>
 

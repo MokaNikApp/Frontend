@@ -18,7 +18,7 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="bg-blue-900 py-24 px-6 lg:px-24">
+    <section className="bg-blue-800 py-24 px-6 lg:px-24">
       
       {/* HEADER (optional if in your design) */}
       <div className="text-center max-w-xl mx-auto">

@@ -5,7 +5,7 @@ import ServicesGrid from "../components/services/ServicesGrid";
 import WhyChoose from "../components/home/WhyChoose";
 import Testimonials from "../components/home/Testimonials";
 import CTA from "../components/services/CTA";
-import Footer from "../components/home/Footers";
+import Footer from "../components/services/Footers";
 
 export default function Services() {
   return (
@@ -17,7 +17,7 @@ export default function Services() {
       <WhyChoose />
       <Testimonials title="What our customers say" />
       <CTA />
-      <Footer className="bg-white" />
+      <Footer />
     </div>
   );
 }

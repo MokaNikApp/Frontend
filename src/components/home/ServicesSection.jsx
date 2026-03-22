@@ -22,9 +22,9 @@ export default function ServicesSection() {
     </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-        {services.map((service) => (
-          <Link key={service.id} to={`/services/${service.id}`}>
-            <ServiceCard {...service} />
+        {services.slice(0, 4).map((item) => (
+          <Link key={item.id} to={`/services/${item.id}`}>
+            <ServiceCard {...item} />
           </Link>
         ))}
       </div>

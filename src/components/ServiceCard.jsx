@@ -23,7 +23,7 @@ export default function ServiceCard({
           
           {/* BADGE (dynamic color) */}
           <span
-            className={`px-2 py-1 rounded font-medium ${
+            className={`px-2 py-1 rounded-full font-medium ${
               category === "Available Today"
                 ? "bg-green-100 text-green-600"
                 : category === "Best Seller"

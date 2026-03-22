@@ -1,20 +1,22 @@
-import { useParams } from "react-router-dom";
-import { services } from "../lib/mock/services";
+import Navbar from "../components/home/NavBarr";
+import Footer from "../components/home/Footers";
+
+import ServiceHero from "../components/serviceDetail/ServiceHero";
+import ServiceIncludes from "../components/serviceDetail/ServiceIncludes";
+import ServiceExtra from "../components/serviceDetail/ServiceExtra";
+import Testimonials from "../components/home/Testimonials";
+import RelatedService from "../components/serviceDetail/RelatedService";
 
 export default function ServiceDetail() {
-  const { id } = useParams();
-
-  console.log("URL ID:", id);
-  console.log("Services:", services);
-
-  const service = services.find((s) => s.id === id);
-
-  if (!service) return <div>Service not found</div>;
-
   return (
-    <div>
-      <h1>{service.title}</h1>
-      <p>₦{service.price}</p>
-    </div>
+    <>
+      <Navbar />
+      <ServiceHero />
+      <ServiceIncludes />
+      <ServiceExtra />
+      <Testimonials title="What our customers say" />
+      <RelatedService />
+      <Footer />
+    </>
   );
 }
