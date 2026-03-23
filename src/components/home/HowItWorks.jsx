@@ -49,7 +49,7 @@ export default function HowItWorks() {
         {/* STEP 1: Book a Service (Bottom Valley) */}
         <div className="absolute left-[20%] top-[74%] -translate-x-1/2 w-72">
           {/* Faint Background Number */}
-          <span className="absolute -top-32 -left-10 text-[260px] font-black text-gray-100/60 select-none -z-10">1</span>
+          <span className="absolute -top-32 -left-10 text-[260px] font-black text-gray-300/60 select-none -z-10">1</span>
           
           {/* Node Box (Centered on the line) */}
           <div className="absolute -top-7.5 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center border border-gray-50">
@@ -66,7 +66,7 @@ export default function HowItWorks() {
 
         {/* STEP 2: Get Matched (Middle Rise) */}
         <div className="absolute left-[53%] top-[57%] -translate-x-1/2 w-72">
-          <span className="absolute -top-36 -left-12 text-[260px] font-black text-gray-100/60 select-none -z-10">2</span>
+          <span className="absolute -top-36 -left-12 text-[260px] font-black text-gray-300/60 select-none -z-10">2</span>
           
           <div className="absolute -top-7.5 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center border border-gray-50">
             <div className="w-4 h-4 bg-gray-300 rounded-full" />
@@ -82,7 +82,7 @@ export default function HowItWorks() {
 
         {/* STEP 3: Track & Pay (Top Peak) */}
         <div className="absolute left-[83%] top-[32%] -translate-x-1/2 w-80">
-          <span className="absolute -top-40 -left-16 text-[280px] font-black text-gray-100/40 select-none -z-10">3</span>
+          <span className="absolute -top-40 -left-16 text-[280px] font-black text-gray-300/40 select-none -z-10">3</span>
           
           <div className="absolute -top-7.5 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center border border-gray-50">
             <div className="w-4 h-4 bg-gray-300 rounded-full" />
