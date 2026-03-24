@@ -36,54 +36,54 @@ export default function FAQ() {
   };
 
   return (
-    <section className="bg-white py-24 px-6 lg:px-24">
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16">
+    <section className="bg-white py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-24">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
 
         {/* LEFT SIDE */}
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Frequently Asked Questions
           </h2>
 
-          <p className="mt-4 text-gray-500 max-w-md">
+          <p className="mt-4 text-gray-500 max-w-md text-sm sm:text-base">
             Still you have any questions? Contact our Team via{" "}
             <span className="text-purple-600">via</span>{" "}
             <span className="text-red-500">Info@techpro.com</span>
           </p>
 
-          <button className="mt-6 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg text-sm">
+          <button className="mt-6 bg-gray-200 text-gray-800 px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm">
             See All FAQ’s
           </button>
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {faqs.map((item, index) => {
             const isOpen = activeIndex === index;
 
             return (
               <div
                 key={index}
-                className="border border-gray-200 rounded-lg p-5 transition-all"
+                className="border border-gray-200 rounded-lg p-4 sm:p-5 transition-all"
               >
                 {/* QUESTION */}
                 <div
                   onClick={() => toggleFAQ(index)}
-                  className="flex justify-between items-center cursor-pointer"
+                  className="flex justify-between items-center cursor-pointer gap-4"
                 >
-                  <h3 className="text-gray-900 font-medium transition-all duration-300">
+                  <h3 className="text-gray-900 font-medium text-sm sm:text-base transition-all duration-300">
                     {item.question}
                   </h3>
 
                   {/* ICON */}
-                  <div className="w-8 h-8 flex items-center justify-center border rounded-md text-gray-800">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md text-gray-800 shrink-0">
                     {isOpen ? "✕" : "+"}
                   </div>
                 </div>
 
                 {/* ANSWER */}
                 {isOpen && (
-                  <p className="mt-4 text-sm text-gray-500 leading-relaxed">
+                  <p className="mt-3 sm:mt-4 text-sm text-gray-500 leading-relaxed">
                     {item.answer}
                   </p>
                 )}

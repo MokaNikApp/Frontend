@@ -71,20 +71,20 @@ const services = [
 
 export default function ServicesGrid() {
   return (
-    <section className="px-6 lg:px-24 py-16">
+    <section className="px-4 sm:px-6 lg:px-24 py-10 sm:py-12 lg:py-16">
       
-    <div className="flex items-center justify-between mb-10">
-        <h2 className="text-2xl font-bold text-slate-800">
-            Popular Services
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-10">
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-800">
+          Popular Services
         </h2>
 
-        <span className="text-blue-700 text-sm font-semibold border-b cursor-pointer text-underline">
-            View all services
+        <span className="text-blue-700 text-sm font-semibold border-b cursor-pointer text-center sm:text-left">
+          View all services
         </span>
-    </div>
+      </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {services.map((item) => (
           <div
             key={item.id}
@@ -94,50 +94,51 @@ export default function ServicesGrid() {
             <img
               src={item.image}
               alt={item.title}
-              className="w-full h-48 object-cover"
+              className="w-full h-40 sm:h-44 lg:h-48 object-cover"
             />
 
             {/* CONTENT */}
-            <div className="p-5">
+            <div className="p-4 sm:p-5">
               
               {/* TAG + RATING */}
-              <div className="flex justify-between items-center mb-3">
-                <span className={`text-xs px-3 py-1 rounded-full ${item.tagColor}`}>
+              <div className="flex justify-between items-center mb-2 sm:mb-3">
+                <span className={`text-xs px-2 sm:px-3 py-1 rounded-full ${item.tagColor}`}>
                   {item.tag}
                 </span>
 
-                <span className="text-black text-sm">
-                    ⭐ <b>{item.rating}</b> {item.reviews}
+                <span className="text-black text-xs sm:text-sm">
+                  ⭐ <b>{item.rating}</b> {item.reviews}
                 </span>
               </div>
 
               {/* TITLE */}
-              <h3 className="text-lg font-semibold text-slate-800">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800">
                 {item.title}
               </h3>
 
               {/* DESC */}
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-xs sm:text-sm text-gray-500 mt-2">
                 {item.desc}
               </p>
 
               {/* PRICE + BUTTON */}
               <div className="flex justify-between items-center mt-4">
-                <span className="font-bold text-slate-800">
+                <span className="font-bold text-slate-800 text-sm sm:text-base">
                   {item.price}
                 </span>
 
                 <Link
-                    to={`/services/${item.id}`}
-                    className="bg-blue-800 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
-                    >
-                        View Details
+                  to={`/services/${item.id}`}
+                  className="bg-blue-800 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm"
+                >
+                  View Details
                 </Link>
               </div>
             </div>
           </div>
         ))}
       </div>
+
     </section>
   );
 }

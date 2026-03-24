@@ -1,4 +1,4 @@
-import NavBarr from "../components/home/NavBarr"; 
+import NavBarr from "../components/home/NavBarr";
 import Footer from "../components/services/Footers";
 import Hero from "../components/providers/Hero";
 import WhyPartner from "../components/providers/WhyPartner";
@@ -9,7 +9,7 @@ import ProviderCTA from "../components/providers/ProviderCTA";
 
 export default function Providers() {
   return (
-    <div>
+    <div className="w-full overflow-x-hidden">
       <NavBarr />
       <Hero />
       <WhyPartner />

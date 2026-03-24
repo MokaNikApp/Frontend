@@ -25,32 +25,38 @@ const items = [
 
 export default function ServiceIncludes() {
   return (
-    <section className="px-6 bg-gray-200 ml-20 lg:mr-24 lg:px-12 py-8 border-gray-200 rounded-2xl">
-      <h2 className="text-xl text-slate-800 mb-6">
-        What's Included
-      </h2>
+    <section className="bg-gray-200 py-8 sm:py-10 lg:py-12 rounded-2xl">
 
-      <div className="grid md:grid-cols-2 gap-5">
-        {items.map((item, i) => (
-          <div key={i} className="flex gap-4">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12">
 
-            <div className="text-blue-600 text-xl">
-              {item.icon}
+        <h2 className="text-lg sm:text-xl font-semibold text-slate-800 mb-6">
+          What's Included
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+          {items.map((item, i) => (
+            <div key={i} className="flex gap-3 sm:gap-4 items-start">
+
+              <div className="text-blue-600 text-lg sm:text-xl mt-1">
+                {item.icon}
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-slate-800 text-sm sm:text-base">
+                  {item.title}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-gray-500 mt-1 leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+
             </div>
+          ))}
+        </div>
 
-            <div>
-              <h3 className="font-semibold text-slate-800">
-                {item.title}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {item.desc}
-              </p>
-            </div>
-
-          </div>
-        ))}
       </div>
+      
     </section>
-    
   );
 }

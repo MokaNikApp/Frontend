@@ -12,6 +12,7 @@ import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Providers from "./pages/Providers";
 import Onboarding from "./pages/Onboarding";
+import Overview from "./pages/Mec-dashboard/Overview";
 
 const App = () => {
   return (
@@ -29,6 +30,8 @@ const App = () => {
         <Route path="/services/:id" element={<ServiceDetail />} /> 
         <Route path="/providers" element={<Providers />} />
         <Route path="/onboarding" element={<Onboarding />} />
+
+        <Route path="/mec-dashboard" element={<Overview />} />
       </Routes>
     </div>
   );

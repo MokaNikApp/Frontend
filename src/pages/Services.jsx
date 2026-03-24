@@ -9,11 +9,15 @@ import Footer from "../components/services/Footers";
 
 export default function Services() {
   return (
-    <div>
+    <div className="bg-white">
       <Navbar />
-      <SearchBar />
-      <Categories />
-      <ServicesGrid />
+
+      <div className="px-4 sm:px-6 lg:px-24">
+        <SearchBar />
+        <Categories />
+        <ServicesGrid />
+      </div>
+
       <WhyChoose />
       <Testimonials title="What our customers say" />
       <CTA />

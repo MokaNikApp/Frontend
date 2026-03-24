@@ -9,14 +9,33 @@ import RelatedService from "../components/serviceDetail/RelatedService";
 
 export default function ServiceDetail() {
   return (
-    <>
+    <div className="bg-white">
+
       <Navbar />
-      <ServiceHero />
-      <ServiceIncludes />
-      <ServiceExtra />
-      <Testimonials title="What our customers say" />
-      <RelatedService />
+
+      {/* MAIN CONTENT WRAPPER */}
+      <main className="space-y-12 lg:space-y-16">
+
+        <ServiceHero />
+
+        <div className="px-6 lg:px-24">
+          <ServiceIncludes />
+        </div>
+
+        <div className="px-6 lg:px-24">
+          <ServiceExtra />
+        </div>
+
+        <Testimonials title="What our customers say" />
+
+        <div className="px-6 lg:px-24">
+          <RelatedService />
+        </div>
+
+      </main>
+
       <Footer />
-    </>
+
+    </div>
   );
 }

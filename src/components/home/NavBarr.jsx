@@ -7,33 +7,39 @@ export default function Navbar() {
   return (
     <div className="sticky top-0 z-50 w-full border-b bg-white">
       
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
         
         {/* LEFT - Logo */}
         <Link to="/">
           <img
             src="/images/logo.png"
             alt="MokaNik"
-            className="h-10 object-contain"
+            className="h-8 sm:h-10 object-contain"
           />
         </Link>
 
         {/* DESKTOP LINKS */}
-        <div className="hidden md:flex space-x-8 text-sm ">
-          <Link to="/" className="hover:text-blue-700 transition">Home</Link>
-          <Link to="/services" className="hover:text-blue-700 transition">Services</Link>
-          <Link to="/providers" className="hover:text-blue-700 transition">Providers</Link>
+        <div className="hidden md:flex space-x-6 lg:space-x-8 text-sm">
+          <Link to="/" className="hover:text-blue-700 transition">
+            Home
+          </Link>
+          <Link to="/services" className="hover:text-blue-700 transition">
+            Services
+          </Link>
+          <Link to="/providers" className="hover:text-blue-700 transition">
+            Providers
+          </Link>
         </div>
 
         {/* RIGHT (DESKTOP) */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3 lg:gap-4">
           <Link to="/login" className="text-sm text-gray-900">
             <b>Log In</b>
           </Link>
 
           <Link
             to="/services"
-            className="bg-blue-800 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium"
+            className="bg-blue-800 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg text-sm font-medium"
           >
             Book a Service
           </Link>
@@ -50,18 +56,29 @@ export default function Navbar() {
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="md:hidden px-6 pb-4 flex flex-col space-y-4 text-sm text-center">
-          <Link to="/">Home</Link>
-          <Link to="/services">Services</Link>
-          <Link to="/providers">Providers</Link>
+        <div className="md:hidden px-4 sm:px-6 pb-4 flex flex-col space-y-4 text-sm text-center border-t">
+          <Link to="/" onClick={() => setOpen(false)}>
+            Home
+          </Link>
+          <Link to="/services" onClick={() => setOpen(false)}>
+            Services
+          </Link>
+          <Link to="/providers" onClick={() => setOpen(false)}>
+            Providers
+          </Link>
 
           {/* MOBILE RIGHT */}
-          <Link to="/login" className="text-gray-900 hover:text-blue-600 transition">
+          <Link
+            to="/login"
+            onClick={() => setOpen(false)}
+            className="text-gray-900 hover:text-blue-600 transition"
+          >
             <b>Log In</b>
           </Link>
 
           <Link
             to="/services"
+            onClick={() => setOpen(false)}
             className="bg-blue-800 text-white px-4 py-2 rounded-lg text-center"
           >
             Book a Service

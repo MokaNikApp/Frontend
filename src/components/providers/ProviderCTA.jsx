@@ -1,31 +1,31 @@
 export default function ProviderCTA() {
   return (
-    <section className="bg-blue-800 text-white text-center py-16 px-6">
+    <section className="bg-blue-800 text-white text-center py-12 sm:py-16 px-6 overflow-hidden">
 
-      <h2 className="text-2xl font-semibold">
+      <h2 className="text-xl sm:text-2xl font-semibold">
         Ready to grow your business?
       </h2>
 
-      <p className="text-blue-100 px-22 text-sm mt-3 max-w-xl mx-auto">
+      <p className="text-blue-100 px-4 sm:px-0 text-sm mt-3 max-w-xl mx-auto">
         Join MokaNik today and start connecting with local customers who need your expertise.
         Application takes less than 10 minutes.
       </p>
 
       {/* BUTTONS */}
-      <div className="flex justify-center gap-4 mt-6 flex-wrap">
+      <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6 flex-wrap">
 
-        <button className="bg-white text-blue-700 px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 hover:text-gray-100">
+        <button className="bg-white text-blue-700 px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 hover:text-gray-100 w-full sm:w-auto">
           Start Your Application
         </button>
 
-        <button className="border border-white px-5 py-2 rounded-md text-sm hover:bg-white hover:text-blue-700">
+        <button className="border border-white px-5 py-2 rounded-md text-sm hover:bg-white hover:text-blue-700 w-full sm:w-auto">
           Talk to Support
         </button>
 
       </div>
 
       {/* SMALL TEXT */}
-      <p className="text-xs text-blue-200 mt-4">
+      <p className="text-xs text-blue-200 mt-4 px-2">
         No long-term contracts. Pause your profile anytime.
       </p>
 

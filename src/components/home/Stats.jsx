@@ -7,21 +7,21 @@ export default function Stats() {
   ];
 
   return (
-    <section className="bg-white py-16 px-6 lg:px-24">
+    <section className="bg-white py-12 sm:py-16 px-4 sm:px-6 lg:px-24">
       <div className="max-w-6xl mx-auto">
 
-        <div className="grid grid-cols-2 md:grid-cols-4 text-center divide-x divide-gray-200">
+        <div className="grid grid-cols-2 md:grid-cols-4 text-center divide-y md:divide-y-0 md:divide-x divide-gray-200">
           
           {stats.map((item, index) => (
-            <div key={index} className="px-6">
+            <div key={index} className="px-4 sm:px-6 py-6 md:py-0">
               
               {/* NUMBER */}
-              <h3 className="text-3xl font-bold text-gray-900">
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 {item.number}
               </h3>
 
               {/* LABEL */}
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-xs sm:text-sm text-gray-500 mt-2">
                 {item.label}
               </p>
 

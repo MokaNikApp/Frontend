@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+
 export default function ServiceCard({
+  id,
   title,
   price,
   image,
@@ -7,8 +10,9 @@ export default function ServiceCard({
   tagColor,
   rating,
   reviews,
+  desc,
 }) {
-  // fallback logic (VERY IMPORTANT)
+  // fallback logic
   const label = tag || category;
 
   const color =
@@ -20,51 +24,52 @@ export default function ServiceCard({
       : "bg-gray-100 text-gray-600");
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden border shadow-sm">
+    <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition">
 
       {/* IMAGE */}
       <img
         src={image}
         alt={title}
-        className="w-full h-44 object-cover"
+        className="w-full h-40 sm:h-44 object-cover"
       />
 
-      <div className="p-4">
+      <div className="p-4 sm:p-5">
 
         {/* BADGE + RATING */}
         <div className="flex items-center justify-between text-xs mb-2">
 
-          {/* BADGE */}
           <span className={`px-2 py-1 rounded-full font-medium ${color}`}>
             {label}
           </span>
 
-          {/* RATING */}
           <span className="text-black">
             <b>⭐ {rating}</b> ({reviews})
           </span>
         </div>
 
         {/* TITLE */}
-        <h3 className="font-semibold text-gray-900 text-sm">
+        <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
           {title}
         </h3>
 
         {/* DESCRIPTION */}
-        <p className="text-xs text-gray-500 mt-1">
-          Front or rear ceramic brake pad installation with rotor resurfacing.
+        <p className="text-xs sm:text-sm text-gray-500 mt-1 leading-relaxed">
+          {desc}
         </p>
 
         {/* PRICE + BUTTON */}
         <div className="flex items-center justify-between mt-4">
 
           <p className="font-bold text-gray-900 text-sm">
-            ${price}
+            {price}
           </p>
 
-          <button className="bg-blue-800 text-white px-3 py-1.5 rounded-md hover:bg-blue-600 text-xs">
+          <Link
+            to={`/services/${id}`}
+            className="bg-blue-800 text-white px-3 py-1.5 rounded-md hover:bg-blue-600 text-xs"
+          >
             View Details
-          </button>
+          </Link>
 
         </div>
 

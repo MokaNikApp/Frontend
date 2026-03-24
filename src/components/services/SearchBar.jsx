@@ -3,25 +3,25 @@ import { FaCar } from "react-icons/fa";
 
 export default function SearchBar() {
   return (
-    <section className="relative py-20 px-6 lg:px-24 text-center overflow-hidden">
+    <section className="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-24 text-center overflow-hidden">
       
       {/* BACKGROUND ICON */}
-      <FaCar className="absolute right-10 top-10 text-[300px] text-blue-300 opacity-20 pointer-events-none" />
+      <FaCar className="absolute right-4 sm:right-10 top-6 sm:top-10 text-[150px] sm:text-[220px] lg:text-[300px] text-blue-300 opacity-20 pointer-events-none" />
 
       {/* HEADING */}
-      <h1 className="text-4xl font-bold text-slate-800 relative z-10">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 relative z-10">
         Available Services
       </h1>
 
-      <p className="mt-4 text-gray-500 max-w-xl mx-auto relative z-10">
+      <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-500 max-w-xl mx-auto relative z-10">
         Find trusted mechanics and book reliable car services easily.
       </p>
 
       {/* SEARCH BAR */}
-      <div className="relative z-10 mt-10 max-w-xl mx-auto bg-white shadow-2xl rounded-2xl flex flex-col md:flex-row overflow-hidden">
+      <div className="relative z-10 mt-8 sm:mt-10 max-w-xl mx-auto bg-white shadow-2xl rounded-2xl flex flex-col md:flex-row overflow-hidden">
         
         {/* SERVICE INPUT */}
-        <div className="flex items-center flex-1 px-4 py-4 border-gray-400 border-b md:border-b-0 md:border-r">
+        <div className="flex items-center flex-1 px-4 py-3 sm:py-4 border-gray-400 border-b md:border-b-0 md:border-r">
           <FiSearch className="text-gray-400 text-lg mr-3" />
           <input
             type="text"
@@ -31,7 +31,7 @@ export default function SearchBar() {
         </div>
 
         {/* LOCATION INPUT */}
-        <div className="flex items-center flex-1 px-4 py-4 border-b md:border-b-0 md:border-r">
+        <div className="flex items-center flex-1 px-4 py-3 sm:py-4 border-b md:border-b-0 md:border-r">
           <FiMapPin className="text-gray-400 text-lg mr-3" />
           <input
             type="text"
@@ -41,7 +41,7 @@ export default function SearchBar() {
         </div>
 
         {/* BUTTON */}
-        <button className="bg-blue-800 hover:bg-blue-700 text-white px-8 py-4 text-sm font-medium">
+        <button className="bg-blue-800 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm font-medium">
           Search
         </button>
 

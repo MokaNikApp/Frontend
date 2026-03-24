@@ -23,16 +23,16 @@ const stories = [
 
 export default function SuccessStories() {
   return (
-    <section className="px-6 lg:px-24 py-16 bg-gray-50">
+    <section className="px-4 sm:px-6 lg:px-24 py-12 sm:py-16 bg-gray-50 overflow-hidden">
 
-      <h2 className="text-center text-lg font-semibold text-gray-800 mb-10">
+      <h2 className="text-center text-base sm:text-lg font-semibold text-gray-800 mb-10">
         Success stories
       </h2>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
         {stories.map((item, index) => (
-          <div key={index} className="bg-white p-6 rounded-xl border shadow-sm">
+          <div key={index} className="bg-white p-5 sm:p-6 rounded-xl border shadow-sm">
 
             {/* STARS */}
             <div className="flex gap-1 text-blue-600 mb-3">
