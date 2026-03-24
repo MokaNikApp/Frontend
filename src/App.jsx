@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import VerifyPage from "./pages/VerifyPage";
 import SignupPage from "./components/Signup";
 import BookingPageA from "./pages/BookingPageA";
+import DashboardPage from './pages/dashboard-pages/DashboardPage'
 
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -24,6 +25,8 @@ const App = () => {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/booking/:step" element={<BookingPageA />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        
 
         <Route path="/home" element={<Home />} />
         <Route path="/services" element={<Services />} />
