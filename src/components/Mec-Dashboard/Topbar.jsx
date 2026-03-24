@@ -5,7 +5,7 @@ export default function Topbar({ toggleSidebar }) {
     <div className="bg-white px-4 sm:px-6 py-4 flex items-center justify-between border-b">
 
       {/* LEFT */}
-      <div className="flex items-center gap-3 w-full sm:w-auto">
+      <div className="flex items-center gap-3 flex-1">
 
         {/* HAMBURGER */}
         <button
@@ -16,7 +16,7 @@ export default function Topbar({ toggleSidebar }) {
         </button>
 
         {/* SEARCH */}
-        <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg w-full sm:w-75 lg:w-[40%]">
+        <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg w-80 sm:w-68 lg:w-[40%]">
           <FiSearch className="text-gray-400 mr-2" />
           <input
             type="text"
