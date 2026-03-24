@@ -1,11 +1,9 @@
 
-
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { HiArrowRight } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
-import prof from "../assets/images/prof.png";
+import prof from "/images/prof.png";
 
 const SignupPage = () => {
   const [email, setEmail] = useState("");
