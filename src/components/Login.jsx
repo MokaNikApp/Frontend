@@ -1,14 +1,9 @@
-
-
-
-
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { HiArrowRight } from "react-icons/hi";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import prof from "../assets/images/prof.png";
+import prof from "/images/prof.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -29,7 +24,7 @@ const Login = () => {
 
         {/* Image Section */}
         <div className="relative w-full h-64 md:w-1/2 md:h-auto">
-          <img src={prof} alt="Profile" className="object-cover w-full h-full" />
+          <img src={prof} alt="Profile" className="object-cover w-full h-full" /> 
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 md:from-transparent"></div>
         </div>
 
@@ -135,3 +130,4 @@ const Login = () => {
 };
 
 export default Login;
+
