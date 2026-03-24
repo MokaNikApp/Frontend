@@ -5,6 +5,9 @@ import React, { useState, useEffect } from "react";
 import { HiArrowRight, HiShieldCheck } from "react-icons/hi";
 import { useParams, useNavigate } from "react-router-dom";
 import BookingB from "./BookingB";
+import BookingC from "./BookingC";
+import BookingD from "./BookingD";
+import BookingE from "./BookingE";
 
 const BookingA = () => {
   // ROUTER
@@ -162,10 +165,12 @@ const BookingA = () => {
             <div className="flex items-start gap-2 p-3 mt-4 bg-gray-100 rounded-lg">
               <HiShieldCheck className="text-xl text-green-500" />
               <p className="text-xs sm:text-sm">
-                Your information is securely encrypted.
+                Your information is securely encrypted. We use this data to verify your identity and
+                  ensure a safe platform for both mechanics and customers.
               </p>
             </div>
           </div>
+          
 
           {/* Back button for steps > 1 */}
           {currentStep > 1 && (
@@ -189,6 +194,10 @@ const BookingA = () => {
 
       {/* Next steps */}
       {currentStep === 2 && <BookingB currentStep={currentStep} totalSteps={totalSteps} />}
+       {currentStep === 3 && (<BookingC currentStep={currentStep} totalSteps={totalSteps} />)}
+          {currentStep === 4 && (<BookingD currentStep={currentStep} totalSteps={totalSteps} />)}
+             {currentStep === 5 && (<BookingE currentStep={currentStep} totalSteps={totalSteps} />)}
+
     </>
   );
 };

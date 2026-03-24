@@ -8,7 +8,7 @@ const BookingPageA = () => {
     <div className="">
     
       <Navbar />
-      <div className="flex items-center justify-center py-10">
+      <div className="flex px-6 items-center justify-center py-6 sm:py-10">
         <BookingA />
       </div>
       <Footer />
