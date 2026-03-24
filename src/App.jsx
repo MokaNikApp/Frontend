@@ -8,17 +8,33 @@ import SignupPage from "./components/Signup";
 import BookingPageA from "./pages/BookingPageA";
 import DashboardPage from './pages/dashboard-pages/DashboardPage'
 
+import Home from "./pages/Home";
+import Services from "./pages/Services";
+import ServiceDetail from "./pages/ServiceDetail";
+import Providers from "./pages/Providers";
+import Onboarding from "./pages/Onboarding";
+import Overview from "./pages/Mec-dashboard/Overview";
 
 const App = () => {
   return (
     <div className="bg-gray-100 ">
       <Routes>
+        <Route path="/" element={<Home />} />
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/booking/:step" element={<BookingPageA />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         
+
+        <Route path="/home" element={<Home />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/services/:id" element={<ServiceDetail />} /> 
+        <Route path="/providers" element={<Providers />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+
+        <Route path="/mec-dashboard" element={<Overview />} />
       </Routes>
     </div>
   );
