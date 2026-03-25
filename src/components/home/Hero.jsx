@@ -1,9 +1,9 @@
 export default function Hero() {
   return (
-    <div className="px-4 py-10 sm:px-6 sm:py-12 lg:px-0 lg:py-20 md:flex items-center justify-between bg-white">
+    <div className="px-4 sm:px-6 lg:px-6 py-10 sm:py-12 lg:py-12 md:flex items-center justify-between bg-white">
 
       {/* LEFT */}
-      <div className="max-w-xl">
+      <div className="max-w-3xl px-4 sm:px-8 lg:px-24">
         
         {/* SMALL BADGE */}
         <span className="text-xs bg-gray-100 px-3 py-1 rounded-full">
@@ -14,10 +14,8 @@ export default function Hero() {
         </span>
 
         {/* MAIN TEXT */}
-        <h1 className="mt-4 text-2xl sm:text-3xl md:text-5xl font-bold leading-tight text-gray-900">
-          Book trusted <br />
-          mechanics for <br />
-          reliable car service
+        <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+          Book trusted mechanics for reliable car service
         </h1>
 
         {/* SUBTEXT */}
@@ -33,7 +31,7 @@ export default function Hero() {
             Book a Service
           </button>
 
-          <button className="text-gray-700 text-sm font-medium w-full sm:w-auto text-left sm:text-center">
+          <button className="text-gray-700 text-sm font-medium w-full sm:w-auto text-center sm:text-center">
             Become a Provider <span className="font-bold text-lg">→</span>
           </button>
         </div>

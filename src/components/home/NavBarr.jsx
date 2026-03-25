@@ -5,7 +5,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="sticky top-0 z-50 w-full border-b bg-white">
+    <div className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white">
       
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
         

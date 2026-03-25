@@ -15,7 +15,7 @@ export default function Home() {
       <NavBarr />
 
       {/* ✅ RESPONSIVE WRAPPER START */}
-      <div className="px-4 sm:px-6 lg:px-24">
+      <div className="px-4 sm:px-6 lg:px-1">
         <Hero />
         <ServicesSection />
         <HowItWorks />
