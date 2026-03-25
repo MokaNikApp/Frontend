@@ -1,25 +1,43 @@
 
+
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { HiArrowRight } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
-import prof from "/images/prof.png";
+import prof from "../../public/images/prof.png";
+import { useNavigate } from "react-router-dom";
+
+
 
 const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [accountType, setAccountType] = useState("user");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState("");
+  
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ fullName, email, accountType, password, confirmPassword });
-  };
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  // simple validation (optional but recommended)
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  console.log({ fullName, email, accountType, password });
+
+  // ✅ Redirect to verify page
+  navigate("/verify");
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-gray-100">
-      <div className="flex flex-col-reverse w-full max-w-5xl overflow-hidden bg-white rounded-lg shadow-lg md:flex-row">
+     
+      <div className="flex flex-col w-full max-w-5xl overflow-hidden bg-white rounded-lg shadow-lg md:flex-row">
 
         {/* Image Section */}
         <div className="relative w-full h-48 md:h-auto md:w-1/2">

@@ -4,9 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import VerifyPage from "./pages/VerifyPage";
+import Verifypage2 from "./pages/Verifypage2";
+import VerifiedPage from "./pages/VerifiedPage";
+import CarModelPage from "./pages/CarModelPage";
 import SignupPage from "./components/Signup";
 import BookingPageA from "./pages/BookingPageA";
 import DashboardPage from './pages/dashboard-pages/DashboardPage'
+
 
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -24,6 +28,9 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyPage />} />
+          <Route path="/verify2" element={<Verifypage2 />} />
+           <Route path="/verified" element={<VerifiedPage />} />
+          <Route path="/car-model" element={<CarModelPage/>} />
         <Route path="/booking/:step" element={<BookingPageA />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         
