@@ -5,16 +5,16 @@ export default function HowItWorks() {
     <section className="relative w-full bg-white py-20 px-4 sm:px-6 lg:px-24 overflow-hidden font-sans lg:min-h-225">
 
       {/* HEADER */}
-      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+      <h2 className="text-2xl px-6 sm:text-3xl font-bold text-gray-900">
         How MokaNik Works
       </h2>
 
-      <p className="text-gray-500 mt-4 sm:mt-6 text-sm sm:text-base max-w-xl">
+      <p className="text-gray-500 px-6 mt-4 sm:mt-6 text-sm sm:text-base max-w-xl">
         Booking a trusted mechanic has never been easier. <br />
         Booking a trusted mechanic has never been
       </p>
 
-      <button className="mt-6 bg-blue-800 hover:bg-blue-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm cursor-pointer">
+      <button className="mt-6 mx-6 bg-blue-800 hover:bg-blue-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm cursor-pointer">
         Get Started
       </button>
 
