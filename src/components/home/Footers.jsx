@@ -2,7 +2,7 @@ import { FaGlobe, FaEnvelope, FaBell } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12 sm:py-16 px-4 sm:px-6 lg:px-24">
+    <footer className="bg-blue-900 text-gray-300 py-12 sm:py-16 px-4 sm:px-12 lg:px-24">
       
       <div className="max-w-6xl mx-auto">
 

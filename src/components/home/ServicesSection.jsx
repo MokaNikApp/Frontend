@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 
 export default function ServicesSection() {
   return (
-    <div className="py-10">
+    <div className="py-10 px-4 sm:px-6 lg:px-30">
 
       {/* HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:text-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
             Our services
@@ -24,7 +24,7 @@ export default function ServicesSection() {
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
         {services.slice(0, 4).map((item) => (
           <Link key={item.id} to={`/services/${item.id}`}>
             <ServiceCard {...item} />
