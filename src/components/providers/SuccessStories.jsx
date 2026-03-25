@@ -23,7 +23,7 @@ const stories = [
 
 export default function SuccessStories() {
   return (
-    <section className="px-4 sm:px-6 lg:px-24 py-12 sm:py-16 bg-gray-50 overflow-hidden">
+    <section className="px-4 sm:px-6 lg:px-24 py-0 pb-10 sm:py-16 bg-gray-50 overflow-hidden">
 
       <h2 className="text-center text-base sm:text-lg font-semibold text-gray-800 mb-10">
         Success stories

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import Navbar from "../components/home/NavBarr";
 import Footer from "../components/home/Footers";
 
@@ -16,20 +17,54 @@ export default function ServiceDetail() {
       {/* MAIN CONTENT WRAPPER */}
       <main className="space-y-12 lg:space-y-16">
 
-        <ServiceHero />
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <ServiceHero />
+        </motion.div>
 
         <div className="px-6 lg:px-24">
-          <ServiceIncludes />
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+          >
+            <ServiceIncludes />
+          </motion.div>
         </div>
 
         <div className="px-6 lg:px-24">
-          <ServiceExtra />
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <ServiceExtra />
+          </motion.div>
         </div>
 
-        <Testimonials title="What our customers say" />
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9 }}
+          viewport={{ once: true }}
+        >
+          <Testimonials title="What our customers say" />
+        </motion.div>
 
         <div className="px-6 lg:px-24">
-          <RelatedService />
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            viewport={{ once: true }}
+          >
+            <RelatedService />
+          </motion.div>
         </div>
 
       </main>

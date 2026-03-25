@@ -56,33 +56,40 @@ export default function Navbar() {
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="md:hidden px-4 sm:px-6 pb-4 flex flex-col space-y-4 text-sm text-center border-t">
-          <Link to="/" onClick={() => setOpen(false)}>
-            Home
-          </Link>
-          <Link to="/services" onClick={() => setOpen(false)}>
-            Services
-          </Link>
-          <Link to="/providers" onClick={() => setOpen(false)}>
-            Providers
-          </Link>
+        <div className="md:hidden px-4 py-6 sm:px-6 pb-4 flex flex-col space-y-4 text-sm border-t">
+          
+          {/* LEFT ITEMS */}
+          <div className="flex flex-col space-y-4 text-left">
+            <Link to="/" onClick={() => setOpen(false)}>
+              Home
+            </Link>
+            <Link to="/services" onClick={() => setOpen(false)}>
+              Services
+            </Link>
+            <Link to="/providers" onClick={() => setOpen(false)}>
+              Providers
+            </Link>
+          </div>
 
-          {/* MOBILE RIGHT */}
-          <Link
-            to="/login"
-            onClick={() => setOpen(false)}
-            className="text-gray-900 hover:text-blue-600 transition"
-          >
-            <b>Log In</b>
-          </Link>
+          {/* RIGHT ITEMS (centered) */}
+          <div className="flex flex-col items-center gap-3 pt-2">
+            <Link
+              to="/login"
+              onClick={() => setOpen(false)}
+              className="text-gray-900 hover:text-blue-600 transition"
+            >
+              <b>Log In</b>
+            </Link>
 
-          <Link
-            to="/services"
-            onClick={() => setOpen(false)}
-            className="bg-blue-800 text-white px-4 py-2 rounded-lg text-center"
-          >
-            Book a Service
-          </Link>
+            <Link
+              to="/services"
+              onClick={() => setOpen(false)}
+              className="bg-blue-800 text-white px-4 py-2 rounded-lg text-center w-full sm:w-auto"
+            >
+              Book a Service
+            </Link>
+          </div>
+
         </div>
       )}
     </div>
