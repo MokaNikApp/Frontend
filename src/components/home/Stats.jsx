@@ -13,13 +13,13 @@ export default function Stats() {
   useEffect(() => {
     const intervals = stats.map((stat, i) => {
       let start = 0;
-      const duration = 1500; // animation duration
+      const duration = 3000; // animation duration
       const increment = stat.target / (duration / 16);
 
       return setInterval(() => {
         start += increment;
         setCounts((prev) => {
-          const updated = [...prev];
+          const updated = [...prev]
           updated[i] =
             start >= stat.target ? stat.target : Math.floor(start);
           return updated;

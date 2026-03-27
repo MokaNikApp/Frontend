@@ -44,7 +44,7 @@ export default function WhyPartner() {
         {features.map((item, index) => (
           <div
             key={index}
-            className="bg-white p-5 sm:p-6 rounded-xl border shadow-sm"
+            className="bg-white p-5 sm:p-6 rounded-xl border-gray-300 shadow-sm"
           >
             {/* ICON */}
             <div className="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-800 rounded-md mb-4 text-lg">
