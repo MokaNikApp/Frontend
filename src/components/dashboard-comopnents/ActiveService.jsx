@@ -2,11 +2,8 @@
 
 
 
-
 import React from "react";
 import Background from '../../assets/images/Background.png';
-import RecentActivity from "../../components/dashboard-comopnents/RecentActivity";
-
 
 import { 
   HiCheckCircle, 
@@ -17,8 +14,8 @@ import {
 
 const ActiveService = () => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
       {/* Active Service Status Card */}
       <div className="lg:col-span-2 p-4 sm:p-6 bg-white shadow-md rounded-xl space-y-5">
 
@@ -75,7 +72,7 @@ const ActiveService = () => {
       </div>
 
       {/* Upcoming Section */}
-      <div className="p-4 sm:p-6 bg-white shadow-md rounded-xl space-y-4">
+      <div className="p-4 sm:p-6 bg-white shadow-md rounded-xl space-y-4 h-auto">
 
         <div className="flex justify-between items-center">
           <p className="font-semibold text-gray-700 text-sm sm:text-base">
@@ -86,7 +83,7 @@ const ActiveService = () => {
           </p>
         </div>
 
-        {/* Event Card */}
+        {/* Event Cards */}
         {[1, 2].map((item, index) => (
           <div key={index} className="flex items-center gap-3 sm:gap-4 p-3 bg-gray-50 rounded-lg">
             

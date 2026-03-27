@@ -76,7 +76,7 @@ const Dashboard = () => {
    <ActiveService />
    </div>
    <div className="mt-8">
-   <RecentActivity  />
+   <RecentActivity />
    </div>
     </div>
   );

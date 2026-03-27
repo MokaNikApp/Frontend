@@ -10,6 +10,7 @@ const RecentActivity = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
+
       {/* LEFT SECTION */}
       <div className="lg:col-span-2 space-y-6">
 
@@ -56,7 +57,7 @@ const RecentActivity = () => {
       </div>
 
       {/* RIGHT SECTION */}
-      <div>
+      <div className="sm:-mt-26">
       <div className="bg-[#1C52AF] text-white p-6 rounded-xl shadow-md flex flex-col justify-between">
         <div>
           <p className="text-lg font-semibold mb-2">
@@ -72,7 +73,7 @@ const RecentActivity = () => {
           Learn More
         </button>
       </div>
-      <div className="bg-white p-5 rounded-xl shadow-md space-y-3">
+      <div className="bg-white p-5 rounded-xl shadow-md space-y-3 mt-5">
           <div className="flex items-center gap-2">
             <HiLocationMarker className="text-[#1C52AF] text-xl" />
             <h2 className="font-semibold text-gray-700">
@@ -80,7 +81,7 @@ const RecentActivity = () => {
             </h2>
           </div>
 
-          <div className="w-full h-64 rounded-lg overflow-hidden">
+          <div className="w-full h-28 rounded-lg overflow-hidden">
             <iframe
               title="map"
               className="w-full h-full border-0"

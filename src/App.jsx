@@ -9,7 +9,10 @@ import VerifiedPage from "./pages/VerifiedPage";
 import CarModelPage from "./pages/CarModelPage";
 import SignupPage from "./components/Signup";
 import BookingPageA from "./pages/BookingPageA";
+import BookServicePage from "./pages/dashboard-pages/BookServicePage";
+import MyServicePage from "./pages/dashboard-pages/MyServicePage";
 import DashboardPage from './pages/dashboard-pages/DashboardPage'
+
 
 
 import Home from "./pages/Home";
@@ -33,6 +36,11 @@ const App = () => {
           <Route path="/car-model" element={<CarModelPage/>} />
         <Route path="/booking/:step" element={<BookingPageA />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+         <Route path="/book-service" element={<BookServicePage />} />
+            <Route path="/my-service" element={<MyServicePage />} />
+        
+        
+
         
 
         <Route path="/home" element={<Home />} />

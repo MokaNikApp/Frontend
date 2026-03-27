@@ -17,7 +17,7 @@ export default function Footer() {
               className="h-8 sm:h-10 mb-4 sm:mb-6"
             />
 
-            <p className="text-xs sm:text-sm text-gray-400 leading-relaxed max-w-xs">
+            <p className="text-xs sm:text-sm leading-relaxed max-w-xs text-white">
               Connecting car owners with the best local mechanics for reliable,
               transparent, and high-quality repair services.
             </p>
@@ -68,7 +68,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-10 sm:mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
 
           {/* COPYRIGHT */}
-          <p className="text-xs sm:text-sm text-gray-400">
+          <p className="text-xs sm:text-sm text-white">
             © 2026 MokaNik. All Rights Reserved 2026.
           </p>
 
