@@ -11,8 +11,11 @@ import SignupPage from "./components/Signup";
 import BookingPageA from "./pages/BookingPageA";
 import BookServicePage from "./pages/dashboard-pages/BookServicePage";
 import MyServicePage from "./pages/dashboard-pages/MyServicePage";
-import DashboardPage from './pages/dashboard-pages/DashboardPage'
-
+import ServiceHistoryPage from "./pages/dashboard-pages/ServiceHistoryPage";
+import DashboardPage from "./pages/dashboard-pages/DashboardPage";
+import PaymentPage from "./pages/dashboard-pages/PaymentPage";
+import NotificationPage from "./pages/dashboard-pages/NotificationPage";
+import ProfilePage from "./pages/dashboard-pages/ProfilePage";
 
 
 import Home from "./pages/Home";
@@ -31,21 +34,21 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyPage />} />
-          <Route path="/verify2" element={<Verifypage2 />} />
-           <Route path="/verified" element={<VerifiedPage />} />
-          <Route path="/car-model" element={<CarModelPage/>} />
+        <Route path="/verify2" element={<Verifypage2 />} />
+        <Route path="/verified" element={<VerifiedPage />} />
+        <Route path="/car-model" element={<CarModelPage />} />
         <Route path="/booking/:step" element={<BookingPageA />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-         <Route path="/book-service" element={<BookServicePage />} />
-            <Route path="/my-service" element={<MyServicePage />} />
-        
-        
-
-        
+        <Route path="/book-service" element={<BookServicePage />} />
+        <Route path="/my-service" element={<MyServicePage />} />
+        <Route path="/service-history" element={<ServiceHistoryPage />} />
+        <Route path="/payment-management" element={<PaymentPage />} />
+        <Route path="/notify" element={<NotificationPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
         <Route path="/home" element={<Home />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/services/:id" element={<ServiceDetail />} /> 
+        <Route path="/services/:id" element={<ServiceDetail />} />
         <Route path="/providers" element={<Providers />} />
         <Route path="/onboarding" element={<Onboarding />} />
 

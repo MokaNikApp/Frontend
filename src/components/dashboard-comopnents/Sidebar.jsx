@@ -22,12 +22,12 @@ const Sidebar = () => {
     { name: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
     { name: "Book Service", icon: <MdSchool />, path: "/book-service" },
     { name: "My Services", icon: <MdSchool />, path: "/my-service" },
-    { name: "Service History", icon: <MdPayment />, path: "/history" },
-    { name: "Payments", icon: <MdCardMembership />, path: "/payments" },
+    { name: "Service History", icon: <MdPayment />, path: "/service-history" },
+    { name: "Payments", icon: <MdCardMembership />, path: "/payment-management" },
   ];
 
   const accountMenu = [
-    { name: "Notifications", icon: <MdNotifications />, path: "/notification" },
+    { name: "Notifications", icon: <MdNotifications />, path: "/notify" },
     { name: "Profile", icon: <MdPerson />, path: "/profile" },
     { name: "Settings", icon: <MdSettings />, path: "/settings" },
   ];
