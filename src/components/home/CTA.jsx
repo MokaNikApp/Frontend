@@ -20,7 +20,7 @@ export default function CTA() {
 
           <Link
             to="/providers"
-            className="inline-block mt-6 bg-blue-800 hover:bg-blue-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm"
+            className="inline-block mt-6 hover:text-base transition-all bg-blue-800 hover:bg-blue-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm"
           >
             Become a Provider
           </Link>

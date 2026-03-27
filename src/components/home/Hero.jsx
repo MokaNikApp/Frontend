@@ -27,7 +27,7 @@ export default function Hero() {
 
         {/* BUTTONS */}
         <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
-          <button className="bg-blue-800 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-medium w-full sm:w-auto">
+          <button className="bg-blue-800 hover:bg-blue-700 hover:text-base transition-all text-white px-6 py-3 rounded-lg text-sm font-medium w-full sm:w-auto">
             Book a Service
           </button>
 
@@ -42,7 +42,7 @@ export default function Hero() {
         <img
           src="/images/hero-mechanic.png"
           alt="mechanic"
-          className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg object-contain"
+          className="w-full max-w-xs sm:max-w-sm md:max-w-md hover:hover:h-base transition lg:max-w-lg object-contain"
         />
       </div>
     </div>
