@@ -80,7 +80,7 @@ const BookingE = ({ currentStep = 5, totalSteps = 5 }) => {
               Go to Portal
             </button>
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/mec-dashboard")}
               className="flex-1 border border-[#1D52AF] text-[#1D52AF] py-3 rounded-lg hover:bg-blue-50 transition"
             >
               Back to Dashboard
