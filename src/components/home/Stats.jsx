@@ -33,7 +33,7 @@ export default function Stats() {
   }, []);
 
   return (
-    <section className="bg-white py-12 sm:py-16 px-4 sm:px-6 lg:px-24">
+    <section className="bg-white py-0  sm:py-16 px-4 sm:px-6 lg:px-24">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 text-center divide-y md:divide-y-0 md:divide-x divide-gray-200">
           
