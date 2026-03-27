@@ -1,58 +1,77 @@
 import { useEffect, useState } from "react";
 
 export default function Hero() {
-  const mechanicText = "MECHANICS";
   const serviceText = "CAR SERVICE";
 
-  const [typedMechanic, setTypedMechanic] = useState("");
-  const [typedService, setTypedService] = useState("");
-
-  const images = [
-    "/images/hero-mechanic.png",
-    "/images/hero-mechanic2.jpeg",
-    "/images/hero-mechanic3.jpeg",
-    "/images/hero-mechanic4.jpeg",
-    "/images/hero-mechanic5.jpeg",
-    "/images/hero-mechanic6.jpeg",
+  const mechanicWords = [
+    "MECHANICS",
+    "PROVIDERS",
+    "ENGINEERS",
+    "TECHNICIANS",
+    "SPECIALISTS",
+    "CONSULTANTS",
   ];
 
-  const [currentImage, setCurrentImage] = useState(images[0]);
+  const [wordIndex, setWordIndex] = useState(0);
+  const [typedMechanic, setTypedMechanic] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const [fade, setFade] = useState(true);
 
-  // TYPEWRITER
+  const [typedService, setTypedService] = useState("");
+
+  // TYPEWRITER FADE IN + TYPEWRITER FADE OUT
   useEffect(() => {
-    let i = 0;
+    const currentWord = mechanicWords[wordIndex];
+    let i = isDeleting ? typedMechanic.length : 0;
+
+    const interval = setInterval(() => {
+      if (!isDeleting) {
+        // typing forward
+        setTypedMechanic(currentWord.slice(0, i + 1));
+        i++;
+
+        if (i === currentWord.length) {
+          clearInterval(interval);
+
+          // pause before deleting
+          setTimeout(() => {
+            setIsDeleting(true);
+          }, 2000);
+        }
+      } else {
+        // deleting (typewriter fade out)
+        setTypedMechanic(currentWord.slice(0, i - 1));
+        i--;
+
+        if (i === 0) {
+          clearInterval(interval);
+
+          // move to next word
+          setIsDeleting(false);
+          setWordIndex((prev) => (prev + 1) % mechanicWords.length);
+        }
+      }
+    }, isDeleting ? 150 : 200);
+
+    return () => clearInterval(interval);
+  }, [wordIndex, isDeleting]);
+
+  // FADE CONTROL
+  useEffect(() => {
+    setFade(false);
+    const t = setTimeout(() => setFade(true), 50);
+    return () => clearTimeout(t);
+  }, [typedMechanic]);
+
+  // TYPEWRITER FOR SERVICE
+  useEffect(() => {
     let j = 0;
 
-    const mechanicInterval = setInterval(() => {
-      setTypedMechanic(mechanicText.slice(0, i + 1));
-      i++;
-      if (i === mechanicText.length) clearInterval(mechanicInterval);
-    }, 100);
-
-    const serviceInterval = setInterval(() => {
+    const interval = setInterval(() => {
       setTypedService(serviceText.slice(0, j + 1));
       j++;
-      if (j === serviceText.length) clearInterval(serviceInterval);
-    }, 120);
-
-    return () => {
-      clearInterval(mechanicInterval);
-      clearInterval(serviceInterval);
-    };
-  }, []);
-
-  // FADE IMAGE TRANSITION
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFade(false);
-
-      setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * images.length);
-        setCurrentImage(images[randomIndex]);
-        setFade(true);
-      }, 500);
-    }, 3000);
+      if (j === serviceText.length) clearInterval(interval);
+    }, 200);
 
     return () => clearInterval(interval);
   }, []);
@@ -72,7 +91,12 @@ export default function Hero() {
 
         <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
           Book trusted{" "}
-          <span className="text-green-700">
+          <span
+            className={`
+              text-green-700 inline-block transition-opacity duration-300
+              ${fade ? "opacity-100" : "opacity-0"}
+            `}
+          >
             {typedMechanic}
             <span className="animate-pulse">|</span>
           </span>{" "}
@@ -101,15 +125,11 @@ export default function Hero() {
       </div>
 
       {/* RIGHT IMAGE */}
-      <div className="mt-10 md:mt-0 flex justify-center px-4 sm:px-8 lg:px-24">
+      <div className="mt-10 md:mt-0 flex justify-center">
         <img
-          src={currentImage}
+          src="/images/hero-mechanic.png"
           alt="mechanic"
-          className={`
-            w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg object-contain
-            transition-opacity duration-500 ease-in-out
-            ${fade ? "opacity-100" : "opacity-0"}
-          `}
+          className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg object-contain"
         />
       </div>
     </div>
