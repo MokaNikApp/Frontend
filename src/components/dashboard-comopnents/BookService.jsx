@@ -185,7 +185,7 @@ const BookService = () => {
         {/* Summary Card */}
         {/* Phone Wrapper */}
 
-        <div className="w-[320px] h-auto bg-white rounded-[2rem] shadow-xl border border-gray-100 p-4 overflow-y-auto">
+        <div className="sm:w-[350px] h-auto bg-white rounded-[2rem] shadow-xl border border-gray-100 p-4 overflow-y-auto w-[300px]">
           {/* Header */}
           <div className="bg-[#1D52AF] text-white p-4 rounded-xl">
             <p className="text-lg font-semibold">Book Summary</p>
