@@ -7,7 +7,7 @@ export default function ServicesSection() {
     <div className="py-10 px-4 sm:px-6 lg:px-30">
 
       {/* HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:text-center sm:justify-between gap-4">
+      <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
             Our services
@@ -18,7 +18,7 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        <button className="bg-blue-800 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600 w-full sm:w-auto">
+        <button className="bg-blue-800 hover:text-base transition-all text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600 w-full sm:w-auto">
           View All Service
         </button>
       </div>

@@ -14,11 +14,11 @@ export default function ProviderCTA() {
       {/* BUTTONS */}
       <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6 flex-wrap">
 
-        <button className="bg-white text-blue-700 px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 hover:text-gray-100 w-full sm:w-auto">
+        <button className="bg-white text-blue-800 px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-800 hover:border hover:text-gray-100 hover:text-base transition-all w-full sm:w-auto">
           Start Your Application
         </button>
 
-        <button className="border border-white px-5 py-2 rounded-md text-sm hover:bg-white hover:text-blue-700 w-full sm:w-auto">
+        <button className="border border-white px-5 py-2 rounded-md text-sm hover:bg-white hover:text-blue-700 hover:text-base transition-all w-full sm:w-auto">
           Talk to Support
         </button>
 

@@ -17,11 +17,11 @@ export default function CTA() {
         {/* BUTTONS */}
         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
           
-          <button className="w-full sm:w-auto bg-white text-blue-800 hover:bg-blue-700 hover:text-white px-6 py-3 rounded-lg font-medium">
+          <button className="w-full sm:w-auto bg-white text-blue-800 hover:bg-blue-700 hover:text-white hover:text-base transition-all px-6 py-3 rounded-lg font-medium">
             Get Started Now
           </button>
 
-          <button className="w-full sm:w-auto border border-white hover:bg-white hover:text-blue-800 px-6 py-3 rounded-lg">
+          <button className="w-full sm:w-auto border border-white hover:bg-white hover:text-blue-800 hover:text-base transition-all px-6 py-3 rounded-lg">
             Become a Mechanic
           </button>
 

@@ -78,7 +78,7 @@ export default function ServicesGrid() {
           Popular Services
         </h2>
 
-        <span className="text-blue-700 text-sm font-semibold border-b cursor-pointer text-center sm:text-left">
+        <span className="text-blue-700 text-sm hover:text-base transition-all font-semibold border-b cursor-pointer text-center sm:text-left">
           View all services
         </span>
       </div>
@@ -88,14 +88,26 @@ export default function ServicesGrid() {
         {services.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-xl shadow-md overflow-hidden"
+            className="
+              bg-white rounded-xl overflow-hidden border border-gray-200
+              shadow-sm
+              transform transition duration-300 ease-in-out
+              hover:-translate-y-2
+              hover:shadow-[0_10px_30px_rgba(30,64,175,0.25),0_10px_30px_rgba(22,163,74,0.25)]
+            "
           >
             {/* IMAGE */}
-            <img
-              src={item.image}
-              alt={item.title}
-              className="w-full h-40 sm:h-44 lg:h-48 object-cover"
-            />
+            <div className="overflow-hidden">
+              <img
+                src={item.image}
+                alt={item.title}
+                className="
+                  w-full h-40 sm:h-44 lg:h-48 object-cover
+                  transition duration-300 ease-in-out
+                  hover:scale-105
+                "
+              />
+            </div>
 
             {/* CONTENT */}
             <div className="p-4 sm:p-5">
@@ -112,7 +124,7 @@ export default function ServicesGrid() {
               </div>
 
               {/* TITLE */}
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 transition hover:text-blue-800">
                 {item.title}
               </h3>
 
@@ -129,7 +141,11 @@ export default function ServicesGrid() {
 
                 <Link
                   to={`/services/${item.id}`}
-                  className="bg-blue-800 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm"
+                  className="
+                    bg-blue-800 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm
+                    transition-all
+                    hover:bg-blue-600 hover:text-base
+                  "
                 >
                   View Details
                 </Link>
