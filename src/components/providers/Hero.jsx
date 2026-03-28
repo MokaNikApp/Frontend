@@ -5,8 +5,8 @@ export default function Hero() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
         {/* LEFT */}
-        <div className="max-w-3xl px-4 sm:px-8 lg:px-24">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight">
+        <div className="max-w-3xl px-4 sm:px-12 lg:px-24">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-gray-900 leading-tight">
             Join the MokaNik <br /> Network
           </h1>
 
@@ -17,11 +17,11 @@ export default function Hero() {
 
           {/* BUTTONS */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-6">
-            <button className="bg-blue-800 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm w-full sm:w-auto">
+            <button className="bg-blue-800 hover:bg-blue-700 hover:text-base transition-all text-white px-6 py-3 rounded-lg text-sm w-full sm:w-auto">
               Apply to Provide Service
             </button>
 
-            <span className="text-sm font-bold text-gray-600 cursor-pointer text-center sm:text-center">
+            <span className="text-sm font-bold text-gray-600 hover:text-base transition-all cursor-pointer text-center sm:text-center">
               Learn more →
             </span>
           </div>

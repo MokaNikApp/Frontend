@@ -20,26 +20,37 @@ export default function Navbar() {
 
         {/* DESKTOP LINKS */}
         <div className="hidden md:flex space-x-6 lg:space-x-8 text-sm">
-          <Link to="/" className="hover:text-blue-700 transition">
+          <Link
+            to="/"
+            className="hover:text-blue-700 hover:underline transition-300"
+          >
             Home
           </Link>
-          <Link to="/services" className="hover:text-blue-700 transition">
+
+          <Link
+            to="/services"
+            className="hover:text-blue-700 hover:underline transition-300"
+          >
             Services
           </Link>
-          <Link to="/providers" className="hover:text-blue-700 transition">
+
+          <Link
+            to="/providers"
+            className="hover:text-blue-700 hover:underline transition-300"
+          >
             Providers
           </Link>
         </div>
 
         {/* RIGHT (DESKTOP) */}
         <div className="hidden md:flex items-center gap-3 lg:gap-4">
-          <Link to="/login" className="text-sm text-gray-900">
+          <Link to="/login" className="text-sm hover:text-base transition-all text-gray-900">
             <b>Log In</b>
           </Link>
 
           <Link
             to="/services"
-            className="bg-blue-800 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-lg text-sm font-medium"
+            className="bg-blue-800 hover:bg-blue-700 hover:text-base transition-all text-white px-4 sm:px-6 py-2 rounded-lg text-sm font-medium"
           >
             Book a Service
           </Link>
@@ -69,10 +80,6 @@ export default function Navbar() {
             <Link to="/providers" onClick={() => setOpen(false)}>
               Providers
             </Link>
-          </div>
-
-          {/* RIGHT ITEMS (centered) */}
-          <div className="flex flex-col items-center gap-3 pt-2">
             <Link
               to="/login"
               onClick={() => setOpen(false)}
@@ -80,7 +87,10 @@ export default function Navbar() {
             >
               <b>Log In</b>
             </Link>
+          </div>
 
+          {/* RIGHT ITEMS (centered) */}
+          <div className="flex flex-col items-center gap-3 pt-2">
             <Link
               to="/services"
               onClick={() => setOpen(false)}

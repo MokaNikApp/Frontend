@@ -51,7 +51,7 @@ export default function FAQ() {
             <span className="text-red-500">Info@techpro.com</span>
           </p>
 
-          <button className="mt-6 bg-gray-200 text-gray-800 px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm">
+          <button className="mt-6 bg-gray-200 text-gray-800 hover:text-base transition-all px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm">
             See All FAQ’s
           </button>
         </div>
@@ -76,7 +76,7 @@ export default function FAQ() {
                   </h3>
 
                   {/* ICON */}
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md text-gray-800 shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-gray-100 border-gray-400 rounded-md text-gray-800 shrink-0">
                     {isOpen ? "✕" : "+"}
                   </div>
                 </div>

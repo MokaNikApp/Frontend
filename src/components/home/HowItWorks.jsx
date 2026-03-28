@@ -15,7 +15,7 @@ export default function HowItWorks() {
           Booking a trusted mechanic has never been easier. <br />
         </p>
 
-        <button className="mt-6 bg-blue-800 hover:bg-blue-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm cursor-pointer">
+        <button className="mt-6 bg-blue-800 hover:bg-blue-600 hover:text-base transition-all text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm cursor-pointer">
           Get Started
         </button>
 

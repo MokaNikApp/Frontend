@@ -32,7 +32,7 @@ export default function SuccessStories() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
         {stories.map((item, index) => (
-          <div key={index} className="bg-white p-5 sm:p-6 rounded-xl border shadow-sm">
+          <div key={index} className="bg-white p-5 sm:p-6 rounded-xl border-gray-300 shadow-sm">
 
             {/* STARS */}
             <div className="flex gap-1 text-blue-600 mb-3">
