@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   const serviceText = "CAR SERVICE";
@@ -114,13 +115,21 @@ export default function Hero() {
         </p>
 
         <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
-          <button className="bg-blue-800 hover:bg-blue-700 hover:text-base transition-all text-white px-6 py-3 rounded-lg text-sm font-medium w-full sm:w-auto">
+  
+          <Link
+            to="/services"
+            className="bg-blue-800 hover:bg-blue-700 hover:text-base transition-all text-white px-6 py-3 rounded-lg text-sm font-medium w-full sm:w-auto text-center"
+          >
             Book a Service
-          </button>
+          </Link>
 
-          <button className="text-gray-700 text-sm font-medium w-full hover:text-base transition-all sm:w-auto text-center sm:text-center">
+          <Link
+            to="/providers"
+            className="text-gray-700 text-sm font-medium w-full hover:text-base transition-all sm:w-auto text-center"
+          >
             Become a Provider <span className="font-bold text-lg">→</span>
-          </button>
+          </Link>
+
         </div>
       </div>
 
