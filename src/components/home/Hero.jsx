@@ -11,6 +11,7 @@ export default function Hero() {
     "TECHNICIANS",
     "SPECIALISTS",
     "CONSULTANTS",
+    
   ];
 
   const [wordIndex, setWordIndex] = useState(0);
