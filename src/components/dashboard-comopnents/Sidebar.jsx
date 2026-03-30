@@ -29,7 +29,6 @@ const Sidebar = () => {
   const accountMenu = [
     { name: "Notifications", icon: <MdNotifications />, path: "/notify" },
     { name: "Profile", icon: <MdPerson />, path: "/profile" },
-    { name: "Settings", icon: <MdSettings />, path: "/settings" },
   ];
 
   const handleLogout = () => {
