@@ -9,8 +9,12 @@ import { FaCar, FaTools, FaMoneyBillWave } from "react-icons/fa";
 import Background from '../../assets/images/Background.png'
 import ActiveService from "../../components/dashboard-comopnents/ActiveService";
 import RecentActivity from "./RecentActivity";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen p-4 sm:p-6">
       
@@ -25,7 +29,13 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <button className="px-4 py-2 text-sm text-white bg-[#1C52AF] rounded-md hover:bg-blue-700 transition w-full sm:w-auto">
+        {/* <button className="px-4 py-2 text-sm text-white bg-[#1C52AF] rounded-md hover:bg-blue-700 transition w-full sm:w-auto">
+          + Book a Service
+        </button> */}
+        <button
+          onClick={() => navigate("/book-service")}
+          className="px-4 py-2 text-sm text-white bg-[#1C52AF] rounded-md hover:bg-blue-700 transition w-full sm:w-auto"
+        >
           + Book a Service
         </button>
       </div>
