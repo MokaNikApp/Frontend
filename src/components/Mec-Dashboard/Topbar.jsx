@@ -1,51 +1,57 @@
 import { FiBell, FiSearch, FiMenu } from "react-icons/fi";
 
-export default function Topbar({ toggleSidebar }) {
+export default function Topbar({ toggleSidebar, isOnline }) {
   return (
     <div className="bg-white px-4 sm:px-6 py-4 flex items-center justify-between border-b">
 
       {/* LEFT */}
       <div className="flex items-center gap-3 flex-1">
-
-        {/* HAMBURGER */}
-        <button
-          className="lg:hidden text-gray-700 text-xl"
-          onClick={toggleSidebar}
-        >
+        <button className="lg:hidden text-gray-700 text-xl" onClick={toggleSidebar}>
           <FiMenu />
         </button>
-
-        {/* SEARCH */}
-        <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg w-80 sm:w-68 lg:w-[40%]">
+        <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg w-40 sm:w-68 lg:w-[40%]">
           <FiSearch className="text-gray-400 mr-2" />
           <input
             type="text"
-            placeholder="Search for jobs, clients or parts..."
+            placeholder="Search requests..."
             className="bg-transparent outline-none text-sm w-full"
           />
         </div>
-
       </div>
 
       {/* RIGHT */}
       <div className="flex sm:gap-6 items-center gap-4">
 
-        <div className="hidden sm:flex border-gray-400 rounded-lg text-xs whitespace-nowrap shrink-0">
-          <span className="px-2 py-1 bg-green-100 text-green-600">Online</span>
-          <span className="px-2 py-1 text-gray-500">Offline</span>
+        {/* ONLINE / OFFLINE PILL — reflects isOnline from layout */}
+        <div className="hidden sm:flex border border-gray-200 rounded-lg text-xs whitespace-nowrap shrink-0 overflow-hidden">
+          <span
+            className={`px-3 py-1.5 font-semibold transition-colors duration-300 ${
+              isOnline ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
+            }`}
+          >
+            Online
+          </span>
+          <span
+            className={`px-3 py-1.5 font-semibold transition-colors duration-300 ${
+              !isOnline ? "bg-red-100 text-red-500" : "text-gray-400"
+            }`}
+          >
+            Offline
+          </span>
         </div>
 
+        {/* BELL */}
         <div className="relative">
           <FiBell className="text-gray-600 text-lg cursor-pointer" />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </div>
 
+        {/* PROFILE */}
         <div className="flex items-center gap-3">
-          <div className="text-right text-xs">
+          <div className="text-right text-xs hidden sm:block">
             <p className="font-medium text-gray-800">Marco Rossi</p>
             <p className="text-gray-400">Senior Mechanic</p>
           </div>
-
           <img
             src="/images/Profile.png"
             alt="profile"
