@@ -58,7 +58,7 @@ export default function Navbar() {
 
         {/* MOBILE MENU BUTTON */}
         <button
-          className="md:hidden text-2xl"
+          className="md:hidden text-black text-2xl"
           onClick={() => setOpen(!open)}
         >
           ☰
@@ -70,7 +70,7 @@ export default function Navbar() {
         <div className="md:hidden px-4 py-6 sm:px-6 pb-4 flex flex-col space-y-4 text-sm border-t">
           
           {/* LEFT ITEMS */}
-          <div className="flex flex-col space-y-4 text-left">
+          <div className="flex flex-col text-black space-y-4 text-left">
             <Link to="/" onClick={() => setOpen(false)}>
               Home
             </Link>

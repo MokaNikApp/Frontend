@@ -1,12 +1,23 @@
-import React, { useState, useEffect } from "react";
+
+
+
+
+
+import React, { useState, useEffect } from "react"; 
 import { HiMail, HiArrowRight } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const VerifyEmail = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const email = "user@example.com";
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.getElementById("code-0")?.focus();
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -30,8 +41,9 @@ const VerifyEmail = () => {
     if (e.key === "Backspace") {
       e.preventDefault();
       const newCode = [...code];
-      if (newCode[index]) newCode[index] = "";
-      else if (index > 0) {
+      if (newCode[index]) {
+        newCode[index] = "";
+      } else if (index > 0) {
         document.getElementById(`code-${index - 1}`)?.focus();
         newCode[index - 1] = "";
       }
@@ -39,17 +51,27 @@ const VerifyEmail = () => {
     }
   };
 
-  const submitCode = () => {
-    const otp = code.join("");
-    if (otp.length < 6) return alert("Please enter the full 6-digit code");
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      otp === "123456"
-        ? alert("Email verified successfully ✅")
-        : alert("Invalid code ❌");
-    }, 1000);
-  };
+ const submitCode = () => {
+  const otp = code.join("");
+  if (otp.length < 6) {
+    alert("Please enter the full 6-digit code");
+    return;
+  }
+
+  setLoading(true);
+
+  setTimeout(() => {
+    setLoading(false);
+    if (otp === "123456") {
+      alert("Email verified successfully ✅");
+
+      // Navigate only to Verify2
+      navigate("/verify2");
+    } else {
+      alert("Invalid code ❌");
+    }
+  }, 1000);
+};
 
   const resendCode = () => {
     if (resendTimer > 0) return;
@@ -58,8 +80,7 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="flex flex-col  bg-[#F2F4F8]">
-      {/* Main Content */}
+    <div className="flex flex-col min-h-screen bg-[#F2F4F8]">
       <div className="flex flex-col items-center justify-center flex-grow px-4 py-10 sm:px-6">
         <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md sm:p-8">
           <div className="bg-[#E0E7FF] p-3 rounded-full mb-4 w-max mx-auto">
@@ -73,6 +94,8 @@ const VerifyEmail = () => {
           <p className="mb-6 text-sm text-center text-gray-600 sm:text-base">
             We've sent a 6-digit verification code to your <br />
             <span className="font-thin text-[#1D52AF]">verifying: {email}</span>
+            <br />
+            Please enter it below to secure your account.
           </p>
 
           <div className="flex flex-wrap justify-center gap-2 mb-6">
@@ -98,7 +121,6 @@ const VerifyEmail = () => {
             {loading ? "Verifying..." : "Verify"}
           </button>
 
-          {/* Resend Section */}
           <div className="flex items-center justify-center gap-2 mt-4">
             <span className="text-xs text-gray-600 sm:text-sm">
               Didn't receive any code?
@@ -106,9 +128,7 @@ const VerifyEmail = () => {
             <button
               onClick={resendCode}
               disabled={resendTimer > 0}
-              className={`text-[#1D52AF] hover:underline text-xs sm:text-sm ${
-                resendTimer > 0 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`text-[#1D52AF] hover:underline text-xs sm:text-sm ${resendTimer > 0 ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend Code"}
             </button>
@@ -122,8 +142,7 @@ const VerifyEmail = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="py-4 text-xs text-center text-[#485567]  sm:text-sm">
+      <footer className="py-4 text-xs text-center text-[#485567] sm:text-sm">
         &copy; 2026 Your Company. All rights reserved.
       </footer>
     </div>

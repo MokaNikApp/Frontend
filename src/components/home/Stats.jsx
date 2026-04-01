@@ -57,6 +57,7 @@ export default function Stats() {
       }, 16);
     });
 
+    
     return () => intervals.forEach((int) => clearInterval(int));
   }, [startAnimation]);
 

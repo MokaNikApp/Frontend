@@ -36,7 +36,7 @@ const Navbar = () => {
           {/* Profile Section */}
           <div className="flex items-center gap-2">
             {/* Profile Avatar */}
-            <div className="flex items-center justify-center w-8 h-8 overflow-hidden bg-gray-200 rounded-full sm:w-10 sm:h-10">
+            <div className="flex items-center justify-center w-8 h-8 overflow-hidden bg-gray-200 rounded-full sm:w-10 sm:h-10 gap-2">
               <HiOutlineUserCircle className="text-xl text-gray-400 sm:text-2xl" />
             </div>
             {/* Profile Info */}

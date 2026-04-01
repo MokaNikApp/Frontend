@@ -1,14 +1,9 @@
-
-
-
-
-// DashboardPage.jsx
 import React, { useState } from "react";
 import Navbar from "../../components/dashboard-comopnents/Navbar";
 import Sidebar from "../../components/dashboard-comopnents/Sidebar";
-import Dashboard from "../../components/dashboard-comopnents/Dashboard";
+import ProfileSettings from "../../components/dashboard-comopnents/ProfileSettings";
 
-const DashboardPage = () => {
+const ProfilePage = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
 
   return (
@@ -42,7 +37,7 @@ const DashboardPage = () => {
 
         {/* Page Content */}
         <main className="flex-1 p-4 sm:p-6">
-          <Dashboard />
+          <ProfileSettings />
         </main>
 
       </div>
@@ -50,5 +45,5 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default ProfilePage;
 

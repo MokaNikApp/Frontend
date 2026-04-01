@@ -1,106 +1,3 @@
-// import { useState } from "react";
-// import { Link, useNavigate, useLocation } from "react-router-dom";
-// import logo from "../../assets/images/logo.png";
-// import {
-//   MdDashboard,
-//   MdSchool,
-//   MdPayment,
-//   MdCardMembership,
-//   MdLogout,
-// } from "react-icons/md";
-
-// const Sidebar = () => {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-
-//   const [student] = useState({
-//     firstName: "User",
-//     lastName: "Name",
-//   });
-
-//   // Main menu items
-//   const mainMenu = [
-//     { name: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
-//     { name: "Book Service", icon: <MdSchool />, path: "/Book" },
-//     { name: "My Services", icon: <MdSchool />, path: "/services" },
-//     { name: "Service History", icon: <MdPayment />, path: "/history" },
-//     { name: "Payments", icon: <MdCardMembership />, path: "/payments" },
-//   ];
-
-//   // Account menu items
-//   const accountMenu = [
-//     { name: "Notifications", icon: <MdDashboard />, path: "/notification" },
-//     { name: "Profile", icon: <MdSchool />, path: "/profile" },
-//     { name: "Settings", icon: <MdSchool />, path: "/settings" },
-//   ];
-
-//   const handleLogout = () => {
-//     localStorage.clear();
-//     navigate("/login");
-//   };
-
-//   return (
-//     <aside className="flex flex-col w-64 h-screen text-black bg-white">
-      
-//       {/* Logo */}
-//       <div className="px-5">
-//         <img src={logo} alt="logo" className="" />
-//       </div>
-
-//       {/* Main Menu */}
-//       <ul className="flex-1 p-4 space-y-2">
-//         {mainMenu.map((item) => (
-//           <li key={item.name}>
-//             <Link
-//               to={item.path}
-//               className={`flex items-center gap-3 p-2 rounded hover:bg-gray-100 ${
-//                 location.pathname === item.path ? "bg-gray-200" : ""
-//               }`}
-//             >
-//               {item.icon}
-//               <span>{item.name}</span>
-//             </Link>
-//           </li>
-//         ))}
-
-//         {/* Account section */}
-//         <li className="pt-4">
-//           <p className="px-2 text-sm font-semibold text-gray-600">Account</p>
-//         </li>
-
-//         {accountMenu.map((item) => (
-//           <li key={item.name}>
-//             <Link
-//               to={item.path}
-//               className={`flex items-center gap-3 p-2 rounded hover:bg-gray-100 ${
-//                 location.pathname === item.path ? "bg-gray-200" : ""
-//               }`}
-//             >
-//               {item.icon}
-//               <span>{item.name}</span>
-//             </Link>
-//           </li>
-//         ))}
-//       </ul>
-
-//       {/* Logout */}
-//       <div className="p-4 border-t border-gray-300">
-//         <button
-//           onClick={handleLogout}
-//           className="flex items-center gap-2 text-black hover:text-red-500"
-//         >
-//           <MdLogout />
-//           Logout
-//         </button>
-//       </div>
-//     </aside>
-//   );
-// };
-
-// export default Sidebar;
-
-
-
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
@@ -110,31 +7,28 @@ import {
   MdPayment,
   MdCardMembership,
   MdLogout,
+  MdNotifications,
+  MdPerson,
+  MdSettings,
 } from "react-icons/md";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [student] = useState({
-    firstName: "User",
-    lastName: "Name",
-  });
+  const [student] = useState({ firstName: "User", lastName: "Name" });
 
-  // Main menu items
   const mainMenu = [
     { name: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
-    { name: "Book Service", icon: <MdSchool />, path: "/Book" },
-    { name: "My Services", icon: <MdSchool />, path: "/services" },
-    { name: "Service History", icon: <MdPayment />, path: "/history" },
-    { name: "Payments", icon: <MdCardMembership />, path: "/payments" },
+    { name: "Book Service", icon: <MdSchool />, path: "/book-service" },
+    { name: "My Services", icon: <MdSchool />, path: "/my-service" },
+    { name: "Service History", icon: <MdPayment />, path: "/service-history" },
+    { name: "Payments", icon: <MdCardMembership />, path: "/payment-management" },
   ];
 
-  // Account menu items
   const accountMenu = [
-    { name: "Notifications", icon: <MdDashboard />, path: "/notification" },
-    { name: "Profile", icon: <MdSchool />, path: "/profile" },
-    { name: "Settings", icon: <MdSchool />, path: "/settings" },
+    { name: "Notifications", icon: <MdNotifications />, path: "/notify" },
+    { name: "Profile", icon: <MdPerson />, path: "/profile" },
   ];
 
   const handleLogout = () => {
@@ -143,61 +37,57 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="flex flex-col w-64 h-screen text-black bg-white shadow-md">
+    <aside className="flex flex-col flex-1 min-h-screen bg-white shadow-md overflow-y-auto w-64">
       
-      {/* Logo */}
-      <div className="flex flex-col items-start px-5 py-4 border-b border-gray-300">
-        <img
-          src={logo}
-          alt="logo"
-          className="w-32 sm:w-36"
-        />
-        
+      {/* Logo Section */}
+      <div className="flex flex-col items-start px-6 py-4 border-b border-gray-200">
+        <img src={logo} alt="logo" className="w-36" />
       </div>
 
       {/* Main Menu */}
-      <ul className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 px-4 py-6 space-y-1">
         {mainMenu.map((item) => (
-          <li key={item.name}>
-            <Link
-              to={item.path}
-              className={`flex items-center gap-3 p-2 rounded hover:bg-gray-100 transition-colors ${
-                location.pathname === item.path ? "bg-gray-200" : ""
-              }`}
-            >
-              {item.icon}
-              <span>{item.name}</span>
-            </Link>
-          </li>
+          <Link
+            key={item.name}
+            to={item.path}
+            className={`flex items-center gap-3 p-3 rounded-lg text-gray-700 text-sm font-medium hover:bg-blue-50 transition-colors ${
+              location.pathname === item.path ? "bg-blue-100 text-blue-700" : ""
+            }`}
+          >
+            <span className="text-lg">{item.icon}</span>
+            {item.name}
+          </Link>
         ))}
 
-        {/* Account section */}
-        <li className="pt-4">
-          <p className="px-2 text-sm font-semibold text-gray-600 uppercase">Account</p>
-        </li>
-
-        {accountMenu.map((item) => (
-          <li key={item.name}>
-            <Link
-              to={item.path}
-              className={`flex items-center gap-3 p-2 rounded hover:bg-gray-100 transition-colors ${
-                location.pathname === item.path ? "bg-gray-200" : ""
-              }`}
-            >
-              {item.icon}
-              <span>{item.name}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+        {/* Account Section */}
+        <div className="mt-6">
+          <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            Account
+          </p>
+          <div className="mt-2 space-y-1">
+            {accountMenu.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`flex items-center gap-3 p-3 rounded-lg text-gray-700 text-sm font-medium hover:bg-blue-50 transition-colors ${
+                  location.pathname === item.path ? "bg-blue-100 text-blue-700" : ""
+                }`}
+              >
+                <span className="text-lg">{item.icon}</span>
+                {item.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-gray-300">
+      <div className="px-4 py-6 border-t border-gray-200">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 text-black transition-colors hover:text-red-500"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-red-600 font-medium hover:bg-red-50 transition-colors"
         >
-          <MdLogout />
+          <MdLogout className="text-lg" />
           Logout
         </button>
       </div>
