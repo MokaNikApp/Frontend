@@ -22,21 +22,21 @@ export default function Navbar() {
         <div className="hidden md:flex space-x-6 lg:space-x-8 text-sm">
           <Link
             to="/"
-            className="hover:text-blue-700 hover:underline transition-300"
+            className="hover:text-blue-700 text-black hover:underline transition-300"
           >
             Home
           </Link>
 
           <Link
             to="/services"
-            className="hover:text-blue-700 hover:underline transition-300"
+            className="hover:text-blue-700 text-black hover:underline transition-300"
           >
             Services
           </Link>
 
           <Link
             to="/providers"
-            className="hover:text-blue-700 hover:underline transition-300"
+            className="hover:text-blue-700 text-black hover:underline transition-300"
           >
             Providers
           </Link>

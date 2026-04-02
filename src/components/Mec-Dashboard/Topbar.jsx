@@ -9,12 +9,12 @@ export default function Topbar({ toggleSidebar, isOnline }) {
         <button className="lg:hidden text-gray-700 text-xl" onClick={toggleSidebar}>
           <FiMenu />
         </button>
-        <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg w-40 sm:w-68 lg:w-[40%]">
+        <div className="flex items-center bg-gray-100 text-black  px-3 py-2 rounded-lg w-40 sm:w-68 lg:w-[40%]">
           <FiSearch className="text-gray-400 mr-2" />
           <input
             type="text"
             placeholder="Search requests..."
-            className="bg-transparent outline-none text-sm w-full"
+            className="bg-transparent outline-none text-blue-800 text-sm w-full"
           />
         </div>
       </div>
