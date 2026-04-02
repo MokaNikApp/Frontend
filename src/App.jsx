@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import VerifyPage from "./pages/VerifyPage";
@@ -17,17 +16,22 @@ import PaymentPage from "./pages/dashboard-pages/PaymentPage";
 import NotificationPage from "./pages/dashboard-pages/NotificationPage";
 import ProfilePage from "./pages/dashboard-pages/ProfilePage";
 
-
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Providers from "./pages/Providers";
 import Onboarding from "./pages/Onboarding";
+
 import Overview from "./pages/Mec-dashboard/Overview";
+import JobRequests from "./pages/Mec-dashboard/JobRequests";
+import ActiveJobs from "./pages/Mec-dashboard/Activejobs";
+import CompletedJobs from "./pages/Mec-dashboard/CompletedJobs";
+import Earnings from "./pages/Mec-dashboard/Earnings";
+import Schedule from "./pages/Mec-dashboard/Schedule";
 
 const App = () => {
   return (
-    <div className="bg-gray-100 ">
+    <div className="bg-gray-100">
       <Routes>
         <Route path="/" element={<Home />} />
 
@@ -53,6 +57,13 @@ const App = () => {
         <Route path="/onboarding" element={<Onboarding />} />
 
         <Route path="/mec-dashboard" element={<Overview />} />
+        <Route path="/mec-dashboard/job-requests" element={<JobRequests />} />
+        <Route path="/mec-dashboard/active-jobs" element={<ActiveJobs />} />
+        <Route path="/mec-dashboard/completed-jobs" element={<CompletedJobs />} />
+        <Route path="/mec-dashboard/earnings" element={<Earnings />} />
+        <Route path="/mec-dashboard/schedule" element={<Schedule />} />
+
+
       </Routes>
     </div>
   );

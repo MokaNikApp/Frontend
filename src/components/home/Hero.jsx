@@ -84,7 +84,7 @@ export default function Hero() {
       {/* LEFT */}
       <div className="max-w-3xl px-4 sm:px-8 lg:px-24">
         
-        <span className="text-xs bg-gray-100 px-3 py-1 rounded-full">
+        <span className="text-xs text-black bg-gray-100 px-3 py-1 rounded-full">
           <span className="font-semibold text-blue-800">
             <b>New:</b>
           </span>{" "}

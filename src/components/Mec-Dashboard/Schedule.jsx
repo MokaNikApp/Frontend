@@ -4,8 +4,8 @@ export default function Schedule() {
 
       {/* HEADER OUTSIDE */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
-        <h3 className="font-semibold text-gray-800">Upcoming Schedule</h3>
-        <span className="text-blue-600 text-sm font-semibold cursor-pointer">View Calendar</span>
+        <h3 className="font-bold text-gray-800">Upcoming Schedule</h3>
+        <span className="text-blue-600 text-sm font-semibold cursor-pointer hover:underline transition">View Calendar</span>
       </div>
 
       {/* BOX */}
@@ -20,7 +20,7 @@ export default function Schedule() {
             </div>
 
             <div>
-              <p className="font-medium text-sm">Brake Pad Replacement</p>
+              <p className="font-medium text-black text-sm">Brake Pad Replacement</p>
               <p className="text-xs text-gray-400">Toyota Corolla (ABC-1234)</p>
             </div>
           </div>
@@ -42,7 +42,7 @@ export default function Schedule() {
             </div>
 
             <div>
-              <p className="font-medium text-sm">Engine Oil Change</p>
+              <p className="font-medium text-black text-sm">Engine Oil Change</p>
               <p className="text-xs text-gray-400">Honda Civic (XYZ-5678)</p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function Schedule() {
             </div>
 
             <div>
-              <p className="font-medium text-sm">Transmission Check</p>
+              <p className="font-medium text-black text-sm">Transmission Check</p>
               <p className="text-xs text-gray-400">Ford F-150 (TRK-9012)</p>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function Schedule() {
             </div>
 
             <div>
-              <p className="font-medium text-sm">AC System Diagnostic</p>
+              <p className="font-medium text-black text-sm">AC System Diagnostic</p>
               <p className="text-xs text-gray-400">BMW M3 (GMN-3456)</p>
             </div>
           </div>
