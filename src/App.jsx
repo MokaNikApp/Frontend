@@ -28,6 +28,7 @@ import ActiveJobs from "./pages/Mec-dashboard/Activejobs";
 import CompletedJobs from "./pages/Mec-dashboard/CompletedJobs";
 import Earnings from "./pages/Mec-dashboard/Earnings";
 import Schedule from "./pages/Mec-dashboard/Schedule";
+import Messages from "./pages/Mec-dashboard/Messages";
 
 const App = () => {
   return (
@@ -62,6 +63,7 @@ const App = () => {
         <Route path="/mec-dashboard/completed-jobs" element={<CompletedJobs />} />
         <Route path="/mec-dashboard/earnings" element={<Earnings />} />
         <Route path="/mec-dashboard/schedule" element={<Schedule />} />
+        <Route path="/mec-dashboard/messages" element={<Messages />} />
 
 
       </Routes>

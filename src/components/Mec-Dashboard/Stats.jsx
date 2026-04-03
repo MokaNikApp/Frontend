@@ -14,7 +14,7 @@ export default function Stats() {
         </div>
 
         <p className="text-xs text-gray-500 mt-4">Total Jobs</p>
-        <h3 className="text-lg sm:text-xl font-semibold mt-1">124</h3>
+        <h3 className="text-lg sm:text-xl text-black font-bold mt-1">124</h3>
       </div>
 
       {/* CARD 2 */}
@@ -27,7 +27,7 @@ export default function Stats() {
         </div>
 
         <p className="text-xs text-gray-500 mt-4">Completed</p>
-        <h3 className="text-lg sm:text-xl font-semibold mt-1">118</h3>
+        <h3 className="text-lg sm:text-xl text-black font-bold mt-1">118</h3>
       </div>
 
       {/* CARD 3 */}
@@ -40,7 +40,7 @@ export default function Stats() {
         </div>
 
         <p className="text-xs text-gray-500 mt-4">Pending</p>
-        <h3 className="text-lg sm:text-xl font-semibold mt-1">6</h3>
+        <h3 className="text-lg sm:text-xl text-black font-bold mt-1">6</h3>
       </div>
 
       {/* CARD 4 */}
@@ -53,7 +53,7 @@ export default function Stats() {
         </div>
 
         <p className="text-xs text-gray-500 mt-4">Monthly Earnings</p>
-        <h3 className="text-lg sm:text-xl font-semibold mt-1">$8,420</h3>
+        <h3 className="text-lg sm:text-xl text-black font-bold mt-1">$8,420</h3>
       </div>
 
     </div>

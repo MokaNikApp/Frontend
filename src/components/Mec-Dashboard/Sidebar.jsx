@@ -33,11 +33,12 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
 
       <div
         className={`
-          fixed z-50 top-0 left-0 h-full bg-white w-64 border-r flex flex-col
+          fixed z-50 top-0 left-0 h-screen bg-white w-64 border-r flex flex-col
           transform transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0 lg:static
+          lg:translate-x-0 lg:sticky lg:top-0 lg:self-start
         `}
+        style={{ height: "100vh" }}
       >
         {/* TOP SCROLLABLE AREA */}
         <div className="flex flex-col flex-1 p-6 overflow-y-auto">
@@ -114,7 +115,7 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
         </div>
 
         {/* STATUS BLOCK — pinned at bottom */}
-        <div className="p-4">
+        <div className="p-4 shrink-0">
           <div className="bg-blue-700 rounded-xl p-4 flex flex-col gap-3">
             <div>
               <p className="text-white text-xs font-semibold uppercase tracking-wide opacity-70">

@@ -6,21 +6,26 @@ import Activity from "../../components/Mec-Dashboard/Activity";
 import { useState } from "react";
 
 export default function Overview() {
-
   const [isOpen, setIsOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-100 min-h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
 
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar
+        isOpen={isOpen}
+        toggleSidebar={toggleSidebar}
+        isOnline={isOnline}
+        setIsOnline={setIsOnline}
+      />
 
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col overflow-hidden">
 
-        <Topbar toggleSidebar={toggleSidebar} />
+        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
 
-        <div className="p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
 
           {/* GREETING */}
           <h1 className="text-xl sm:text-2xl font-black text-gray-800">
@@ -35,18 +40,15 @@ export default function Overview() {
 
           {/* MAIN GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-
             <div className="lg:col-span-2">
               <Schedule />
             </div>
-
             <div>
               <Activity />
             </div>
-
           </div>
 
-        </div>
+        </main>
       </div>
     </div>
   );
