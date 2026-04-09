@@ -8,7 +8,7 @@ export default function Schedule() {
 
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-black text-gray-900">Upcoming Schedule</h3>
+        <h3 className="text-xl font-bold text-gray-800">Upcoming Schedule</h3>
         <span
           onClick={() => navigate("/mec-dashboard/schedule")}
           className="text-blue-600 text-sm font-bold cursor-pointer hover:underline transition"
