@@ -31,7 +31,6 @@ const allTransactions = [
   { id: 24, date: "Apr 21, 2024", time: "08:00 AM", txId: "#TRX-370530", amount: 420.00,  status: "Paid" },
 ];
 
-// Build chart data from actual transaction amounts
 const dailyData = allTransactions.slice(0, 6).map((t) => ({
   label: t.date.slice(0, 6),
   value: t.amount,
@@ -85,7 +84,7 @@ export default function Earnings() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-100 min-h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
 
       <Sidebar
         isOpen={isOpen}
@@ -94,10 +93,10 @@ export default function Earnings() {
         setIsOnline={setIsOnline}
       />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
 
-        <div className="p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
 
           {/* PAGE HEADER */}
           <div className="mb-6">
@@ -299,7 +298,7 @@ export default function Earnings() {
             </div>
 
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

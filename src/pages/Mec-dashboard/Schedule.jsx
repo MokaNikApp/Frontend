@@ -7,7 +7,6 @@ const HOURS = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00"];
 const WEEK_DAYS = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
 const HOUR_HEIGHT = 80;
 
-// Blue = In Progress | Green = Done | Orange = Started
 const colorMap = {
   inprogress: { bg: "bg-blue-600",   text: "text-white" },
   done:       { bg: "bg-green-500",  text: "text-white" },
@@ -27,7 +26,6 @@ const statusLabel = {
 };
 
 const BASE_APPOINTMENTS = [
-  // WEEK + DAY
   { id: 1, view: ["week","day"], dayIndex: 1, startHour: 10, durationHours: 1.5,
     title: "Brake Service", car: "BMW X5 · AB-7234", status: "inprogress", jobId: "#SRV-9021",
     customer: "Johnathan Doe", phone: "+1 (550) 012-3456", vehicle: "2021 BMW X5 M-Sport",
@@ -58,14 +56,12 @@ const BASE_APPOINTMENTS = [
     plate: "FD-8812", color2: "Oxford White", service: "AC System Recharge",
     tasks: ["Check Refrigerant", "Recharge AC System", "Test Cooling Output"],
     start: "09:00 AM", duration: "1.0 Hour" },
-  // DAY only
   { id: 6, view: ["day"], dayIndex: 1, startHour: 9, durationHours: 1,
     title: "Inspection", car: "Kia Sportage · KS-1123", status: "done", jobId: "#SRV-9026",
     customer: "Lena Marsh", phone: "+1 (550) 112-5566", vehicle: "2021 Kia Sportage",
     plate: "KS-1123", color2: "Snow White", service: "Annual Vehicle Inspection",
     tasks: ["Safety Check", "Lights & Signals", "Fluid Levels"],
     start: "09:00 AM", duration: "1.0 Hour" },
-  // MONTH
   { id: 7, view: ["month"], week: 1, dayIndex: 1, startHour: 10, durationHours: 1,
     title: "Brake Service", car: "BMW X5 · AB-7234", status: "inprogress", jobId: "#SRV-9021",
     customer: "Johnathan Doe", phone: "+1 (550) 012-3456", vehicle: "2021 BMW X5 M-Sport",
@@ -121,7 +117,6 @@ function getWeekDates(mon) {
   });
 }
 
-// Three dots block menu
 function BlockMenu({ appt, onStatusChange, onSelect }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -213,7 +208,6 @@ export default function Schedule() {
     );
   };
 
-  // ── WEEK VIEW ──
   const WeekView = () => (
     <div>
       <div className="grid border-b border-gray-100" style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}>
@@ -257,7 +251,6 @@ export default function Schedule() {
     </div>
   );
 
-  // ── DAY VIEW ──
   const DayView = () => (
     <div>
       <div className="grid border-b border-gray-100" style={{ gridTemplateColumns: "56px 1fr" }}>
@@ -289,7 +282,6 @@ export default function Schedule() {
     </div>
   );
 
-  // ── MONTH VIEW ──
   const MonthView = () => (
     <div className="overflow-y-auto" style={{ maxHeight: "480px" }}>
       {MONTH_WEEKS.map(({ label, wi }) => {
@@ -331,11 +323,11 @@ export default function Schedule() {
   const currentStatus = getStatus(selectedAppt);
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-100 min-h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
       <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
-        <div className="p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <div className="flex gap-4">
 
             {/* CALENDAR */}
@@ -369,7 +361,6 @@ export default function Schedule() {
                   </button>
                 </div>
 
-                {/* STATUS */}
                 <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-md ${statusBadge[currentStatus]}`}>
                     {statusLabel[currentStatus]}
@@ -377,7 +368,6 @@ export default function Schedule() {
                   <span className="text-xs text-gray-400">{selectedAppt.jobId}</span>
                 </div>
 
-                {/* CUSTOMER */}
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Customer</p>
                   <div className="flex items-center gap-2">
@@ -391,14 +381,12 @@ export default function Schedule() {
                   </div>
                 </div>
 
-                {/* VEHICLE */}
                 <div className="px-4 py-3 bg-white border-b border-gray-100">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Vehicle</p>
                   <p className="text-xs font-bold text-gray-800">{selectedAppt.vehicle}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{selectedAppt.plate} · {selectedAppt.color2}</p>
                 </div>
 
-                {/* SERVICE */}
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Service</p>
                   <p className="text-xs font-bold text-gray-800 mb-2">{selectedAppt.service}</p>
@@ -412,7 +400,6 @@ export default function Schedule() {
                   </div>
                 </div>
 
-                {/* START | DURATION */}
                 <div className="bg-white border-b border-gray-100">
                   <div className="grid grid-cols-2">
                     <div className="px-4 py-3 border-r border-gray-100">
@@ -426,7 +413,6 @@ export default function Schedule() {
                   </div>
                 </div>
 
-                {/* ACTIONS */}
                 <div className="px-4 py-4 flex flex-col gap-2 bg-white">
                   <button onClick={handleComplete}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg transition-colors">
@@ -441,7 +427,7 @@ export default function Schedule() {
             )}
 
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

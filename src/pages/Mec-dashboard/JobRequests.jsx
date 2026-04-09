@@ -57,7 +57,7 @@ export default function JobRequests() {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-100 min-h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
 
       <Sidebar
         isOpen={isOpen}
@@ -66,11 +66,11 @@ export default function JobRequests() {
         setIsOnline={setIsOnline}
       />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
 
         <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
 
-        <div className="p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
 
           {/* HEADER */}
           <h1 className="text-xl sm:text-2xl font-black text-gray-800">Job Requests</h1>
@@ -158,7 +158,7 @@ export default function JobRequests() {
             </button>
           </div>
 
-        </div>
+        </main>
       </div>
     </div>
   );

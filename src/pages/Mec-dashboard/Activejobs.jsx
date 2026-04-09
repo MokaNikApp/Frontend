@@ -243,7 +243,7 @@ export default function ActiveJobs() {
       : allJobs.filter((job) => job.type === activeFilter);
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-100 min-h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
 
       <Sidebar
         isOpen={isOpen}
@@ -252,10 +252,10 @@ export default function ActiveJobs() {
         setIsOnline={setIsOnline}
       />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
 
-        <div className="p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
 
           {/* HEADER */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
@@ -295,7 +295,7 @@ export default function ActiveJobs() {
             </div>
           )}
 
-        </div>
+        </main>
       </div>
     </div>
   );
