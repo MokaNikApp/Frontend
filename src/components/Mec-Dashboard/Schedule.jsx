@@ -1,101 +1,102 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Schedule() {
+  const navigate = useNavigate();
+
   return (
     <div>
 
-      {/* HEADER OUTSIDE */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
-        <h3 className="font-bold text-gray-800">Upcoming Schedule</h3>
-        <span className="text-blue-600 text-sm font-semibold cursor-pointer hover:underline transition">View Calendar</span>
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-black text-gray-900">Upcoming Schedule</h3>
+        <span
+          onClick={() => navigate("/mec-dashboard/schedule")}
+          className="text-blue-600 text-sm font-bold cursor-pointer hover:underline transition"
+        >
+          View Calendar
+        </span>
       </div>
 
-      {/* BOX */}
-      <div className="bg-white p-4 sm:p-5 rounded-xl border space-y-4">
+      {/* LIST */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-        {/* ITEM */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex gap-4">
-            <div className="text-xs text-gray-400 text-center">
-              <p>09:00</p>
-              <p>AM</p>
+        {/* ITEM 1 */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-5">
+            <div className="text-center w-10 shrink-0">
+              <p className="text-sm font-bold text-blue-600">09:00</p>
+              <p className="text-xs text-gray-400">AM</p>
             </div>
-
             <div>
-              <p className="font-medium text-black text-sm">Brake Pad Replacement</p>
-              <p className="text-xs text-gray-400">Toyota Corolla (ABC-1234)</p>
+              <p className="text-sm font-bold text-gray-900">Brake Pad Replacement</p>
+              <p className="text-xs text-gray-400 mt-0.5">Toyota Corolla (ABC-1234)</p>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <span className="bg-blue-800 text-blue-100 font-semibold text-xs px-2 py-1 rounded">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg">
               CONFIRMED
             </span>
-            <span>{">"}</span>
+            <span className="text-gray-400 text-sm font-semibold">›</span>
           </div>
         </div>
 
-        {/* ITEM */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex gap-4">
-            <div className="text-xs text-gray-400 text-center">
-              <p>11:30</p>
-              <p>AM</p>
+        {/* ITEM 2 */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-5">
+            <div className="text-center w-10 shrink-0">
+              <p className="text-sm font-bold text-blue-600">11:30</p>
+              <p className="text-xs text-gray-400">AM</p>
             </div>
-
             <div>
-              <p className="font-medium text-black text-sm">Engine Oil Change</p>
-              <p className="text-xs text-gray-400">Honda Civic (XYZ-5678)</p>
+              <p className="text-sm font-bold text-gray-900">Engine Oil Change</p>
+              <p className="text-xs text-gray-400 mt-0.5">Honda Civic (XYZ-5678)</p>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <span className="bg-yellow-800 text-yellow-100 font-semibold text-xs px-2 py-1 rounded">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="bg-orange-400 text-white font-bold text-xs px-3 py-1.5 rounded-lg">
               WAITING
             </span>
-            <span>{">"}</span>
+            <span className="text-gray-400 text-sm font-semibold">›</span>
           </div>
         </div>
 
-        {/* ITEM */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex gap-4">
-            <div className="text-xs text-gray-400 text-center">
-              <p>02:00</p>
-              <p>PM</p>
+        {/* ITEM 3 */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-5">
+            <div className="text-center w-10 shrink-0">
+              <p className="text-sm font-bold text-blue-600">02:00</p>
+              <p className="text-xs text-gray-400">PM</p>
             </div>
-
             <div>
-              <p className="font-medium text-black text-sm">Transmission Check</p>
-              <p className="text-xs text-gray-400">Ford F-150 (TRK-9012)</p>
+              <p className="text-sm font-bold text-gray-900">Transmission Check</p>
+              <p className="text-xs text-gray-400 mt-0.5">Ford F-150 (TRK-9012)</p>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <span className="bg-blue-800 text-blue-100 font-semibold text-xs px-2 py-1 rounded">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg">
               CONFIRMED
             </span>
-            <span>{">"}</span>
+            <span className="text-gray-400 text-sm font-semibold">›</span>
           </div>
         </div>
 
-        {/* ITEM */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex gap-4">
-            <div className="text-xs text-gray-400 text-center">
-              <p>04:30</p>
-              <p>PM</p>
+        {/* ITEM 4 */}
+        <div className="flex items-center justify-between px-5 py-4">
+          <div className="flex items-center gap-5">
+            <div className="text-center w-10 shrink-0">
+              <p className="text-sm font-bold text-blue-600">04:30</p>
+              <p className="text-xs text-gray-400">PM</p>
             </div>
-
             <div>
-              <p className="font-medium text-black text-sm">AC System Diagnostic</p>
-              <p className="text-xs text-gray-400">BMW M3 (GMN-3456)</p>
+              <p className="text-sm font-bold text-gray-900">AC System Diagnostic</p>
+              <p className="text-xs text-gray-400 mt-0.5">BMW M3 (GMN-3456)</p>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">  
-            <span className="bg-gray-400 text-gray-900 font-bold text-xs px-2 py-1 rounded">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="bg-gray-200 text-gray-600 font-bold text-xs px-3 py-1.5 rounded-lg">
               UPCOMING
             </span>
-            <span>{">"}</span>
+            <span className="text-gray-400 text-sm font-semibold">›</span>
           </div>
         </div>
 

@@ -33,28 +33,27 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
 
       <div
         className={`
-          fixed z-50 top-0 left-0 h-screen bg-white w-64 border-r flex flex-col
+          fixed z-50 top-0 left-0 bg-white w-64 border-r flex flex-col
           transform transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0 lg:sticky lg:top-0 lg:self-start
+          lg:translate-x-0 lg:static lg:shrink-0
         `}
-        style={{ height: "100vh" }}
+        style={{ height: "100vh", overflowY: "auto" }}
       >
-        {/* TOP SCROLLABLE AREA */}
-        <div className="flex flex-col flex-1 p-6 overflow-y-auto">
 
-          {/* LOGO */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="bg-blue-700 p-2 rounded-lg">
-              <FiTool className="text-white text-lg" />
-            </div>
-            <div>
-              <h2 className="font-bold text-gray-800">MokaNik</h2>
-              <p className="text-xs text-gray-400">Mechanic Portal</p>
-            </div>
+        {/* LOGO */}
+        <div className="flex items-center gap-3 px-6 pt-6 pb-4">
+          <div className="bg-blue-700 p-2 rounded-lg">
+            <FiTool className="text-white text-lg" />
           </div>
+          <div>
+            <h2 className="font-bold text-gray-800">MokaNik</h2>
+            <p className="text-xs text-gray-400">Mechanic Portal</p>
+          </div>
+        </div>
 
-          {/* NAV LINKS */}
+        {/* NAV LINKS */}
+        <div className="px-6 py-2">
           <div className="space-y-1 text-sm">
 
             <Link to="/mec-dashboard" className={linkClass("/mec-dashboard")}>
@@ -107,15 +106,15 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
               <FiSettings /> Settings
             </Link>
 
-            <Link to="/logout" className="flex items-center font-semibold gap-2 px-2 py-2 rounded-md text-red-500 hover:bg-red-50">
+            <Link to="/login" className="flex items-center font-semibold gap-2 px-2 py-2 rounded-md text-red-500 hover:bg-red-50">
               <FiLogOut /> Logout
             </Link>
 
           </div>
         </div>
 
-        {/* STATUS BLOCK — pinned at bottom */}
-        <div className="p-4 shrink-0">
+        {/* STATUS BLOCK — sits naturally below Logout */}
+        <div className="px-6 py-4 mt-2">
           <div className="bg-blue-700 rounded-xl p-4 flex flex-col gap-3">
             <div>
               <p className="text-white text-xs font-semibold uppercase tracking-wide opacity-70">

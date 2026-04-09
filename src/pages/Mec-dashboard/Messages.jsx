@@ -123,10 +123,10 @@ export default function Messages() {
   const vehicle = vehicleDetails[activeContact.id];
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-100 min-h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
       <Sidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} isOnline={isOnline} setIsOnline={setIsOnline} />
 
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Topbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} isOnline={isOnline} />
 
         <div className="flex flex-1 overflow-hidden">

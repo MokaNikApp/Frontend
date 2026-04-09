@@ -7,7 +7,7 @@ export default function Stats() {
       {/* CARD 1 */}
       <div className="bg-white p-4 sm:p-5 rounded-xl border">
         <div className="flex justify-between items-start">
-          <FiClipboard className="text-blue-600 text-lg" />
+          <FiClipboard className="text-blue-600 bg-blue-100 p-0.5 rounded-md text-lg" />
           <span className="text-green-600 text-xs bg-green-100 px-2 py-0.5 rounded">
             +12%
           </span>
@@ -20,7 +20,7 @@ export default function Stats() {
       {/* CARD 2 */}
       <div className="bg-white p-4 sm:p-5 rounded-xl border">
         <div className="flex justify-between items-start">
-          <FiCheckCircle className="text-green-600 text-lg" />
+          <FiCheckCircle className="text-green-600 bg-green-100 p-0.5 rounded-md text-lg" />
           <span className="text-green-600 text-xs bg-green-100 px-2 py-0.5 rounded">
             +10%
           </span>
@@ -33,7 +33,7 @@ export default function Stats() {
       {/* CARD 3 */}
       <div className="bg-white p-4 sm:p-5 rounded-xl border">
         <div className="flex justify-between items-start">
-          <FiClock className="text-yellow-500 text-lg" />
+          <FiClock className="text-yellow-500 bg-yellow-100 p-0.5 rounded-md text-lg" />
           <span className="text-red-500 text-xs bg-red-100 px-2 py-0.5 rounded">
             -2%
           </span>
@@ -46,7 +46,7 @@ export default function Stats() {
       {/* CARD 4 */}
       <div className="bg-white p-4 sm:p-5 rounded-xl border">
         <div className="flex justify-between items-start">
-          <FiDollarSign className="text-purple-600 text-lg" />
+          <FiDollarSign className="text-purple-600 p-0.5 bg-purple-100 rounded-md text-lg" />
           <span className="text-green-600 text-xs bg-green-100 px-2 py-0.5 rounded">
             +15%
           </span>
