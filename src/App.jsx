@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 
 import LoginPage from "./pages/LoginPage";
 import VerifyPage from "./pages/VerifyPage";
@@ -36,6 +37,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 const App = () => {
   return (
     <div className="">
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
 
