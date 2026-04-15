@@ -56,7 +56,7 @@ export default function Hero() {
           </p>
 
           {/* PREMIUM HEADING */}
-          <h1 className="text-2xl sm:text-5xl  font-bold leading-tight mt-5">
+          <h1 className="text-2xl text-black sm:text-5xl  font-bold leading-tight mt-5">
             Book trusted mechanics for{" "}
             <span className="bg-[#1C52AF] bg-clip-text text-transparent">
               {typedText}
