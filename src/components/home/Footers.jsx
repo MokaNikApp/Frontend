@@ -5,15 +5,15 @@ export default function Footer() {
 
   const customerLinks = [
     { label: "How it Works", to: "/how-it-works" },
-    { label: "Help Center", to: "/help" },
+    { label: "Help Center", to: "/contact" },
     { label: "Pricing Guide", to: "/pricing" },
     { label: "Service Areas", to: "/locations" },
     { label: "Customer Reviews", to: "/reviews" },
   ];
 
   const mechanicLinks = [
-    { label: "Join as a Pro", to: "/join-mechanic" },
-    { label: "Mechanic Portal", to: "/mechanic/login" },
+    { label: "Join as a Pro", to: "/signup" },
+    { label: "Mechanic Portal", to: "/mec-dashboard" },
     { label: "Resource Center", to: "/resources" },
     { label: "Success Stories", to: "/success-stories" },
   ];
@@ -36,7 +36,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto">
 
         {/* TOP SECTION */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
 
           {/* BRAND */}
           <div className="space-y-4">
@@ -46,7 +46,7 @@ export default function Footer() {
               className="h-10 sm:h-12"
             />
 
-            <p className="text-sm leading-relaxed text-white max-w-xs">
+            <p className="max-w-xs text-sm leading-relaxed text-white">
               Connecting car owners with trusted local mechanics for fast,
               transparent, and reliable repair services.
             </p>
@@ -54,13 +54,13 @@ export default function Footer() {
 
           {/* CUSTOMER LINKS */}
           <div>
-            <h3 className="text-white font-semibold mb-4">For Customers</h3>
+            <h3 className="mb-4 font-semibold text-white">For Customers</h3>
             <ul className="space-y-3 text-sm">
               {customerLinks.map((item) => (
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="text-white hover:text-white transition"
+                    className="text-white transition hover:text-white"
                   >
                     {item.label}
                   </Link>
@@ -71,13 +71,13 @@ export default function Footer() {
 
           {/* MECHANIC LINKS */}
           <div>
-            <h3 className="text-white font-semibold mb-4">For Mechanics</h3>
+            <h3 className="mb-4 font-semibold text-white">For Mechanics</h3>
             <ul className="space-y-3 text-sm">
               {mechanicLinks.map((item) => (
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="text-white hover:text-white transition"
+                    className="text-white transition hover:text-white"
                   >
                     {item.label}
                   </Link>
@@ -88,13 +88,13 @@ export default function Footer() {
 
           {/* SUPPORT LINKS */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Support</h3>
+            <h3 className="mb-4 font-semibold text-white">Support</h3>
             <ul className="space-y-3 text-sm">
               {supportLinks.map((item) => (
                 <li key={item.to}>
                   <Link
                     to={item.to}
-                    className="text-white hover:text-white transition"
+                    className="text-white transition hover:text-white"
                   >
                     {item.label}
                   </Link>
@@ -106,9 +106,9 @@ export default function Footer() {
         </div>
 
         {/* DIVIDER */}
-        <div className="mt-12 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col items-center justify-between gap-4 pt-6 mt-12 border-t border-white/10 sm:flex-row">
 
-          <p className="text-xs sm:text-sm text-white">
+          <p className="text-xs text-white sm:text-sm">
             © 2026 MokaNik. All rights reserved.
           </p>
 
@@ -122,13 +122,7 @@ export default function Footer() {
                 target={item.to.startsWith("http") ? "_blank" : "_self"}
                 rel="noreferrer"
                 aria-label={item.label}
-                className="
-                  w-9 h-9 flex items-center justify-center
-                  rounded-full bg-white/10
-                  hover:bg-white/20
-                  transition-all duration-200
-                  active:scale-95
-                "
+                className="flex items-center justify-center transition-all duration-200 rounded-full w-9 h-9 bg-white/10 hover:bg-white/20 active:scale-95"
               >
                 {item.icon}
               </a>

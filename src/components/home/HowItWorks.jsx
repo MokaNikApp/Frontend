@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Link } from "react-router-dom";
 
 const steps = [
   {
@@ -21,22 +22,24 @@ const steps = [
 
 export default function HowMokaNikWorks() {
   return (
-    <section className="px-6 sm:px-28 py-14 relative overflow-hidden font-sans bg-white pb-0 pb-14">
+    <section className="relative px-6 pb-0 overflow-hidden font-sans bg-white sm:px-28 py-14 pb-14">
       {/* Decorative circle */}
       <div className="absolute top-0 -right-16 w-[420px] h-[420px] bg-gray-300 rounded-full opacity-20 pointer-events-none" />
 
       {/* Header */}
-      <div className="max-w-xl mb-12 relative z-10">
-        <h2 className="text-gray-900 text-3xl sm:text-4xl font-bold mb-3 leading-tight">
+      <div className="relative z-10 max-w-xl mb-12">
+        <h2 className="mb-3 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl">
           How MokaNik Works
         </h2>
-        <p className="text-gray-500 text-sm sm:text-base leading-relaxed mb-6">
+        <p className="mb-6 text-sm leading-relaxed text-gray-500 sm:text-base">
           No more searching or waiting around. Find a trusted mechanic instantly and get your car
           serviced quickly, safely, and conveniently — right where you are.
         </p>
+        <Link to="/signup">
         <button className="bg-[#1C52AF] hover:bg-[#163f8a] text-white font-semibold px-6 py-3 rounded-lg transition-colors">
           Get Started
         </button>
+      </Link>
       </div>
 
       {/* ── MOBILE: vertical stepper ── */}
@@ -54,11 +57,11 @@ export default function HowMokaNikWorks() {
             </div>
 
             {/* Right: text */}
-            <div className="pb-4 pt-1">
-              <p className="text-gray-900 font-bold text-base mb-1">
+            <div className="pt-1 pb-4">
+              <p className="mb-1 text-base font-bold text-gray-900">
                 {step.title}
               </p>
-              <p className="text-gray-500 text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed text-gray-500">
                 {step.desc}
               </p>
             </div>
