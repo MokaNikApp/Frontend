@@ -27,7 +27,7 @@ export default function ServiceExtra() {
             <h3 className="mt-4 font-semibold text-sm sm:text-base">
               1. Book online
             </h3>
-
+            
             <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-55">
               Choose your time, location, and service package in seconds.
             </p>
