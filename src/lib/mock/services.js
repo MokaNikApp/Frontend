@@ -32,15 +32,5 @@ export const services = [
     rating: "5.0",
     reviews: "(85+)",
   },
-  {
-    id: 4,
-    title: "Cooling System",
-    desc: "Maintain engine temperature with cooling system service.",
-    price: "$90",
-    image: "/images/service1.png",
-    tag: "Diagnostics",
-    tagColor: "bg-gray-100 text-gray-600",
-    rating: "5.0",
-    reviews: "(70+)",
-  },
+  
 ];

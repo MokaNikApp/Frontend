@@ -5,103 +5,122 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white">
+    <div className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md  border-gray-100 shadow-md">
       
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
         
-        {/* LEFT - Logo */}
-        <Link to="/">
+        {/* LOGO */}
+        <Link to="/" className="flex items-center">
           <img
             src="/images/logo.png"
             alt="MokaNik"
-            className="h-8 sm:h-10 object-contain"
+            className="h-9 sm:h-12 object-contain"
           />
         </Link>
 
         {/* DESKTOP LINKS */}
-        <div className="hidden md:flex space-x-6 lg:space-x-8 text-sm">
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
           <Link
             to="/"
-            className="hover:text-blue-700 text-black hover:underline transition-300"
+            className="hover:text-blue-700 transition duration-300 hover:scale-105"
           >
             Home
           </Link>
 
           <Link
             to="/services"
-            className="hover:text-blue-700 text-black hover:underline transition-300"
+            className="hover:text-blue-700 transition duration-300 hover:scale-105"
           >
             Services
           </Link>
 
           <Link
             to="/providers"
-            className="hover:text-blue-700 text-black hover:underline transition-300"
+            className="hover:text-blue-700 transition duration-300 hover:scale-105"
           >
             Providers
           </Link>
         </div>
 
-        {/* RIGHT (DESKTOP) */}
-        <div className="hidden md:flex items-center gap-3 lg:gap-4">
-          <Link to="/login" className="text-sm hover:text-base transition-all text-gray-900">
-            <b>Log In</b>
+        {/* RIGHT SIDE */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link
+            to="/login"
+            className="text-sm text-gray-700 hover:text-[#1C52AF] transition duration-300 font-semibold"
+          >
+            Log In
           </Link>
 
           <Link
             to="/services"
-            className="bg-blue-800 hover:bg-blue-700 hover:text-base transition-all text-white px-4 sm:px-6 py-2 rounded-lg text-sm font-medium"
+            className="bg-blue-800 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm font-semibold shadow-sm hover:shadow-md transition duration-300"
           >
             Book a Service
           </Link>
         </div>
 
-        {/* MOBILE MENU BUTTON */}
+        {/* MOBILE BUTTON */}
         <button
-          className="md:hidden text-black text-2xl"
+          className="md:hidden text-2xl text-gray-700"
           onClick={() => setOpen(!open)}
         >
-          ☰
+          {open ? "✕" : "☰"}
         </button>
       </div>
 
       {/* MOBILE MENU */}
-      {open && (
-        <div className="md:hidden px-4 py-6 sm:px-6 pb-4 flex flex-col space-y-4 text-sm border-t">
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ${
+          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-6 py-6 flex flex-col gap-5 text-sm font-medium text-gray-700 shadow-md bg-white">
           
-          {/* LEFT ITEMS */}
-          <div className="flex flex-col text-black space-y-4 text-left">
-            <Link to="/" onClick={() => setOpen(false)}>
-              Home
-            </Link>
-            <Link to="/services" onClick={() => setOpen(false)}>
-              Services
-            </Link>
-            <Link to="/providers" onClick={() => setOpen(false)}>
-              Providers
-            </Link>
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="text-gray-900 hover:text-blue-600 transition"
-            >
-              <b>Log In</b>
-            </Link>
-          </div>
+          <Link
+            to="/"
+            onClick={() => setOpen(false)}
+            className="hover:text-[#1C52AF] transition duration-300 font-semibold"
+          >
+            Home
+          </Link>
 
-          {/* RIGHT ITEMS (centered) */}
-          <div className="flex flex-col items-center gap-3 pt-2">
-            <Link
-              to="/services"
-              onClick={() => setOpen(false)}
-              className="bg-blue-800 text-white px-4 py-2 rounded-lg text-center w-full sm:w-auto"
-            >
-              Book a Service
-            </Link>
-          </div>
+          <Link
+            to="/services"
+            onClick={() => setOpen(false)}
+            className="hover:text-[#1C52AF] transition duration-300 font-semibold"
+          >
+            Services
+          </Link>
 
+          <Link
+            to="/providers"
+            onClick={() => setOpen(false)}
+            className="hover:text-[#1C52AF] transition duration-300 font-semibold"
+          >
+            Providers
+          </Link>
+
+          <Link
+            to="/login"
+            onClick={() => setOpen(false)}
+            className="hover:text-[#1C52AF] transition duration-300 font-semibold"
+          >
+            Log In
+          </Link>
+
+          <Link
+            to="/services"
+            onClick={() => setOpen(false)}
+            className="bg-[#1C52AF] text-white py-2 rounded-md text-center font-semibold shadow-sm"
+          >
+            Book a Service
+          </Link>
         </div>
-      )}
+      </div>
     </div>
   );
 }
+
+
+
+

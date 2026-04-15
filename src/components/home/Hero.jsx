@@ -1,147 +1,103 @@
-import { useEffect, useState } from "react";
+
+
+
+
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Hero() {
-  const serviceText = "CAR SERVICE";
-
-  const mechanicWords = [
-    "MECHANICS",
-    "PROVIDERS",
-    "ENGINEERS",
-    "TECHNICIANS",
-    "SPECIALISTS",
-    "CONSULTANTS",
-    
+  const words = [
+     "trusted mechanics at your doorstep",
+  "emergency car repair anytime you need",
+  "verified experts you can rely on",
+  "same-day car service near you",
+  "affordable repairs without workshop stress",
+  "quick roadside assistance 24/7",
   ];
 
   const [wordIndex, setWordIndex] = useState(0);
-  const [typedMechanic, setTypedMechanic] = useState("");
+  const [typedText, setTypedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
-  const [fade, setFade] = useState(true);
 
-  const [typedService, setTypedService] = useState("");
-
-  // TYPEWRITER FADE IN + TYPEWRITER FADE OUT
   useEffect(() => {
-    const currentWord = mechanicWords[wordIndex];
-    let i = isDeleting ? typedMechanic.length : 0;
+    const currentWord = words[wordIndex];
 
-    const interval = setInterval(() => {
+    const typingSpeed = isDeleting ? 35 : 70;
+
+    const timeout = setTimeout(() => {
       if (!isDeleting) {
-        // typing forward
-        setTypedMechanic(currentWord.slice(0, i + 1));
-        i++;
+        setTypedText(currentWord.substring(0, typedText.length + 1));
 
-        if (i === currentWord.length) {
-          clearInterval(interval);
-
-          // pause before deleting
-          setTimeout(() => {
-            setIsDeleting(true);
-          }, 2000);
+        if (typedText === currentWord) {
+          setTimeout(() => setIsDeleting(true), 1200);
         }
       } else {
-        // deleting (typewriter fade out)
-        setTypedMechanic(currentWord.slice(0, i - 1));
-        i--;
+        setTypedText(currentWord.substring(0, typedText.length - 1));
 
-        if (i === 0) {
-          clearInterval(interval);
-
-          // move to next word
+        if (typedText === "") {
           setIsDeleting(false);
-          setWordIndex((prev) => (prev + 1) % mechanicWords.length);
+          setWordIndex((prev) => (prev + 1) % words.length);
         }
       }
-    }, isDeleting ? 150 : 200);
+    }, typingSpeed);
 
-    return () => clearInterval(interval);
-  }, [wordIndex, isDeleting]);
-
-  // FADE CONTROL
-  useEffect(() => {
-    setFade(false);
-    const t = setTimeout(() => setFade(true), 50);
-    return () => clearTimeout(t);
-  }, [typedMechanic]);
-
-  // TYPEWRITER FOR SERVICE
-  useEffect(() => {
-    let j = 0;
-
-    const interval = setInterval(() => {
-      setTypedService(serviceText.slice(0, j + 1));
-      j++;
-      if (j === serviceText.length) clearInterval(interval);
-    }, 200);
-
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearTimeout(timeout);
+  }, [typedText, isDeleting, wordIndex, words]);
 
   return (
-    <div className="px-4 sm:px-6 lg:px-6 py-10 sm:py-12 lg:py-12 md:flex items-center justify-between bg-white">
+    <section className="w-full bg-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center max-w-6xl mx-auto py-8 px-6 sm:px-0 gap-10">
 
-      {/* LEFT */}
-      <div className="max-w-3xl px-4 sm:px-8 lg:px-24">
-        
-        <span className="text-xs text-black bg-gray-100 px-3 py-1 rounded-full">
-          <span className="font-semibold text-blue-800">
-            <b>New:</b>
-          </span>{" "}
-          Trusted Car Service Platform
-        </span>
+        {/* LEFT TEXT */}
+        <div className="flex flex-col justify-center text-center md:text-left">
 
-        <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
-          Book trusted{" "}
-          <span
-            className={`
-              text-green-700 inline-block transition-opacity duration-300
-              ${fade ? "opacity-100" : "opacity-0"}
-            `}
-          >
-            {typedMechanic}
-            <span className="animate-pulse">|</span>
-          </span>{" "}
-          for reliable{" "}
-          <span className="text-green-700">
-            {typedService}
-            <span className="animate-pulse">|</span>
-          </span>
-        </h1>
+          <p className="inline-block rounded-full bg-[#F1F2F9] py-2 px-6 text-sm font-medium text-black w-fit mx-auto md:mx-0">
+            <span className="font-bold text-[#1C52AF]">New:</span> Trusted Car Service Platform
+          </p>
 
-        <p className="mt-4 text-gray-500 text-sm sm:text-base md:text-lg">
-          Skip the stress of searching for workshops — our verified
-          professionals come to you, making car servicing faster,
-          safer, and more convenient every time.
-        </p>
+          {/* PREMIUM HEADING */}
+          <h1 className="text-2xl sm:text-5xl  font-bold leading-tight mt-5">
+            Book trusted mechanics for{" "}
+            <span className="bg-[#1C52AF] bg-clip-text text-transparent">
+              {typedText}
+            </span>
+            <span className="ml-1 inline-block w-[2px] h-[1em] bg-black animate-pulse"></span>
+          </h1>
 
-        <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
-  
-          <Link
-            to="/services"
-            className="bg-blue-800 hover:bg-blue-700 hover:text-base transition-all text-white px-6 py-3 rounded-lg text-sm font-medium w-full sm:w-auto text-center"
-          >
-            Book a Service
-          </Link>
+          <p className="mt-6 text-gray-600 text-base md:text-lg max-w-lg mx-auto md:mx-0">
+            Skip the stress of searching for workshops. Verified professionals
+            come to you — making car servicing faster, smarter, and more convenient.
+          </p>
 
-          <Link
-            to="/providers"
-            className="text-gray-700 text-sm font-medium w-full hover:text-base transition-all sm:w-auto text-center"
-          >
-            Become a Provider <span className="font-bold text-lg">→</span>
-          </Link>
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <Link
+              to="/services"
+              className="px-7 py-3 text-sm font-semibold text-white bg-[#1C52AF] rounded-lg hover:bg-[#17439a] transition"
+            >
+              Book a Service
+            </Link>
 
+            <Link
+              to="/providers"
+              className="px-7 py-3 text-sm font-semibold text-[#1C52AF] border border-gray-300 rounded-lg hover:bg-[#1C52AF] hover:text-white transition"
+            >
+              Become a Provider
+            </Link>
+          </div>
         </div>
-      </div>
 
-      {/* RIGHT IMAGE */}
-      <div className="mt-10 md:mt-0 flex justify-center">
-        <img
-          src="/images/hero-mechanic.png"
-          alt="mechanic"
-          className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg object-contain"
-        />
+        {/* RIGHT IMAGE */}
+        <div className="flex justify-center md:justify-end">
+          <div className="sm:w-[600px] sm:h-[420px] w-[340px] h-[300px] flex items-center justify-center">
+            <img
+              src="/images/hero-mechanic.png"
+              alt="mechanic"
+              className="w-full h-full object-contain"
+            />
+          </div>
+        </div>
+
       </div>
-    </div>
+    </section>
   );
 }

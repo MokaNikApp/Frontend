@@ -69,9 +69,9 @@ export default function ServiceCard({
           <Link
             to={`/services/${id}`}
             className="
-              bg-blue-800 text-white px-3 py-1.5 rounded-md text-xs
+              bg-[#1C52AF] text-white px-3 py-1.5 rounded-md text-xs
               transition-all
-              hover:bg-blue-600 hover:text-base
+              hover:bg-[#1C52AF] hover:text-base
             "
           >
             View Details

@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 export default function CTA() {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-24">
-      <div className="bg-blue-800 rounded-2xl text-center py-12 px-4 sm:px-6 text-white">
+      <div className="bg-[#1D52AF] rounded-2xl text-center py-12 px-4 sm:px-6 text-white">
         
         {/* TITLE */}
         <h2 className="text-2xl sm:text-3xl font-bold">
@@ -15,18 +17,27 @@ export default function CTA() {
         </p>
 
         {/* BUTTONS */}
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-          
-          <button className="w-full sm:w-auto bg-white text-blue-800 hover:bg-blue-700 hover:text-white hover:text-base transition-all px-6 py-3 rounded-lg font-medium">
-            Get Started Now
-          </button>
 
-          <button className="w-full sm:w-auto border border-white hover:bg-white hover:text-blue-800 hover:text-base transition-all px-6 py-3 rounded-lg">
-            Become a Mechanic
-          </button>
 
-        </div>
+<div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
 
+  {/* BUTTON 1 */}
+  <Link
+    to="/signup"
+    className="w-full sm:w-auto bg-white text-[#1D52AF] hover:bg-[#1D52AF] hover:text-white transition-all px-6 py-3 rounded-lg font-medium text-center"
+  >
+    Get Started Now
+  </Link>
+
+  {/* BUTTON 2 */}
+  <Link
+    to="/signup"
+    className="w-full sm:w-auto border border-white hover:bg-white hover:text-blue-800 transition-all px-6 py-3 rounded-lg text-center"
+  >
+    Become a Mechanic
+  </Link>
+
+</div>
       </div>
     </section>
   );

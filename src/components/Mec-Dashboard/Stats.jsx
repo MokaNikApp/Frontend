@@ -2,7 +2,7 @@ import { FiClipboard, FiCheckCircle, FiClock, FiDollarSign } from "react-icons/f
 
 export default function Stats() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6 bg-[#FAFAFA]">
 
       {/* CARD 1 */}
       <div className="bg-white p-4 sm:p-5 rounded-xl border">
