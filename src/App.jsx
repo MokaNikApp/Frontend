@@ -16,7 +16,7 @@ import PaymentPage from "./pages/dashboard-pages/PaymentPage";
 import NotificationPage from "./pages/dashboard-pages/NotificationPage";
 import ProfilePage from "./pages/dashboard-pages/ProfilePage";
 
-import Home from "./pages/Home";
+import Home from "./pages/Home";          
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Providers from "./pages/Providers";
@@ -29,14 +29,18 @@ import CompletedJobs from "./pages/Mec-dashboard/CompletedJobs";
 import Earnings from "./pages/Mec-dashboard/Earnings";
 import Schedule from "./pages/Mec-dashboard/Schedule";
 import Messages from "./pages/Mec-dashboard/Messages";
+import ContactPage from "./pages/ContactPage";
+import TermPage from "./pages/TermPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 const App = () => {
   return (
-    <div className="bg-gray-100">
+    <div className="">
       <Routes>
         <Route path="/" element={<Home />} />
 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/verify2" element={<Verifypage2 />} />
@@ -52,6 +56,9 @@ const App = () => {
         <Route path="/profile" element={<ProfilePage />} />
 
         <Route path="/home" element={<Home />} />
+           <Route path="/contact" element={<ContactPage />} />
+        <Route path="/terms" element={<TermPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/services" element={<Services />} />
         <Route path="/services/:id" element={<ServiceDetail />} />
         <Route path="/providers" element={<Providers />} />

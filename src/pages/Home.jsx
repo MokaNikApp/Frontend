@@ -15,39 +15,43 @@ export default function Home() {
     <div>
       <NavBarr />
 
-      <div className="px-4 sm:px-6 lg:px-1">
+      <div className="">
 
-        <FadeIn>
+          <div>
           <Hero />
-        </FadeIn>
+           </div>
+        
 
-        <FadeIn delay={100}>
+          
+
+        <div>
           <ServicesSection />
-        </FadeIn>
+        </div>
 
-        <FadeIn delay={200}>
+        <div>
           <HowItWorks />
-        </FadeIn>
+        </div>
 
-        <FadeIn delay={300}>
+        <div>
           <WhyChoose />
-        </FadeIn>
+        </div>
 
-        <FadeIn delay={400}>
+        <div>
           <CTA />
-        </FadeIn>
+        </div>
 
-        <FadeIn delay={500}>
+        <div>
           <Testimonials />
-        </FadeIn>
+        </div>
 
-        <FadeIn delay={600}>
+        <div>
           <FAQ />
-        </FadeIn>
+        </div>
 
-        <FadeIn delay={700}>
+       <div>
           <Stats />
-        </FadeIn>
+          </div>
+      
 
       </div>
 

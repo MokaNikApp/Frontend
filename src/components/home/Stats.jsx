@@ -1,84 +1,82 @@
+
+
+
+
+
 import { useEffect, useRef, useState } from "react";
 
 export default function Stats() {
   const stats = [
-    { target: 5000, suffix: "+", label: "Services Completed" },
-    { target: 800, suffix: "+", label: "Verified Mechanics" },
-    { target: 98, suffix: "%", label: "Happy Customers" },
-    { target: 24, suffix: "/7", label: "Support Availability" },
+    { target: 5000, suffix: "+", label: "Services Completed", short: "Services" },
+    { target: 800, suffix: "+", label: "Verified Mechanics", short: "Mechanics" },
+    { target: 98, suffix: "%", label: "Happy Customers", short: "Happy %" },
+    { target: 24, suffix: "/7", label: "Support Availability", short: "24/7" },
   ];
 
   const [counts, setCounts] = useState(stats.map(() => 0));
-  const [startAnimation, setStartAnimation] = useState(false);
   const sectionRef = useRef(null);
+  const hasAnimated = useRef(false);
 
-  // TRIGGER ON SCROLL (WORKS ON MOBILE TOO)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setStartAnimation(true);
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          startCounting();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.4 }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
+    const current = sectionRef.current;
+    if (current) observer.observe(current);
+    return () => { if (current) observer.unobserve(current); };
   }, []);
 
-  // COUNTING ANIMATION
-  useEffect(() => {
-    if (!startAnimation) return;
-
-    const intervals = stats.map((stat, i) => {
-      let start = 0;
-      const duration = 3000;
-      const increment = stat.target / (duration / 16);
-
-      return setInterval(() => {
-        start += increment;
-
-        setCounts((prev) => {
-          const updated = [...prev];
-          updated[i] =
-            start >= stat.target ? stat.target : Math.floor(start);
-          return updated;
-        });
-
-        if (start >= stat.target) clearInterval(intervals[i]);
-      }, 16);
-    });
-
-    
-    return () => intervals.forEach((int) => clearInterval(int));
-  }, [startAnimation]);
+  const startCounting = () => {
+    const duration = 2000;
+    const startTime = performance.now();
+    const animate = (currentTime) => {
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      setCounts(stats.map((stat) => Math.floor(progress * stat.target)));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  };
 
   return (
-    <section
-      ref={sectionRef}
-      className="bg-white py-12 sm:py-16 px-4 sm:px-6 lg:px-24"
-    >
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 text-center divide-y md:divide-y-0 md:divide-x divide-gray-200">
-          
+    <div className="w-full bg-[#F7F5F8] py-8" ref={sectionRef}>
+      <div className="w-full px-4 sm:px-6 lg:px-16">
+
+        {/* 2-col on mobile, 4-col on sm+ */}
+        <div className="grid grid-cols-2 sm:grid-cols-4">
+
           {stats.map((item, index) => (
-            <div key={index} className="px-4 sm:px-6 py-6 md:py-0">
-              
+            <div key={index} className="relative py-6 px-4 text-center">
+
+              {/* Divider: vertical on all screens except first col */}
+              {index % 2 !== 0 && (
+                <div className="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 h-10 w-px bg-gray-200" />
+              )}
+              {index !== 0 && (
+                <div className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 h-10 w-px bg-gray-200" />
+              )}
+
+              {/* Horizontal divider between rows on mobile */}
+              {index >= 2 && (
+                <div className="sm:hidden absolute top-0 left-4 right-4 h-px bg-gray-200" />
+              )}
+
+              {/* Number */}
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 {counts[index].toLocaleString()}
                 {item.suffix}
               </h3>
 
-              <p className="text-xs sm:text-sm text-gray-500 mt-2">
-                {item.label}
+              {/* Label */}
+              <p className="text-gray-500 mt-1 text-xs sm:text-sm tracking-wide leading-tight">
+                <span className="sm:hidden">{item.short}</span>
+                <span className="hidden sm:inline">{item.label}</span>
               </p>
 
             </div>
@@ -86,6 +84,6 @@ export default function Stats() {
 
         </div>
       </div>
-    </section>
+    </div>
   );
 }

@@ -26,9 +26,9 @@ const relatedServices = [
 
 export default function RelatedServices() {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-8 sm:py-12">
 
-      <div className="max-w-6xl mx-auto px-6 lg:px-24">
+      <div className=" mx-auto px-6 lg:px-24">
 
         {/* TITLE */}
         <h2 className="text-base sm:text-lg font-semibold text-gray-700 mb-6">

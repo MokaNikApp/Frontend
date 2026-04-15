@@ -1,91 +1,138 @@
 import { FaGlobe, FaEnvelope, FaBell } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
+
+  const customerLinks = [
+    { label: "How it Works", to: "/how-it-works" },
+    { label: "Help Center", to: "/help" },
+    { label: "Pricing Guide", to: "/pricing" },
+    { label: "Service Areas", to: "/locations" },
+    { label: "Customer Reviews", to: "/reviews" },
+  ];
+
+  const mechanicLinks = [
+    { label: "Join as a Pro", to: "/join-mechanic" },
+    { label: "Mechanic Portal", to: "/mechanic/login" },
+    { label: "Resource Center", to: "/resources" },
+    { label: "Success Stories", to: "/success-stories" },
+  ];
+
+  const supportLinks = [
+    { label: "Contact Us", to: "/contact" },
+    { label: "Privacy Policy", to: "/privacy" },
+    { label: "Terms of Service", to: "/terms" },
+  ];
+
+  const iconLinks = [
+    { icon: <FaGlobe />, to: "https://www.mokanik.com", label: "Website" },
+    { icon: <FaEnvelope />, to: "mailto:info@308digital.com", label: "Email" },
+    { icon: <FaBell />, to: "/notifications", label: "Notifications" },
+  ];
+
   return (
-    <footer className="bg-blue-900 text-gray-300 py-12 sm:py-16 px-4 sm:px-12 lg:px-24">
-      
+    <footer className="bg-[#15256E] text-gray-300 pt-14 sm:pt-20 pb-10 px-6 sm:px-8 lg:px-24">
+
       <div className="max-w-6xl mx-auto">
 
         {/* TOP SECTION */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
-          {/* LOGO */}
-          <div>
+          {/* BRAND */}
+          <div className="space-y-4">
             <img
               src="/images/logo.png"
               alt="MokaNik Logo"
-              className="h-8 sm:h-10 mb-4 sm:mb-6"
+              className="h-10 sm:h-12"
             />
 
-            <p className="text-xs sm:text-sm leading-relaxed max-w-xs text-white">
-              Connecting car owners with the best local mechanics for reliable,
-              transparent, and high-quality repair services.
+            <p className="text-sm leading-relaxed text-white max-w-xs">
+              Connecting car owners with trusted local mechanics for fast,
+              transparent, and reliable repair services.
             </p>
           </div>
 
-          {/* COLUMN 1 */}
+          {/* CUSTOMER LINKS */}
           <div>
-            <h3 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
-              For Customers
-            </h3>
-            <ul className="space-y-2 text-xs sm:text-sm">
-              <li><a href="#">How it Works</a></li>
-              <li><a href="#">Help Center</a></li>
-              <li><a href="#">Pricing Guide</a></li>
-              <li><a href="#">Service Areas</a></li>
-              <li><a href="#">Customer Reviews</a></li>
+            <h3 className="text-white font-semibold mb-4">For Customers</h3>
+            <ul className="space-y-3 text-sm">
+              {customerLinks.map((item) => (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    className="text-white hover:text-white transition"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* COLUMN 2 */}
+          {/* MECHANIC LINKS */}
           <div>
-            <h3 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
-              For Mechanics
-            </h3>
-            <ul className="space-y-2 text-xs sm:text-sm">
-              <li><a href="#">Join as a Pro</a></li>
-              <li><a href="#">Mechanic Portal</a></li>
-              <li><a href="#">Resource Center</a></li>
-              <li><a href="#">Success Stories</a></li>
+            <h3 className="text-white font-semibold mb-4">For Mechanics</h3>
+            <ul className="space-y-3 text-sm">
+              {mechanicLinks.map((item) => (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    className="text-white hover:text-white transition"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* COLUMN 3 */}
+          {/* SUPPORT LINKS */}
           <div>
-            <h3 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
-              Support
-            </h3>
-            <ul className="space-y-2 text-xs sm:text-sm">
-              <li><a href="#">Contact Us</a></li>
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Terms of Service</a></li>
+            <h3 className="text-white font-semibold mb-4">Support</h3>
+            <ul className="space-y-3 text-sm">
+              {supportLinks.map((item) => (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    className="text-white hover:text-white transition"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
         </div>
 
         {/* DIVIDER */}
-        <div className="border-t border-gray-700 mt-10 sm:mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+        <div className="mt-12 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
 
-          {/* COPYRIGHT */}
           <p className="text-xs sm:text-sm text-white">
-            © 2026 MokaNik. All Rights Reserved 2026.
+            © 2026 MokaNik. All rights reserved.
           </p>
 
-          {/* ICONS */}
-          <div className="flex space-x-3 sm:space-x-4 mt-4 md:mt-0">
-            
-            <div className="p-2 bg-gray-800 rounded-full cursor-pointer hover:bg-gray-700">
-              <FaGlobe size={14} />
-            </div>
+          {/* ICON LINKS */}
+          <div className="flex items-center gap-3 text-white">
 
-            <div className="p-2 bg-gray-800 rounded-full cursor-pointer hover:bg-gray-700">
-              <FaEnvelope size={14} />
-            </div>
-
-            <div className="p-2 bg-gray-800 rounded-full cursor-pointer hover:bg-gray-700">
-              <FaBell size={14} />
-            </div>
+            {iconLinks.map((item, i) => (
+              <a
+                key={i}
+                href={item.to}
+                target={item.to.startsWith("http") ? "_blank" : "_self"}
+                rel="noreferrer"
+                aria-label={item.label}
+                className="
+                  w-9 h-9 flex items-center justify-center
+                  rounded-full bg-white/10
+                  hover:bg-white/20
+                  transition-all duration-200
+                  active:scale-95
+                "
+              >
+                {item.icon}
+              </a>
+            ))}
 
           </div>
 

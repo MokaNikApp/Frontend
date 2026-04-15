@@ -1,3 +1,7 @@
+
+
+
+
 import { FiStar } from "react-icons/fi";
 
 const stories = [
@@ -23,44 +27,49 @@ const stories = [
 
 export default function SuccessStories() {
   return (
-    <section className="px-4 sm:px-6 lg:px-24 py-0 pb-10 sm:py-16 bg-gray-50 overflow-hidden">
+    <section className="px-4 sm:px-6 lg:px-24 py-8 sm:py-12 bg-white">
 
-      <h2 className="text-center text-base sm:text-lg font-semibold text-gray-800 mb-10">
+      {/* HEADER */}
+      <h2 className="text-center text-lg sm:text-xl font-semibold text-gray-800 mb-6 sm:mb-10">
         Success stories
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {/* CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
 
         {stories.map((item, index) => (
-          <div key={index} className="bg-white p-5 sm:p-6 rounded-xl border-gray-300 shadow-sm">
+          <div
+            key={index}
+            className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-300"
+          >
 
             {/* STARS */}
-            <div className="flex gap-1 text-blue-600 mb-3">
+            <div className="flex gap-1 text-blue-600 mb-4">
               {[...Array(5)].map((_, i) => (
-                <FiStar key={i} />
+                <FiStar key={i} className="fill-blue-600" />
               ))}
             </div>
 
             {/* TEXT */}
-            <p className="text-sm text-gray-600 leading-relaxed">
-              "{item.text}"
+            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+              “{item.text}”
             </p>
 
             {/* USER */}
-            <div className="flex items-center gap-3 mt-5">
+            <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-9 h-9 rounded-full object-cover"
               />
 
-              <div>
-                <p className="text-sm font-semibold text-gray-800">
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-gray-800">
                   {item.name}
-                </p>
-                <p className="text-xs text-gray-400">
+                </span>
+                <span className="text-xs text-gray-400">
                   {item.year}
-                </p>
+                </span>
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import NavBarr from "../components/home/NavBarr";
-import Footer from "../components/services/Footers";
+import Footer from '../components/home/Footers'
 import Hero from "../components/providers/Hero";
 import WhyPartner from "../components/providers/WhyPartner";
 import HowItWorks from "../components/home/HowItWorks";
@@ -57,14 +57,9 @@ export default function Providers() {
         <SuccessStories />
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.1 }}
-        viewport={{ once: true }}
-      >
+      
         <ProviderCTA />
-      </motion.div>
+    
 
       <Footer />
     </div>

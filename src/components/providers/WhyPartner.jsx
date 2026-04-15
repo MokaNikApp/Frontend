@@ -26,44 +26,51 @@ const features = [
 
 export default function WhyPartner() {
   return (
-    <section className="px-6 lg:px-24 py-12 sm:py-16 bg-gray-100 overflow-hidden">
+    <section className="px-6 lg:px-24 py-12 sm:py-14 bg-[#F7F9FC]">
 
       {/* HEADER */}
-      <div className="text-center max-w-xl mx-auto px-2">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+      <div className="text-center max-w-2xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
           Why partner with MokaNik?
         </h2>
 
-        <p className="text-gray-500 text-xs sm:text-sm mt-2">
+        <p className="text-gray-500 text-sm sm:text-base mt-2">
           Everything you need to succeed as a modern service provider, all in one platform.
         </p>
       </div>
 
       {/* CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+
         {features.map((item, index) => (
           <div
             key={index}
-            className="bg-white p-5 sm:p-6 rounded-xl border-gray-300 shadow-sm"
+            className="group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm
+                       hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
           >
+
             {/* ICON */}
-            <div className="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-800 rounded-md mb-4 text-lg">
+            <div className="w-12 h-12 flex items-center justify-center 
+                            bg-blue-50 text-blue-700 rounded-xl mb-5
+                            group-hover:bg-blue-600 group-hover:text-white
+                            transition-all duration-300 text-xl">
               {item.icon}
             </div>
 
             {/* TITLE */}
-            <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+            <h3 className="font-semibold text-gray-900 text-base">
               {item.title}
             </h3>
 
             {/* DESC */}
-            <p className="text-xs sm:text-sm text-gray-500 mt-2 leading-relaxed">
+            <p className="text-sm text-gray-500 mt-2 leading-relaxed">
               {item.desc}
             </p>
+
           </div>
         ))}
-      </div>
 
+      </div>
     </section>
   );
 }

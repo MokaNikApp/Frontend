@@ -1,133 +1,127 @@
+
 import React from "react";
 
-export default function HowItWorks() {
-  return (
-    <section className="relative w-full bg-white py-12 px-4 sm:px-6 lg:px-24 overflow-hidden font-sans lg:min-h-225">
+const steps = [
+  {
+    number: "1",
+    title: "Book a Service",
+    desc: "Choose the car service you need and submit your request in minutes.",
+  },
+  {
+    number: "2",
+    title: "Get Matched",
+    desc: "We connect you with a verified, nearby mechanic for your job.",
+  },
+  {
+    number: "3",
+    title: "Track & Pay",
+    desc: "Monitor your service in real time and pay securely when done.",
+  },
+];
 
-      {/* HEADER */}
-      <div className="flex flex-col items-center text-center sm:text-center lg:items-start lg:text-left">
-        
-        <h2 className="text-2xl px-6 sm:text-3xl font-bold text-gray-900 lg:px-0">
+export default function HowMokaNikWorks() {
+  return (
+    <section className="px-6 sm:px-28 py-14 relative overflow-hidden font-sans bg-white pb-0 pb-14">
+      {/* Decorative circle */}
+      <div className="absolute top-0 -right-16 w-[420px] h-[420px] bg-gray-300 rounded-full opacity-20 pointer-events-none" />
+
+      {/* Header */}
+      <div className="max-w-xl mb-12 relative z-10">
+        <h2 className="text-gray-900 text-3xl sm:text-4xl font-bold mb-3 leading-tight">
           How MokaNik Works
         </h2>
-
-        <p className="text-gray-500 px-6 mt-4 sm:mt-6 text-sm sm:text-base max-w-xl lg:px-0">
-          Booking a trusted mechanic has never been easier. <br />
+        <p className="text-gray-500 text-sm sm:text-base leading-relaxed mb-6">
+          No more searching or waiting around. Find a trusted mechanic instantly and get your car
+          serviced quickly, safely, and conveniently — right where you are.
         </p>
-
-        <button className="mt-6 bg-blue-800 hover:bg-blue-600 hover:text-base transition-all text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm cursor-pointer">
+        <button className="bg-[#1C52AF] hover:bg-[#163f8a] text-white font-semibold px-6 py-3 rounded-lg transition-colors">
           Get Started
         </button>
-
       </div>
 
-      {/* ================= MOBILE VERSION ================= */}
-      <div className="mt-12 text-center space-y-12 lg:hidden">
+      {/* ── MOBILE: vertical stepper ── */}
+      <div className="flex flex-col gap-0 sm:hidden">
+        {steps.map((step, i) => (
+          <div key={i} className="flex gap-4">
+            {/* Left: number + connector line */}
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#1C52AF] flex items-center justify-center text-[#1C52AF] font-bold text-base shrink-0 shadow-sm">
+                {step.number}
+              </div>
+              {i < steps.length - 1 && (
+                <div className="w-0.5 flex-1 bg-[#1C52AF] opacity-30 my-1" />
+              )}
+            </div>
 
-        {/* STEP 1 */}
-        <div>
-          <span className="text-6xl font-black text-gray-200">1</span>
-          <h3 className="text-xl font-bold text-slate-800 mt-2">Book a Service</h3>
-          <p className="text-sm text-slate-500 mt-2">
-            Choose the car service you need and submit your request in. Choose the car service you n.
-          </p>
-        </div>
-
-        {/* STEP 2 */}
-        <div>
-          <span className="text-6xl font-black text-gray-200">2</span>
-          <h3 className="text-xl font-bold text-slate-800 mt-2">Get Matched</h3>
-          <p className="text-sm text-slate-500 mt-2">
-            His defective nor convinced residence own. Connection has put impossible own apartments boisterous.
-          </p>
-        </div>
-
-        {/* STEP 3 */}
-        <div>
-          <span className="text-6xl font-black text-gray-200">3</span>
-          <h3 className="text-xl font-bold text-slate-800 mt-2">Track & Pay</h3>
-          <p className="text-sm text-slate-500 mt-2">
-            From they fine john he give of rich he. They age and draw mrs like. Improving end distrusts may instantly.
-          </p>
-        </div>
-
+            {/* Right: text */}
+            <div className="pb-4 pt-1">
+              <p className="text-gray-900 font-bold text-base mb-1">
+                {step.title}
+              </p>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                {step.desc}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* ================= DESKTOP VERSION ================= */}
-      <div className="hidden lg:block absolute inset-0 z-0 pointer-events-none">
-
-        {/* Glow */}
-        <div className="absolute top-1/4 -right-20 w-150 h-150 bg-blue-50/50 rounded-full blur-[120px]" />
-
-        {/* SVG LINE */}
+      {/* ── DESKTOP: SVG curve + nodes ── */}
+      <div className="hidden sm:block relative bottom-[150px] -mb-[160px]" style={{ height: "280px" }}>
         <svg
-          viewBox="0 0 1000 500"
+          viewBox="0 0 900 260"
+          xmlns="http://www.w3.org/2000/svg"
+          className="absolute top-0 left-0 w-full h-full overflow-visible"
           preserveAspectRatio="none"
-          className="absolute top-[15%] left-0 w-full h-[70%]"
         >
+          {/* Curved path */}
           <path
-            d="M 0 300
-               C 100 300, 120 420, 200 420
-               C 350 420, 400 300, 530 300
-               C 650 300, 700 120, 830 120
-               L 1100 10"
-            stroke="#1d4ed8"
-            strokeWidth="5"
-            strokeLinecap="round"
+            d="M 60 200 C 150 200, 180 130, 280 130 C 380 130, 420 60, 520 60 C 620 60, 660 10, 760 10"
             fill="none"
-            className="drop-shadow-[0_12px_15px_rgba(29,78,216,0.2)]"
+            stroke="#1C52AF"
+            strokeWidth="3"
+            strokeLinecap="round"
           />
+
+          {/* Step 1 node */}
+          <g transform="translate(280,130)">
+            <rect x="-30" y="-30" width="60" height="60" rx="14" fill="white" stroke="#e5e7eb" strokeWidth="1" />
+            <text x="0" y="7" textAnchor="middle" fontSize="18" fontWeight="700" fill="#1C52AF">1</text>
+          </g>
+
+          {/* Step 2 node */}
+          <g transform="translate(520,60)">
+            <rect x="-30" y="-30" width="60" height="60" rx="14" fill="white" stroke="#e5e7eb" strokeWidth="1" />
+            <text x="0" y="7" textAnchor="middle" fontSize="18" fontWeight="700" fill="#1C52AF">2</text>
+          </g>
+
+          {/* Step 3 node */}
+          <g transform="translate(760,10)">
+            <rect x="-30" y="-30" width="60" height="60" rx="14" fill="white" stroke="#e5e7eb" strokeWidth="1" />
+            <text x="0" y="7" textAnchor="middle" fontSize="18" fontWeight="700" fill="#1C52AF">3</text>
+          </g>
         </svg>
 
-        {/* STEP 1 */}
-        <div className="absolute left-[20%] top-[74%] -translate-x-1/2 w-72">
-          <span className="absolute -top-32 -left-10 text-[260px] font-black text-gray-300/60 -z-10">1</span>
-
-          <div className="absolute -top-7.5 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center border">
-            <div className="w-4 h-4 bg-gray-300 rounded-full" />
+        {/* Step labels — positioned below each node */}
+        {[
+          { x: (280 / 900) * 100, top: 160 },
+          { x: (520 / 900) * 100, top: 90 },
+          { x: (760 / 900) * 100, top: 45 },
+        ].map((pos, i) => (
+          <div
+            key={i}
+            className="absolute w-44"
+            style={{ left: `${pos.x}%`, top: `${pos.top}px`, transform: "translateX(-50%)" }}
+          >
+            <p className="text-gray-900 text-[22px] font-bold mt-6">{steps[i].title}</p>
+            <p className="text-gray-500 text-[14px] leading-relaxed">{steps[i].desc}</p>
           </div>
-
-          <div className="mt-14 px-4 text-left">
-            <h3 className="text-2xl font-bold text-slate-800">Book a Service</h3>
-            <p className="text-base text-slate-500 mt-2">
-              Choose the car service you need and submit your request in. Choose the car service you n.
-            </p>
-          </div>
-        </div>
-
-        {/* STEP 2 */}
-        <div className="absolute left-[53%] top-[57%] -translate-x-1/2 w-72">
-          <span className="absolute -top-36 -left-12 text-[260px] font-black text-gray-300/60 -z-10">2</span>
-
-          <div className="absolute -top-7.5 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center border">
-            <div className="w-4 h-4 bg-gray-300 rounded-full" />
-          </div>
-
-          <div className="mt-14 px-4 text-left">
-            <h3 className="text-2xl font-bold text-slate-800">Get Matched</h3>
-            <p className="text-base text-slate-500 mt-2">
-              His defective nor convinced residence own. Connection has put impossible own apartments boisterous.
-            </p>
-          </div>
-        </div>
-
-        {/* STEP 3 */}
-        <div className="absolute left-[83%] top-[32%] -translate-x-1/2 w-80">
-          <span className="absolute -top-40 -left-16 text-[280px] font-black text-gray-300/40 -z-10">3</span>
-
-          <div className="absolute -top-7.5 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex items-center justify-center border">
-            <div className="w-4 h-4 bg-gray-300 rounded-full" />
-          </div>
-
-          <div className="mt-14 px-6 text-left">
-            <h3 className="text-2xl font-bold text-slate-800">Track & Pay</h3>
-            <p className="text-base text-slate-500 mt-2">
-              From they fine john he give of rich he. They age and draw mrs like. Improving end distrusts may instantly.
-            </p>
-          </div>
-        </div>
-
+        ))}
       </div>
     </section>
   );
 }
+
+
+
+
