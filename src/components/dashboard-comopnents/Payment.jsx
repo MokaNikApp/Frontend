@@ -36,17 +36,17 @@
 //   return (
 //     <div className="p-4">
 //       {/* Header */}
-//       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+//       <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
 //         <div>
 //           <h1 className="text-xl font-semibold">Payment Records</h1>
 //           <p className="text-sm text-gray-500">Review all your payment history across completed services.</p>
 //         </div>
-//         <div className="flex gap-3 flex-wrap">
+//         <div className="flex flex-wrap gap-3">
           
-//           <p className="flex items-center gap-2 bg-white px-3 py-2 rounded-md shadow-sm cursor-pointer">
+//           <p className="flex items-center gap-2 px-3 py-2 bg-white rounded-md shadow-sm cursor-pointer">
 //             <HiOutlineDownload className="text-lg" /> Export CSV
 //           </p>
-//           <p className="flex items-center gap-2 bg-white px-3 py-2 rounded-md shadow-sm cursor-pointer">
+//           <p className="flex items-center gap-2 px-3 py-2 bg-white rounded-md shadow-sm cursor-pointer">
 //             <FaFileAlt className="text-lg" /> Statements
 //           </p>
 //         </div>
@@ -81,7 +81,7 @@
 //       </div>
 
 //       {/* Tabs */}
-//       <div className="flex gap-2 bg-gray-100 p-1 rounded-lg flex-wrap w-full md:w-fit mt-6">
+//       <div className="flex flex-wrap w-full gap-2 p-1 mt-6 bg-gray-100 rounded-lg md:w-fit">
 //         {["History", "Invoices", "Payment Methods"].map((tab) => (
 //           <button
 //             key={tab}
@@ -135,9 +135,9 @@
 
 //         {/* Invoices */}
 //         {activeTab === "Invoices" && (
-//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+//           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 //             {invoices.map((inv) => (
-//               <div key={inv.id} className="p-4 bg-white shadow-lg rounded-lg flex flex-col justify-between">
+//               <div key={inv.id} className="flex flex-col justify-between p-4 bg-white rounded-lg shadow-lg">
 //                 <div className="flex items-center gap-3 mb-4">
 //                   <FaFileInvoiceDollar size={24} className="text-[#1C52AF]" />
 //                   <div>
@@ -147,9 +147,9 @@
 //                     </p>
 //                   </div>
 //                 </div>
-//                 <div className="flex justify-between items-center">
+//                 <div className="flex items-center justify-between">
 //                   <p className="font-bold">{inv.amount}</p>
-//                   <p className="text-gray-400 text-sm">{inv.date}</p>
+//                   <p className="text-sm text-gray-400">{inv.date}</p>
 //                 </div>
 //               </div>
 //             ))}
@@ -158,14 +158,14 @@
 
 //         {/* Payment Methods */}
 //         {activeTab === "Payment Methods" && (
-//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+//           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 //             {paymentMethods.map((pm, i) => (
-//               <div key={i} className="p-4 bg-white shadow-lg rounded-lg flex flex-col justify-between">
+//               <div key={i} className="flex flex-col justify-between p-4 bg-white rounded-lg shadow-lg">
 //                 <div className="flex items-center gap-3 mb-4">
 //                   <FaCreditCard size={24} className="text-[#1C52AF]" />
 //                   <div>
 //                     <h3 className="font-semibold">{pm.type} ending in {pm.last4}</h3>
-//                     <p className="text-gray-500 text-sm">Expires {pm.exp}</p>
+//                     <p className="text-sm text-gray-500">Expires {pm.exp}</p>
 //                   </div>
 //                 </div>
 //                 {pm.primary && <span className="text-sm text-white bg-[#1C52AF] px-2 py-1 rounded-full w-fit">Primary</span>}
@@ -219,10 +219,10 @@ const Payment = () => {
   ];
 
   return (
-    <div className="py-6 min-h-screen px-4">
+    <div className="min-h-screen px-4 py-6">
 
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+      <div className="flex flex-col gap-4 mb-6 md:flex-row md:justify-between md:items-center">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">
             Payment Records
@@ -233,7 +233,7 @@ const Payment = () => {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-100 shadow-sm hover:bg-gray-50 text-sm text-gray-700">
+          <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 bg-white border border-gray-100 rounded-lg shadow-sm hover:bg-gray-50">
             <HiOutlineDownload className="text-[#1C52AF]" />
             Export
           </button>
@@ -246,9 +246,9 @@ const Payment = () => {
       </div>
 
       {/* SUMMARY CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
-        <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="flex items-center gap-4 p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
           <div className="p-3 bg-[#1C52AF]/10 text-[#1C52AF] rounded-full">
             <HiOutlineClipboardCheck size={20} />
           </div>
@@ -259,8 +259,8 @@ const Payment = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-3 bg-gray-100 text-gray-700 rounded-full">
+        <div className="flex items-center gap-4 p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="p-3 text-gray-700 bg-gray-100 rounded-full">
             <HiOutlineCash size={20} />
           </div>
           <div>
@@ -270,8 +270,8 @@ const Payment = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-3 bg-purple-100 text-purple-600 rounded-full">
+        <div className="flex items-center gap-4 p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
+          <div className="p-3 text-purple-600 bg-purple-100 rounded-full">
             <HiOutlineStar size={20} />
           </div>
           <div>
@@ -283,7 +283,7 @@ const Payment = () => {
       </div>
 
       {/* TABS */}
-      <div className="flex flex-wrap gap-2 bg-gray-100 p-1 rounded-lg mt-6 w-full md:w-fit">
+      <div className="flex flex-wrap w-full gap-2 p-1 mt-6 bg-gray-100 rounded-lg md:w-fit">
         {["History", "Invoices", "Payment Methods"].map((tab) => (
           <button
             key={tab}
@@ -308,10 +308,10 @@ const Payment = () => {
             {/* MOBILE CARD VIEW */}
             <div className="grid grid-cols-1 gap-3 sm:hidden">
               {paymentRecords.map((r) => (
-                <div key={r.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                <div key={r.id} className="p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
                   <div className="flex justify-between">
                     <p className="font-semibold">{r.service}</p>
-                    <span className="text-gray-700 font-bold">{r.amount}</span>
+                    <span className="font-bold text-gray-700">{r.amount}</span>
                   </div>
                   <p className="text-sm text-gray-500">{r.vehicle}</p>
                   <p className="text-sm text-gray-500">{r.mechanic}</p>
@@ -331,9 +331,9 @@ const Payment = () => {
             </div>
 
             {/* DESKTOP TABLE */}
-            <div className="hidden sm:block overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
+            <div className="hidden overflow-x-auto bg-white border border-gray-100 shadow-sm sm:block rounded-xl">
               <table className="min-w-[700px] w-full text-sm">
-                <thead className="bg-gray-50 text-gray-600">
+                <thead className="text-gray-600 bg-gray-50">
                   <tr>
                     <th className="p-3 text-left">#</th>
                     <th className="p-3 text-left">Service</th>
@@ -373,9 +373,9 @@ const Payment = () => {
 
         {/* INVOICES */}
         {activeTab === "Invoices" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {invoices.map((inv) => (
-              <div key={inv.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+              <div key={inv.id} className="p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
                 <div className="flex items-center gap-3">
                   <FaFileInvoiceDollar className="text-[#1C52AF]" />
                   <div>
@@ -390,9 +390,9 @@ const Payment = () => {
 
         {/* PAYMENT METHODS */}
         {activeTab === "Payment Methods" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {paymentMethods.map((pm, i) => (
-              <div key={i} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+              <div key={i} className="p-4 bg-white border border-gray-100 shadow-sm rounded-xl">
                 <div className="flex items-center gap-3">
                   <FaCreditCard className="text-[#1C52AF]" />
                   <div>
