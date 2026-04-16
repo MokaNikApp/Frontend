@@ -111,7 +111,7 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="bg-[#36558C] py-12 sm:py-18 px-4 sm:px-6 lg:px-24">
+    <section id="reviews" className="bg-[#36558C] py-12 sm:py-18 px-4 sm:px-6 lg:px-24">
 
       {/* HEADER */}
       <div className="text-center max-w-2xl mx-auto">
