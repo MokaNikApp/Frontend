@@ -27,7 +27,7 @@ const stories = [
 
 export default function SuccessStories() {
   return (
-    <section className="px-4 sm:px-6 lg:px-24 py-8 sm:py-12 bg-white">
+    <section id="success-stories" className="px-4 sm:px-6 lg:px-24 py-8 sm:py-12 bg-white">
 
       {/* HEADER */}
       <h2 className="text-center text-lg sm:text-xl font-semibold text-gray-800 mb-6 sm:mb-10">

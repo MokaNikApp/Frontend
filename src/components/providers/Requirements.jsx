@@ -4,16 +4,16 @@ import { PiPiggyBank } from "react-icons/pi";
 export default function Requirements() {
   return (
     <section className="px-6 lg:px-24 py-12 sm:py-16 bg-[#F7F9FC]">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+      <div className="grid items-stretch grid-cols-1 gap-10 lg:grid-cols-2">
 
         {/* LEFT SIDE */}
         <div className="flex flex-col justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center sm:text-start">
+            <h2 className="text-xl font-bold text-center text-gray-900 sm:text-2xl sm:text-start">
               What you'll need
             </h2>
 
-            <p className="text-gray-500 text-xs sm:text-sm mt-2 text-center sm:text-start">
+            <p className="mt-2 text-xs text-center text-gray-500 sm:text-sm sm:text-start">
               To maintain high service quality, we require the following from our partners:
             </p>
 
@@ -35,9 +35,9 @@ export default function Requirements() {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex gap-3 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition"
+                  className="flex gap-3 p-4 transition bg-white shadow-sm rounded-xl hover:shadow-md"
                 >
-                  <FiCheckCircle className="text-blue-600 text-lg mt-1 shrink-0" />
+                  <FiCheckCircle className="mt-1 text-lg text-blue-600 shrink-0" />
                   <div>
                     <h4 className="text-sm font-semibold text-gray-900">
                       {item.title}
@@ -54,37 +54,37 @@ export default function Requirements() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="h-full flex">
+        <div className="flex h-full">
           <div className="bg-gradient-to-b from-[#1C52AF] to-[#1747a0] w-full text-white p-6 sm:p-8 rounded-2xl shadow-lg flex flex-col justify-between">
 
             <div>
-              <div className="w-11 h-11 flex items-center justify-center bg-white/15 rounded-lg mb-5">
-                <PiPiggyBank className="text-white text-xl" />
+              <div className="flex items-center justify-center mb-5 rounded-lg w-11 h-11 bg-white/15">
+                <PiPiggyBank className="text-xl text-white" />
               </div>
 
-              <h3 className="text-lg sm:text-xl font-semibold">
+              <h3 className="text-lg font-semibold sm:text-xl">
                 Earning Potential
               </h3>
 
-              <p className="text-sm text-blue-100 mt-3 leading-relaxed">
+              <p className="mt-3 text-sm leading-relaxed text-blue-100">
                 MokaNik providers earn on average 35% more than independent mobile mechanics
                 by reducing marketing costs and downtime.
               </p>
             </div>
 
             {/* Divider */}
-            <div className="border-t border-white/20 my-6"></div>
+            <div className="my-6 border-t border-white/20"></div>
 
             {/* STATS */}
-            <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
+            <div className="flex flex-col gap-6 sm:flex-row sm:justify-between">
               <div>
-                <p className="text-blue-100 text-xs">Average Hourly Rate</p>
-                <p className="font-bold text-white text-lg">$85 - $125</p>
+                <p className="text-xs text-white">Average Hourly Rate</p>
+                <p className="text-lg font-bold text-white">$85 - $125</p>
               </div>
 
               <div className="sm:text-right">
-                <p className="text-blue-100 text-xs">Service Fee</p>
-                <p className="font-bold text-white text-lg">Flat 12%</p>
+                <p className="text-xs text-white">Service Fee</p>
+                <p className="text-lg font-bold text-white">Flat 12%</p>
               </div>
             </div>
 
