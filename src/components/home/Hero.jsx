@@ -100,7 +100,7 @@ export default function Hero() {
 
         /* shimmer on typed text */
         .shimmer-type {
-          background: linear-gradient(90deg, #1C52AF 0%, #6fa3f7 40%, #1C52AF 65%, #1C52AF 100%);
+          background: linear-gradient(90deg, #1C52AF 0%, #1C52AF 40%, #1C52AF 65%, #1C52AF 100%);
           background-size: 200% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -204,21 +204,21 @@ export default function Hero() {
           .card-pop { display: none; }
         }
       `}</style>
-      <section className="w-full bg-white relative overflow-hidden">
+      <section className="relative w-full overflow-hidden bg-white">
 
         {/* DOT GRID BG */}
         <div className="absolute inset-0 dot-grid opacity-[0.045] pointer-events-none -z-10" />
 
         {/* GLOW BLOBS */}
         <div
-          className="absolute -top-20 -left-20 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-40 pointer-events-none -z-10 blob-bg"
+          className="absolute bg-blue-100 rounded-full pointer-events-none -top-20 -left-20 w-72 h-72 blur-3xl opacity-40 -z-10 blob-bg"
         />
         <div
-          className="absolute -bottom-16 -right-16 w-64 h-64 bg-indigo-100 rounded-full blur-3xl opacity-35 pointer-events-none -z-10 blob-bg"
+          className="absolute w-64 h-64 bg-indigo-100 rounded-full pointer-events-none -bottom-16 -right-16 blur-3xl opacity-35 -z-10 blob-bg"
           style={{ animationDelay: "4s" }}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 items-center max-w-6xl mx-auto py-8 px-6 sm:px-0 gap-10">
+        <div className="grid items-center max-w-6xl grid-cols-1 gap-10 px-6 mx-auto py-7 md:grid-cols-2 sm:px-0 sm:py-12">
 
           {/* ── LEFT TEXT ── */}
           <div className={`flex flex-col justify-center text-center md:text-left transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}>
@@ -230,20 +230,20 @@ export default function Hero() {
             </div>
 
             {/* HEADING */}
-            <h1 className="fu d2 text-2xl text-black sm:text-5xl font-bold leading-tight mt-5">
+            <h1 className="mt-5 text-2xl font-bold leading-tight text-black fu d2 sm:text-5xl">
               Book trusted mechanics for{" "}
               <span className="shimmer-type">{typedText}</span>
               <span className="cursor" />
             </h1>
 
             {/* DESCRIPTION */}
-            <p className="fu d3 mt-6 text-gray-600 text-base md:text-lg max-w-lg mx-auto md:mx-0">
+            <p className="max-w-lg mx-auto mt-6 text-base text-gray-600 fu d3 md:text-lg md:mx-0">
               Skip the stress of searching for workshops. Verified professionals
               come to you — making car servicing faster, smarter, and more convenient.
             </p>
 
             {/* BUTTONS */}
-            <div className="fu d4 mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="flex flex-col justify-center gap-4 mt-10 fu d4 sm:flex-row md:justify-start">
               <Link
                 to="/services"
                 className="btn-shine px-7 py-3 text-sm font-semibold text-white bg-[#1C52AF] rounded-lg transition-all duration-200 shadow-md"
@@ -259,11 +259,11 @@ export default function Hero() {
             </div>
 
             {/* SOCIAL PROOF */}
-            <div className="fu d5 mt-7 flex items-center gap-3 justify-center md:justify-start">
+            <div className="flex items-center justify-center gap-3 fu d5 mt-7 md:justify-start">
               <div className="flex -space-x-2">
                 {[1,2,3].map(i => (
                   <img key={i} src={`/images/test${i}.png`} alt="user"
-                    className="w-7 h-7 rounded-full border-2 border-white object-cover" />
+                    className="object-cover border-2 border-white rounded-full w-7 h-7" />
                 ))}
                 <div className="w-7 h-7 rounded-full bg-[#1C52AF] text-white flex items-center justify-center text-[9px] font-bold border-2 border-white">+2k</div>
               </div>
@@ -271,7 +271,7 @@ export default function Hero() {
                 <span className="font-semibold text-gray-800">2,000+</span> car owners trust MokaNik
               </p>
               <div className="hidden sm:flex gap-0.5">
-                {[...Array(5)].map((_, i) => <span key={i} className="text-yellow-400 text-xs">★</span>)}
+                {[...Array(5)].map((_, i) => <span key={i} className="text-xs text-yellow-400">★</span>)}
               </div>
             </div>
 
@@ -283,19 +283,19 @@ export default function Hero() {
 
               {/* BLOB BEHIND IMAGE */}
               <div
-                className="absolute inset-4 bg-gradient-to-br from-blue-50 to-indigo-100 opacity-60 pointer-events-none blob-bg"
+                className="absolute pointer-events-none inset-4 bg-gradient-to-br from-blue-50 to-indigo-100 opacity-60 blob-bg"
                 style={{ borderRadius: "55% 45% 40% 60% / 50% 45% 55% 50%" }}
               />
 
               <img
                 src="/images/hero-mechanic.png"
                 alt="mechanic"
-                className="float-img relative w-full h-full object-contain drop-shadow-xl z-10"
+                className="relative z-10 object-contain w-full h-full float-img drop-shadow-xl"
               />
 
               {/* FLOAT CARD — top left */}
               <div className="card-pop card-a" style={{ top: "8%", left: "-10px" }}>
-                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-sm font-bold flex-shrink-0">✓</div>
+                <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-sm font-bold text-green-600 bg-green-100 rounded-full">✓</div>
                 <div>
                   <p className="text-xs font-semibold text-gray-800">Mechanic Arrived</p>
                   <p className="text-[10px] text-gray-400">Emmanuel O. · 4.9 ★</p>
@@ -304,7 +304,7 @@ export default function Hero() {
 
               {/* FLOAT CARD — bottom right */}
               <div className="card-pop card-b" style={{ bottom: "8%", right: "-10px" }}>
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-base flex-shrink-0">🔧</div>
+                <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-base bg-blue-100 rounded-full">🔧</div>
                 <div>
                   <p className="text-xs font-semibold text-gray-800">Booking Confirmed</p>
                   <p className="text-[10px] text-green-500 font-semibold">Today, 2:30 PM</p>

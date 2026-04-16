@@ -3,66 +3,137 @@
 
 
 
-
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function CTA() {
   return (
-    <section className="relative py-10 sm:py-20 px-4 sm:px-6 lg:px-24 overflow-hidden">
+    <section className="relative px-4 py-8 overflow-hidden sm:py-20 sm:px-6 lg:px-24">
 
-      {/* subtle background glow */}
-      <div className="absolute -top-24 -left-24 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-40" />
-      <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-100 rounded-full blur-3xl opacity-40" />
+      {/* Animated background glow */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.4, scale: 1 }}
+        transition={{ duration: 1.5 }}
+        className="absolute bg-blue-100 rounded-full -top-24 -left-24 w-72 h-72 blur-3xl"
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.4, scale: 1 }}
+        transition={{ duration: 1.5, delay: 0.2 }}
+        className="absolute bg-indigo-100 rounded-full -bottom-24 -right-24 w-72 h-72 blur-3xl"
+      />
 
-      <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="relative grid items-center max-w-6xl grid-cols-1 gap-12 mx-auto lg:grid-cols-2">
 
         {/* LEFT CONTENT */}
-        <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.2,
+              },
+            },
+          }}
+          className="flex flex-col items-center text-center lg:text-left lg:items-start"
+        >
 
-          <span className="text-blue-700 font-semibold text-sm tracking-wide uppercase">
+          <motion.span
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="text-sm font-semibold tracking-wide text-blue-700 uppercase"
+          >
             Join our network
-          </span>
+          </motion.span>
 
-          <h2 className="mt-3 text-2xl sm:text-4xl font-bold text-gray-900 leading-tight">
+          <motion.h2
+            variants={{
+              hidden: { opacity: 0, y: 25 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="mt-3 text-2xl font-bold leading-tight text-gray-900 sm:text-4xl"
+          >
             Join the MokaNik Mechanic Network
-          </h2>
+          </motion.h2>
 
-          <p className="mt-5 text-gray-600 max-w-md text-sm sm:text-base leading-relaxed">
+          <motion.p
+            variants={{
+              hidden: { opacity: 0, y: 25 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="max-w-md mt-5 text-sm leading-relaxed text-gray-600 sm:text-base"
+          >
             Are you a professional mechanic? Join MokaNik to receive service
             requests, grow your customer base, and manage your jobs more
             efficiently with a smooth digital workflow.
-          </p>
+          </motion.p>
 
-          <Link
-            to="/providers"
-            className="mt-8 inline-flex items-center gap-2 bg-blue-800 hover:bg-blue-700 active:scale-95 transition-all text-white px-7 py-3 rounded-xl shadow-md hover:shadow-lg"
+          {/* BUTTON */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 },
+            }}
           >
-            Become a Provider
-          </Link>
-        </div>
+            <Link
+              to="/providers"
+              className="inline-flex items-center gap-2 py-3 mt-8 text-white bg-blue-800 shadow-md px-7 rounded-xl"
+            >
+              <motion.span
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0px 10px 25px rgba(0,0,0,0.15)",
+                }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2"
+              >
+                Become a Provider
+              </motion.span>
+            </Link>
+          </motion.div>
+        </motion.div>
 
         {/* RIGHT IMAGE */}
-        <div className="relative flex justify-center lg:justify-end">
-
-          <div className="relative group">
+        <motion.div
+          initial={{ opacity: 0, x: 60 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="relative flex justify-center lg:justify-end"
+        >
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="relative group"
+          >
             <img
               src="/images/CTAmechanic.png"
               alt="Mechanic"
-              className="
-                w-full max-w-md lg:max-w-lg
-                object-cover
-                rounded-3xl
-                shadow-xl
-                transition-transform duration-500
-                group-hover:scale-[1.03]
-              "
+              className="object-cover w-full max-w-md shadow-xl lg:max-w-lg rounded-3xl"
             />
 
-            {/* floating highlight */}
-            <div className="absolute -inset-3 bg-blue-100 rounded-3xl blur-2xl opacity-20 -z-10" />
-          </div>
-
-        </div>
+            {/* glowing highlight */}
+            <motion.div
+              animate={{ opacity: [0.2, 0.4, 0.2] }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute bg-blue-100 -inset-3 rounded-3xl blur-2xl -z-10"
+            />
+          </motion.div>
+        </motion.div>
 
       </div>
     </section>
