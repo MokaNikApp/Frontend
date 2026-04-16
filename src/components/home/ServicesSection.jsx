@@ -38,17 +38,17 @@ export default function ServicesSection() {
 
   return (
     <section className="w-full bg-[#F7F5F8] py-6 sm:py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
 
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8 mb-8">
+        <div className="flex flex-col gap-8 mb-8 sm:flex-row sm:items-center sm:justify-between">
           
-          <div className="text-center sm:text-left max-w-xl">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          <div className="max-w-xl text-center sm:text-left">
+            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
               Our Services
             </h2>
 
-            <p className="text-gray-500 text-sm sm:text-base mt-2">
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">
               Book reliable car care from verified mechanics — wherever you are
             </p>
           </div>
@@ -66,7 +66,7 @@ export default function ServicesSection() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
+          className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3"
         >
           {services.slice(0, 4).map((item) => (
             <motion.div
