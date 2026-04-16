@@ -68,6 +68,7 @@ export default function Messages() {
   const [input, setInput] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [showAttach, setShowAttach] = useState(false);
+  const [showContacts, setShowContacts] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const emojiRef = useRef(null);
@@ -129,16 +130,25 @@ export default function Messages() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Topbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} isOnline={isOnline} />
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden relative">
 
           {/* ── CONTACTS LIST ── */}
-          <div className="w-64 shrink-0 bg-white border-r border-gray-100 flex flex-col overflow-hidden">
-            <div className="px-4 py-4 border-b border-gray-100">
+          {/* Mobile: absolute overlay. Desktop: always visible */}
+          <div className={`
+            absolute inset-y-0 left-0 z-20 w-64 shrink-0 bg-white border-r border-gray-100 flex flex-col overflow-hidden
+            transform transition-transform duration-300
+            ${showContacts ? "translate-x-0" : "-translate-x-full"}
+            md:relative md:translate-x-0 md:z-auto
+          `}>
+            <div className="px-4 py-4 border-b border-gray-100 flex items-center justify-between">
               <h2 className="font-black text-gray-800 text-base">Recent Chats</h2>
+              <button className="md:hidden text-gray-400" onClick={() => setShowContacts(false)}>
+                <FiX size={18} />
+              </button>
             </div>
             <div className="flex-1 overflow-y-auto">
               {contacts.map((c) => (
-                <div key={c.id} onClick={() => setActiveContact(c)}
+                <div key={c.id} onClick={() => { setActiveContact(c); setShowContacts(false); }}
                   className={`flex items-center gap-3 px-4 py-3 cursor-pointer border-b border-gray-50 hover:bg-gray-50 transition-colors ${activeContact.id === c.id ? "border-l-2 border-l-blue-600 bg-blue-50/40" : ""}`}>
                   <div className="relative shrink-0">
                     <img src={c.avatar} alt={c.name} className="w-10 h-10 rounded-full object-cover bg-gray-200" />
@@ -164,11 +174,15 @@ export default function Messages() {
           </div>
 
           {/* ── CHAT AREA ── */}
-          <div className="flex-1 flex flex-col overflow-hidden bg-gray-50">
+          <div className="flex-1 flex flex-col overflow-hidden bg-gray-50 min-w-0">
 
             {/* CHAT HEADER */}
-            <div className="bg-white border-b border-gray-100 px-5 py-3 flex items-center justify-between shrink-0">
+            <div className="bg-white border-b border-gray-100 px-4 sm:px-5 py-3 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
+                {/* Mobile contacts toggle */}
+                <button className="md:hidden text-blue-600 font-bold text-xs mr-1" onClick={() => setShowContacts(true)}>
+                  ☰
+                </button>
                 <div className="relative">
                   <img src={activeContact.avatar} alt={activeContact.name} className="w-9 h-9 rounded-full object-cover bg-gray-200" />
                   {activeContact.status === "ACTIVE NOW" && (
@@ -187,14 +201,13 @@ export default function Messages() {
               </div>
               <div className="flex items-center gap-4 text-gray-400">
                 <button className="hover:text-blue-600 transition-colors"><FiPhone size={16} /></button>
-                <button className="hover:text-blue-600 transition-colors"><FiVideo size={16} /></button>
-                <button className="hover:text-blue-600 transition-colors"><FiInfo size={16} /></button>
+                <button className="hover:text-blue-600 transition-colors hidden sm:block"><FiVideo size={16} /></button>
+                <button className="hover:text-blue-600 transition-colors hidden sm:block"><FiInfo size={16} /></button>
               </div>
             </div>
 
             {/* MESSAGES */}
-            <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3">
-              {/* DATE DIVIDER */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 flex flex-col gap-3">
               <div className="flex items-center justify-center">
                 <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">TODAY</span>
               </div>
@@ -204,7 +217,7 @@ export default function Messages() {
                   {msg.from === "customer" && (
                     <img src={activeContact.avatar} alt="" className="w-7 h-7 rounded-full object-cover bg-gray-200 shrink-0 mb-1" />
                   )}
-                  <div className={`max-w-xs lg:max-w-sm ${msg.from === "me" ? "items-end" : "items-start"} flex flex-col gap-1`}>
+                  <div className={`max-w-[75%] sm:max-w-xs lg:max-w-sm ${msg.from === "me" ? "items-end" : "items-start"} flex flex-col gap-1`}>
                     {msg.type === "file" ? (
                       <div className={`rounded-2xl overflow-hidden ${msg.from === "me" ? "bg-blue-600 text-white" : "bg-white text-gray-800"} shadow-sm`}>
                         <div className="flex items-center gap-2 px-3 py-2 border-b border-white/20">
