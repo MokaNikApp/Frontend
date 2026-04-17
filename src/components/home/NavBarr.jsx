@@ -22,21 +22,21 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
           <Link
             to="/"
-            className="hover:text-blue-700 transition duration-300 hover:scale-105"
+            className="hover:text-[#1C52AF] transition duration-300 hover:scale-105"
           >
             Home
           </Link>
 
           <Link
             to="/services"
-            className="hover:text-blue-700 transition duration-300 hover:scale-105"
+            className="hover:text-[#1C52AF] transition duration-300 hover:scale-105"
           >
             Services
           </Link>
 
           <Link
             to="/providers"
-            className="hover:text-blue-700 transition duration-300 hover:scale-105"
+            className="hover:text-[#1C52AF] transition duration-300 hover:scale-105"
           >
             Providers
           </Link>
@@ -53,7 +53,7 @@ export default function Navbar() {
 
           <Link
             to="/services"
-            className="bg-blue-800 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm font-semibold shadow-sm hover:shadow-md transition duration-300"
+            className="bg-[#1C52AF] hover:bg-[#1C52AF] text-white px-5 py-2 rounded-md text-sm font-semibold shadow-sm hover:shadow-md transition duration-300"
           >
             Book a Service
           </Link>
