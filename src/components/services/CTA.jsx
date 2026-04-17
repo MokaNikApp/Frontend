@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function CTA() {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-24">
-      <div className="bg-[#1D52AF] rounded-2xl text-center py-12 px-4 sm:px-6 text-white">
+      <div className="bg-[#1C52AF] rounded-2xl text-center py-12 px-4 sm:px-6 text-white">
         
         {/* TITLE */}
         <h2 className="text-2xl sm:text-3xl font-bold">
@@ -24,7 +24,7 @@ export default function CTA() {
   {/* BUTTON 1 */}
   <Link
     to="/signup"
-    className="w-full sm:w-auto bg-white text-[#1D52AF] hover:bg-[#1D52AF] hover:text-white transition-all px-6 py-3 rounded-lg font-medium text-center"
+    className="w-full sm:w-auto bg-white text-[#1C52AF] hover:bg-[#1C52AF] hover:text-white transition-all px-6 py-3 rounded-lg font-medium text-center"
   >
     Get Started Now
   </Link>

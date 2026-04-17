@@ -69,7 +69,7 @@ export default function RelatedServices() {
 
                   <Link
                     to={`/services/${item.id}`}
-                    className="text-blue-700 text-sm font-medium hover:underline"
+                    className="text-[#1C52AF] text-sm font-medium hover:underline"
                   >
                     Book &gt;
                   </Link>

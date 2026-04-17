@@ -42,7 +42,7 @@ function ParticlesCanvas() {
       y: Math.random() * H,
       r: Math.random() * 2 + 0.3,
       vx: (Math.random() - 0.5) * 0.5,
-      vy: -(Math.random() * 0.5 + 0.2),
+      vy: -(Math.random() * 0.5 + 0.4),
       a: Math.random() * 0.55 + 0.15,
       life: 0,
       maxLife: 180 + Math.random() * 220,

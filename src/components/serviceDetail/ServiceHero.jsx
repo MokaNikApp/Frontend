@@ -87,7 +87,7 @@ export default function ServiceHero() {
           </div>
 
           {/* BUTTON */}
-          <button className="w-full mt-6 bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-lg text-sm sm:text-base">
+          <button className="w-full mt-6 bg-[#1C52AF] hover:bg-[#1C52AF] text-white py-3 rounded-lg text-sm sm:text-base">
             Book Service
           </button>
 
