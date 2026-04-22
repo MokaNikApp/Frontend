@@ -210,7 +210,7 @@ export default function Schedule() {
 
   const WeekView = () => (
     <div>
-      <div className="grid border-b border-gray-100" style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}>
+      <div className="grid border-b border-gray-100" style={{ gridTemplateColumns: "56px repeat(7, minmax(80px, 1fr))" }}>
         <div className="border-r border-gray-100" />
         {WEEK_DAYS.map((day, i) => (
           <div key={day} className={`text-center py-3 border-r border-gray-100 last:border-r-0 ${i === todayIndex ? "bg-blue-50" : ""}`}>
@@ -222,7 +222,7 @@ export default function Schedule() {
         ))}
       </div>
       <div className="overflow-y-auto overflow-x-auto" style={{ maxHeight: "420px" }}>
-        <div className="relative grid" style={{ gridTemplateColumns: "56px repeat(7, minmax(80px, 1fr))" }}>
+        <div className="relative grid" style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}>
           <div className="relative">
             {HOURS.map((h) => (
               <div key={h} className="border-b border-gray-50 flex items-start pt-1 justify-end pr-2" style={{ height: `${HOUR_HEIGHT}px` }}>
@@ -326,13 +326,13 @@ export default function Schedule() {
     <div className="flex h-screen overflow-hidden bg-gray-100">
       <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
+        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <div className="flex flex-col xl:flex-row gap-4">
 
             {/* CALENDAR */}
             <div className="flex-1 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden min-w-0">
-              <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                 <div>
                   <h1 className="text-lg font-black text-gray-800">Schedule View</h1>
                   <p className="text-xs text-gray-400 mt-0.5">October 24, 2023</p>
@@ -340,7 +340,7 @@ export default function Schedule() {
                 <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                   {["Day", "Week", "Month"].map((v) => (
                     <button key={v} onClick={() => setViewMode(v)}
-                      className={`px-3 sm:px-4 py-1.5 text-xs font-semibold transition-colors ${viewMode === v ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
+                      className={`px-4 py-1.5 text-xs font-semibold transition-colors ${viewMode === v ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
                       {v}
                     </button>
                   ))}
@@ -351,7 +351,7 @@ export default function Schedule() {
               {viewMode === "Month" && <MonthView />}
             </div>
 
-            {/* APPOINTMENT DETAILS — stacks below on mobile, side panel on xl */}
+            {/* APPOINTMENT DETAILS */}
             {showPanel && selectedAppt && (
               <div className="w-full xl:w-64 xl:shrink-0 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden xl:self-start">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">

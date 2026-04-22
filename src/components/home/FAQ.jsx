@@ -56,7 +56,7 @@ export default function FAQ() {
           </p>
 
           <div className="flex flex-col gap-3 mt-6 sm:flex-row">
-            <Link className="px-6 py-3 text-sm transition bg-gray-100 rounded-xl hover:bg-gray-200">
+            <Link className="px-6 py-3 text-sm text-black border border-gray-400 *transition bg-gray-100 rounded-xl hover:bg-gray-200">
               See All FAQs
             </Link>
 

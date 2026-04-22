@@ -1,6 +1,11 @@
 import { FiBell, FiSearch, FiMenu } from "react-icons/fi";
 
-export default function Topbar({ toggleSidebar, isOnline }) {
+export default function Topbar({ toggleSidebar, isOnline, setIsOnline }) {
+
+  const handleToggle = () => {
+    setIsOnline(!isOnline);
+  };
+
   return (
     <div className="bg-white px-4 sm:px-6 py-4 flex items-center justify-between border-b">
 
@@ -22,8 +27,11 @@ export default function Topbar({ toggleSidebar, isOnline }) {
       {/* RIGHT */}
       <div className="flex sm:gap-6 items-center gap-4">
 
-        {/* ONLINE / OFFLINE PILL — reflects isOnline from layout */}
-        <div className="hidden sm:flex border border-gray-200 rounded-lg text-xs whitespace-nowrap shrink-0 overflow-hidden">
+        {/* ONLINE / OFFLINE TOGGLE */}
+        <button
+          onClick={handleToggle}
+          className="hidden sm:flex border border-gray-200 rounded-lg text-xs whitespace-nowrap shrink-0 overflow-hidden"
+        >
           <span
             className={`px-3 py-1.5 font-semibold transition-colors duration-300 ${
               isOnline ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
@@ -38,7 +46,7 @@ export default function Topbar({ toggleSidebar, isOnline }) {
           >
             Offline
           </span>
-        </div>
+        </button>
 
         {/* BELL */}
         <div className="relative">

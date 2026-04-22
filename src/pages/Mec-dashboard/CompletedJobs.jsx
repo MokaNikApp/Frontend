@@ -1,24 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { FiDownload, FiFilter, FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { FaStar, FaRegStar } from "react-icons/fa";
 import Sidebar from "../../components/Mec-Dashboard/Sidebar";
 import Topbar from "../../components/Mec-Dashboard/Topbar";
-
-const allRecords = [
-  { id: 1, date: "Oct 28, 2023", initials: "AA", initialsColor: "bg-blue-100 text-blue-600", customer: "Ahmed Al-Sayed", serviceType: "Full Synthetic Oil Change", serviceColor: "text-blue-600", amount: "SAR 350.00", rating: 5, review: "Professional se..." },
-  { id: 2, date: "Oct 27, 2023", initials: "SJ", initialsColor: "bg-orange-100 text-orange-600", customer: "Sarah Johnson", serviceType: "Brake Pad Replacement", serviceColor: "text-orange-500", amount: "SAR 820.00", rating: 4, review: "Quality parts us..." },
-  { id: 3, date: "Oct 26, 2023", initials: "OA", initialsColor: "bg-green-100 text-green-600", customer: "Omar Al-Hashimi", serviceType: "Annual Inspection", serviceColor: "text-blue-600", amount: "SAR 200.00", rating: 3, review: "Fast and efficie..." },
-  { id: 4, date: "Oct 24, 2023", initials: "RT", initialsColor: "bg-purple-100 text-purple-600", customer: "Ryan T.", serviceType: "Transmission Repair", serviceColor: "text-orange-500", amount: "SAR 2,450.00", rating: 4, review: "Big job but han..." },
-  { id: 5, date: "Oct 22, 2023", initials: "MK", initialsColor: "bg-pink-100 text-pink-600", customer: "Muna Khalid", serviceType: "AC Recharge", serviceColor: "text-blue-600", amount: "SAR 450.00", rating: 5, review: "Quick turn arou..." },
-  { id: 6, date: "Oct 20, 2023", initials: "FS", initialsColor: "bg-yellow-100 text-yellow-600", customer: "Fahad Saleh", serviceType: "Engine Diagnostics", serviceColor: "text-blue-600", amount: "SAR 180.00", rating: 5, review: "Very thorough..." },
-  { id: 7, date: "Oct 18, 2023", initials: "LM", initialsColor: "bg-red-100 text-red-600", customer: "Layla Mohammed", serviceType: "Tire Rotation & Balance", serviceColor: "text-orange-500", amount: "SAR 120.00", rating: 4, review: "Good service..." },
-  { id: 8, date: "Oct 16, 2023", initials: "KA", initialsColor: "bg-indigo-100 text-indigo-600", customer: "Khalid Amin", serviceType: "Battery Replacement", serviceColor: "text-blue-600", amount: "SAR 560.00", rating: 3, review: "Decent work..." },
-  { id: 9, date: "Oct 14, 2023", initials: "NR", initialsColor: "bg-teal-100 text-teal-600", customer: "Nora Rahman", serviceType: "Full Synthetic Oil Change", serviceColor: "text-blue-600", amount: "SAR 350.00", rating: 5, review: "Excellent job..." },
-  { id: 10, date: "Oct 12, 2023", initials: "BH", initialsColor: "bg-cyan-100 text-cyan-600", customer: "Basel Hamad", serviceType: "Brake Pad Replacement", serviceColor: "text-orange-500", amount: "SAR 820.00", rating: 4, review: "Solid work..." },
-];
+import { useJobs } from "../../context/JobsContext";
 
 const ROWS_PER_PAGE = 5;
-
 const filterOptions = ["All Services", "Oil Change", "Brake Service", "Diagnostics", "Inspection", "Transmission"];
 
 function StarRating({ rating }) {
@@ -40,6 +27,7 @@ export default function CompletedJobs() {
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All Services");
   const filterRef = useRef(null);
+  const { completedJobs } = useJobs();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -52,17 +40,26 @@ export default function CompletedJobs() {
   }, []);
 
   const filteredRecords = activeFilter === "All Services"
-    ? allRecords
-    : allRecords.filter((r) =>
-        r.serviceType.toLowerCase().includes(activeFilter.toLowerCase().replace(" service", ""))
+    ? completedJobs
+    : completedJobs.filter((r) =>
+        r.service.toLowerCase().includes(activeFilter.toLowerCase().replace(" service", ""))
       );
 
-  const totalPages = Math.ceil(filteredRecords.length / ROWS_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / ROWS_PER_PAGE));
   const paginated = filteredRecords.slice((currentPage - 1) * ROWS_PER_PAGE, currentPage * ROWS_PER_PAGE);
 
+  const avgRating = completedJobs.length
+    ? (completedJobs.reduce((s, j) => s + (j.rating || 0), 0) / completedJobs.length).toFixed(1)
+    : "—";
+
+  const totalRevenue = completedJobs.reduce((s, j) => {
+    const num = parseFloat((j.amount || "0").replace(/[^0-9.]/g, ""));
+    return s + (isNaN(num) ? 0 : num);
+  }, 0).toLocaleString();
+
   const handleExport = () => {
-    const headers = ["Date", "Customer", "Service Type", "Amount", "Rating", "Review"];
-    const rows = allRecords.map((r) => [r.date, r.customer, r.serviceType, r.amount, r.rating, r.review]);
+    const headers = ["Date", "Customer", "Service", "Amount", "Rating", "Review"];
+    const rows = completedJobs.map((r) => [r.completedDate, r.name, r.service, r.amount, r.rating, r.review]);
     const csvContent = [headers, ...rows].map((row) => row.join(",")).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -85,7 +82,7 @@ export default function CompletedJobs() {
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
+        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
 
@@ -100,32 +97,29 @@ export default function CompletedJobs() {
           {/* STATS CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
 
-            {/* Total Jobs */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
               <p className="text-xs text-gray-500 mb-1">Total Jobs Completed</p>
               <div className="flex items-center gap-2 justify-between">
-                <p className="text-3xl font-black text-gray-900">1,284</p>
+                <p className="text-3xl font-black text-gray-900">{completedJobs.length}</p>
                 <p className="text-xs bg-green-100 text-green-500 font-semibold mt-1">+12% this month</p>
               </div>
             </div>
 
-            {/* Average Satisfaction */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
               <p className="text-xs text-gray-500 mb-1">Average Satisfaction</p>
-                <div className="flex items-center gap-2 justify-between">
-                    <div className="flex items-center gap-2">
-                        <p className="text-3xl font-black text-gray-900">4.9</p>
-                        <FaStar className="text-yellow-400 text-xl" />
-                    </div>
-                    <p className="text-xs bg-gray-100 text-gray-400 mt-1">Last 90 days</p>
+              <div className="flex items-center gap-2 justify-between">
+                <div className="flex items-center gap-2">
+                  <p className="text-3xl font-black text-gray-900">{avgRating}</p>
+                  <FaStar className="text-yellow-400 text-xl" />
                 </div>
+                <p className="text-xs bg-gray-100 text-gray-400 mt-1">Last 90 days</p>
+              </div>
             </div>
 
-            {/* Revenue */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
               <p className="text-xs text-gray-500 mb-1">Revenue (Jobs Only)</p>
               <div className="flex items-center gap-2 justify-between">
-                <p className="text-3xl font-black text-gray-900">SAR 42,500</p>
+                <p className="text-3xl font-black text-gray-900">SAR {totalRevenue}</p>
                 <p className="text-xs bg-green-100 text-green-500 font-semibold mt-1">+8.2%</p>
               </div>
             </div>
@@ -140,7 +134,7 @@ export default function CompletedJobs() {
               <div className="flex items-center gap-2">
                 <p className="font-bold text-gray-800 text-sm">Service History</p>
                 <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-                  142 Records
+                  {completedJobs.length} Records
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -197,32 +191,40 @@ export default function CompletedJobs() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginated.map((row, index) => (
-                    <tr
-                      key={row.id}
-                      className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${
-                        index === paginated.length - 1 ? "border-0" : ""
-                      }`}
-                    >
-                      <td className="px-5 py-4 text-xs text-gray-500 whitespace-nowrap">{row.date}</td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${row.initialsColor}`}>
-                            {row.initials}
-                          </div>
-                          <span className="text-xs font-semibold text-gray-800">{row.customer}</span>
-                        </div>
+                  {paginated.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-5 py-8 text-center text-xs text-gray-400">
+                        No completed jobs yet.
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <span className={`text-xs font-semibold ${row.serviceColor}`}>{row.serviceType}</span>
-                      </td>
-                      <td className="px-5 py-4 text-xs font-semibold text-gray-800 whitespace-nowrap">{row.amount}</td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <StarRating rating={row.rating} />
-                      </td>
-                      <td className="px-5 py-4 text-xs text-gray-500 max-w-35 truncate">{row.review}</td>
                     </tr>
-                  ))}
+                  ) : (
+                    paginated.map((row, index) => (
+                      <tr
+                        key={row.id}
+                        className={`border-b border-gray-50 hover:bg-gray-50 transition-colors ${
+                          index === paginated.length - 1 ? "border-0" : ""
+                        }`}
+                      >
+                        <td className="px-5 py-4 text-xs text-gray-500 whitespace-nowrap">{row.completedDate}</td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${row.initialsColor}`}>
+                              {row.initials}
+                            </div>
+                            <span className="text-xs font-semibold text-gray-800">{row.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <span className={`text-xs font-semibold ${row.serviceColor}`}>{row.service}</span>
+                        </td>
+                        <td className="px-5 py-4 text-xs font-semibold text-gray-800 whitespace-nowrap">{row.amount}</td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          <StarRating rating={row.rating || 0} />
+                        </td>
+                        <td className="px-5 py-4 text-xs text-gray-500 max-w-35 truncate">{row.review || "—"}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -230,7 +232,7 @@ export default function CompletedJobs() {
             {/* PAGINATION */}
             <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100">
               <p className="text-xs text-gray-400">
-                Showing {((currentPage - 1) * ROWS_PER_PAGE) + 1} to {Math.min(currentPage * ROWS_PER_PAGE, filteredRecords.length)} of {filteredRecords.length} results
+                Showing {filteredRecords.length === 0 ? 0 : ((currentPage - 1) * ROWS_PER_PAGE) + 1} to {Math.min(currentPage * ROWS_PER_PAGE, filteredRecords.length)} of {filteredRecords.length} results
               </p>
               <div className="flex items-center gap-1">
                 <button
