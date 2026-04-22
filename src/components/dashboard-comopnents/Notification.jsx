@@ -110,12 +110,7 @@ const Notification = () => {
         <h3 className="font-semibold text-gray-800">{note.title}</h3>
         <p className="text-gray-500 text-sm mt-1">{note.message}</p>
         <div className="flex gap-2 mt-3 flex-wrap">
-          <button
-            onClick={() => handleReply(note)}
-            className="px-3 py-1 bg-[#1C52AF] text-white rounded-md text-xs hover:opacity-90 transition"
-          >
-            Reply Now
-          </button>
+          
           <button
             onClick={() => setSelected(note)}
             className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-xs hover:bg-gray-200 transition"

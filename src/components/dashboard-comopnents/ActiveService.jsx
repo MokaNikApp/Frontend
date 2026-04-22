@@ -1,14 +1,25 @@
+
+
+
+
+
+
 import React from "react";
 import Background from '../../assets/images/Background.png';
+import { useNavigate } from "react-router-dom";
 
 import { 
   HiCheckCircle, 
   HiCash, 
   HiCalendar, 
-  HiLocationMarker 
+  HiLocationMarker,
+  HiArrowRight   // ✅ FIX added
 } from "react-icons/hi";
 
 const ActiveService = () => {
+
+  const navigate = useNavigate(); // ✅ FIX moved inside component
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
@@ -61,10 +72,24 @@ const ActiveService = () => {
           Estimated completion: 2:00 PM
         </p>
 
-        {/* Button */}
-        <button className="w-full bg-[#1C52AF] text-white py-3 rounded-lg hover:bg-[#163f8a] transition text-sm sm:text-base">
-          View Live Progress
+        {/* ✅ BUTTON NOW WORKS */}
+        <button
+          onClick={() => navigate("/my-service")} // 👈 make sure route matches
+          className="group w-full bg-[#1C52AF] text-white py-3 rounded-xl
+          flex items-center justify-center gap-2
+          text-sm sm:text-base font-medium
+          shadow-sm hover:shadow-md
+          hover:bg-[#163f8a]
+          active:scale-[0.98]
+          transition-all duration-300"
+        >
+          View Service Status
+          <HiArrowRight
+            className="transition-transform duration-300 group-hover:translate-x-1"
+            size={18}
+          />
         </button>
+
       </div>
 
       {/* Upcoming Section */}
@@ -74,16 +99,17 @@ const ActiveService = () => {
           <p className="font-semibold text-gray-700 text-sm sm:text-base">
             Upcoming
           </p>
-          <p className="text-blue-600 text-sm cursor-pointer hover:underline">
+          <p 
+            onClick={() => navigate("/service")} // 🔥 optional: make this clickable too
+            className="text-blue-600 text-sm cursor-pointer hover:underline"
+          >
             View All
           </p>
         </div>
 
-        {/* Event Cards */}
         {[1, 2].map((item, index) => (
           <div key={index} className="flex items-center gap-3 sm:gap-4 p-3 bg-gray-50 rounded-lg">
             
-            {/* Date */}
             <div className="flex flex-col items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 text-blue-600 rounded-lg">
               <p className="text-xs sm:text-sm font-bold">
                 {index === 0 ? "24" : "28"}
@@ -91,7 +117,6 @@ const ActiveService = () => {
               <p className="text-[10px] sm:text-xs">Nov</p>
             </div>
 
-            {/* Info */}
             <div className="flex-1">
               <p className="font-medium text-sm sm:text-base">
                 {index === 0 ? "Oil Change" : "Tire Rotation"}
@@ -103,7 +128,6 @@ const ActiveService = () => {
               </p>
             </div>
 
-            {/* Action */}
             <p className="bg-gray-200 text-gray-700 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs cursor-pointer hover:bg-gray-300 whitespace-nowrap">
               {index === 0 ? "Reschedule" : "Details"}
             </p>

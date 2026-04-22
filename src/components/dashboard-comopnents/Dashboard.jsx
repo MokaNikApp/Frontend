@@ -29,58 +29,58 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* <button className="px-4 py-2 text-sm text-white bg-[#1C52AF] rounded-md hover:bg-blue-700 transition w-full sm:w-auto">
-          + Book a Service
-        </button> */}
+      
         <button
           onClick={() => navigate("/book-service")}
-          className="px-4 py-2 text-sm text-white bg-[#1C52AF] rounded-md hover:bg-blue-700 transition w-full sm:w-auto"
+          className="px-4 py-2 text-sm text-white bg-[#1C52AF] rounded-md transition w-full sm:w-auto"
         >
           + Book a Service
         </button>
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2 lg:grid-cols-3">
-        
-        {/* Card 1 */}
-        <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow">
-          <div className="p-3 text-blue-600 bg-blue-100 rounded-full">
-            <FaCar size={20} />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Total Vehicles</p>
-            <h2 className="text-2xl font-bold">3</h2>
-            <p className="text-[#16A34A] text-sm">+2 from last month</p>
-          </div>
-        </div>
+    {/* Cards */}
+<div className="grid grid-cols-1 gap-5 mt-6 sm:grid-cols-2 lg:grid-cols-3">
 
-        {/* Card 2 */}
-        <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow">
-          <div className="p-3 text-green-600 bg-green-100 rounded-full">
-            <FaTools size={20} />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Active Services</p>
-            <h2 className="text-2xl font-bold">1</h2>
-            <p className="text-sm text-gray-500">Efficiency rate: 92%</p>
-          </div>
-        </div>
+  {/* Card 1 */}
+  <div className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-br from-blue-50 to-white shadow-sm border border-blue-100 hover:shadow-md transition">
+    <div className="p-3 text-blue-600 bg-blue-100 rounded-full">
+      <FaCar size={20} />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500">Total Vehicles</p>
+      <h2 className="text-2xl font-bold text-gray-800">3</h2>
+      <p className="text-sm text-green-600 font-medium">+2 from last month</p>
+    </div>
+  </div>
 
-        {/* Card 3 */}
-        <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow">
-          <div className="p-3 text-yellow-600 bg-yellow-100 rounded-full">
-            <FaMoneyBillWave size={20} />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Pending Payments</p>
-            <h2 className="text-2xl font-bold">₦45,000</h2>
-            <p className="text-[#D97706] text-sm">
-              2 require immediate action
-            </p>
-          </div>
-        </div>
-      </div>
+  {/* Card 2 */}
+  <div className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-br from-green-50 to-white shadow-sm border border-green-100 hover:shadow-md transition">
+    <div className="p-3 text-green-600 bg-green-100 rounded-full">
+      <FaTools size={20} />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500">Active Services</p>
+      <h2 className="text-2xl font-bold text-gray-800">1</h2>
+      <p className="text-sm text-gray-500 font-medium">Efficiency rate: 92%</p>
+    </div>
+  </div>
+
+  {/* Card 3 */}
+  <div className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-br from-yellow-50 to-white shadow-sm border border-yellow-100 hover:shadow-md transition">
+    <div className="p-3 text-yellow-600 bg-yellow-100 rounded-full">
+      <FaMoneyBillWave size={20} />
+    </div>
+    <div>
+      <p className="text-sm text-gray-500">Pending Payments</p>
+      <h2 className="text-2xl font-bold text-gray-800">₦45,000</h2>
+      <p className="text-sm text-yellow-600 font-medium">
+        2 require immediate action
+      </p>
+    </div>
+  </div>
+
+</div>
       
   <div className="mt-8">
    <ActiveService />
@@ -93,3 +93,10 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
+
+
+
+
+
