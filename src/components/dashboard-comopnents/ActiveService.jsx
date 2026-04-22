@@ -100,7 +100,7 @@ const ActiveService = () => {
             Upcoming
           </p>
           <p 
-            onClick={() => navigate("/service")} // 🔥 optional: make this clickable too
+            onClick={() => navigate("/my-service")} // 🔥 optional: make this clickable too
             className="text-blue-600 text-sm cursor-pointer hover:underline"
           >
             View All
