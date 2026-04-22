@@ -17,7 +17,7 @@ import PaymentPage from "./pages/dashboard-pages/PaymentPage";
 import NotificationPage from "./pages/dashboard-pages/NotificationPage";
 import ProfilePage from "./pages/dashboard-pages/ProfilePage";
 
-import Home from "./pages/Home";          
+import Home from "./pages/Home";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
 import Providers from "./pages/Providers";
@@ -30,14 +30,15 @@ import CompletedJobs from "./pages/Mec-dashboard/CompletedJobs";
 import Earnings from "./pages/Mec-dashboard/Earnings";
 import Schedule from "./pages/Mec-dashboard/Schedule";
 import Messages from "./pages/Mec-dashboard/Messages";
+import { JobsProvider } from "./context/JobsContext";
 import ContactPage from "./pages/ContactPage";
 import TermPage from "./pages/TermPage";
 import PrivacyPage from "./pages/PrivacyPage";
 
+
 const App = () => {
   return (
-    <div className="">
-      <ScrollToTop />
+    <div className="bg-gray-100">
       <Routes>
         <Route path="/" element={<Home />} />
 
@@ -66,14 +67,20 @@ const App = () => {
         <Route path="/providers" element={<Providers />} />
         <Route path="/onboarding" element={<Onboarding />} />
 
-        <Route path="/mec-dashboard" element={<Overview />} />
-        <Route path="/mec-dashboard/job-requests" element={<JobRequests />} />
-        <Route path="/mec-dashboard/active-jobs" element={<ActiveJobs />} />
-        <Route path="/mec-dashboard/completed-jobs" element={<CompletedJobs />} />
-        <Route path="/mec-dashboard/earnings" element={<Earnings />} />
-        <Route path="/mec-dashboard/schedule" element={<Schedule />} />
-        <Route path="/mec-dashboard/messages" element={<Messages />} />
-
+        {/* MEC DASHBOARD — all wrapped in ONE JobsProvider so state is shared */}
+        <Route path="/mec-dashboard/*" element={
+          <JobsProvider>
+            <Routes>
+              <Route index element={<Overview />} />
+              <Route path="job-requests" element={<JobRequests />} />
+              <Route path="active-jobs" element={<ActiveJobs />} />
+              <Route path="completed-jobs" element={<CompletedJobs />} />
+              <Route path="earnings" element={<Earnings />} />
+              <Route path="schedule" element={<Schedule />} />
+              <Route path="messages" element={<Messages />} />
+            </Routes>
+          </JobsProvider>
+        } />
 
       </Routes>
     </div>

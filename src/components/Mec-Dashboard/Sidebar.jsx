@@ -11,9 +11,11 @@ import {
   FiSettings,
   FiLogOut,
 } from "react-icons/fi";
+import { useJobs } from "../../context/JobsContext";
 
 export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }) {
   const location = useLocation();
+  const { incomingJobs } = useJobs();
 
   const linkClass = (path) =>
     `flex items-center font-semibold gap-2 px-2 py-2 rounded-md transition-colors ${
@@ -71,9 +73,11 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
               <span className="flex items-center gap-2">
                 <FiClipboard /> Job Requests
               </span>
-              <span className="bg-blue-700 text-white text-xs px-2 py-0.5 rounded-full">
-                3
-              </span>
+              {incomingJobs.length > 0 && (
+                <span className="bg-blue-700 text-white text-xs px-2 py-0.5 rounded-full">
+                  {incomingJobs.length}
+                </span>
+              )}
             </Link>
 
             <Link to="/mec-dashboard/active-jobs" className={linkClass("/mec-dashboard/active-jobs")}>
@@ -113,7 +117,7 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
           </div>
         </div>
 
-        {/* STATUS BLOCK — sits naturally below Logout */}
+        {/* STATUS BLOCK */}
         <div className="px-6 py-4 mt-2">
           <div className="bg-blue-700 rounded-xl p-4 flex flex-col gap-3">
             <div>

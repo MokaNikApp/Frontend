@@ -1,73 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { FiMoreVertical, FiMapPin, FiChevronDown, FiTruck } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Mec-Dashboard/Sidebar";
 import Topbar from "../../components/Mec-Dashboard/Topbar";
+import { useJobs } from "../../context/JobsContext";
 
-const allJobs = [
-  {
-    id: 1,
-    status: "IN PROGRESS",
-    customerName: "John Doe",
-    carModel: "Toyota Camry",
-    plateNumber: "ABC-1234",
-    carImage: "/images/ca1.png",
-    startedAgo: "Started 2h ago",
-    serviceName: "Transmission Fluid Change",
-    progress: 65,
-    avatars: ["/images/av1.png", "/images/av2.png"],
-    type: "inprogress",
-    pickupAddress: null,
-  },
-  {
-    id: 2,
-    status: "EN ROUTE",
-    customerName: "Sarah Smith",
-    carModel: "Honda CR-V",
-    plateNumber: "XYZ-9876",
-    carImage: "/images/ca2.png",
-    startedAgo: "ETA 15 mins",
-    serviceName: null,
-    progress: null,
-    avatars: ["/images/av3.png"],
-    type: "enroute",
-    pickupAddress: "452 Oak Street, West Avenue",
-  },
-  {
-    id: 3,
-    status: "IN PROGRESS",
-    customerName: "Michael Chen",
-    carModel: "BMW M4",
-    plateNumber: "K-FAST-99",
-    carImage: "/images/ca3.png",
-    startedAgo: "Started 45m ago",
-    serviceName: "Full Engine Diagnostic",
-    progress: 20,
-    avatars: ["/images/av4.png"],
-    type: "inprogress",
-    pickupAddress: null,
-  },
-  {
-    id: 4,
-    status: "EN ROUTE",
-    customerName: "Robert Miller",
-    carModel: "Ford F-150",
-    plateNumber: "TRK-2200",
-    carImage: "/images/ca4.png",
-    startedAgo: "Arriving Now",
-    serviceName: "Towing Service",
-    progress: null,
-    avatars: ["/images/av5.png"],
-    type: "enroute",
-    pickupAddress: "Highway 101, Exit 24",
-  },
-];
-
-const statusOptions = ["Mark Complete", "Update Progress", "Contact Customer", "Cancel Job"];
 const dotMenuOptions = ["View Details", "Reassign Job", "Contact Customer", "Cancel Job"];
 
-function JobCard({ job }) {
+function JobCard({ job, onComplete, onUpdateProgress }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showDotMenu, setShowDotMenu] = useState(false);
+  const [progressInput, setProgressInput] = useState(job.progress);
+  const [showProgressEdit, setShowProgressEdit] = useState(false);
   const statusRef = useRef(null);
   const dotRef = useRef(null);
 
@@ -83,6 +27,13 @@ function JobCard({ job }) {
   const isInProgress = job.type === "inprogress";
   const isEnRoute = job.type === "enroute";
 
+  const statusOptions = [
+    { label: "Mark Complete", action: () => { onComplete(job.id); setShowStatusMenu(false); } },
+    { label: "Update Progress", action: () => { setShowProgressEdit(true); setShowStatusMenu(false); } },
+    { label: "Contact Customer", action: () => { setShowStatusMenu(false); } },
+    { label: "Cancel Job", action: () => { setShowStatusMenu(false); } },
+  ];
+
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col gap-4">
 
@@ -95,7 +46,7 @@ function JobCard({ job }) {
             className="w-16 h-12 object-cover rounded-lg bg-gray-100"
           />
           <div>
-            <p className="font-bold text-gray-900 text-sm">{job.customerName}</p>
+            <p className="font-bold text-gray-900 text-sm">{job.name}</p>
             <p className="text-xs text-gray-500">
               {job.carModel}{" "}
               <span className="font-bold text-gray-800">{job.plateNumber}</span>
@@ -113,7 +64,7 @@ function JobCard({ job }) {
                   EN ROUTE
                 </span>
               )}
-              <span className="text-xs text-gray-400">{job.startedAgo}</span>
+              <span className="text-xs text-gray-400">{job.scheduledDate}</span>
             </div>
           </div>
         </div>
@@ -143,11 +94,11 @@ function JobCard({ job }) {
         </div>
       </div>
 
-      {/* PROGRESS BAR — only for In Progress */}
-      {isInProgress && job.serviceName && (
+      {/* PROGRESS BAR */}
+      {isInProgress && job.service && (
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs text-gray-500">{job.serviceName}</p>
+            <p className="text-xs text-gray-500">{job.service}</p>
             <p className="text-xs font-bold text-blue-600">{job.progress}%</p>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2">
@@ -156,10 +107,27 @@ function JobCard({ job }) {
               style={{ width: `${job.progress}%` }}
             />
           </div>
+          {showProgressEdit && (
+            <div className="flex items-center gap-2 mt-2">
+              <input
+                type="range" min="0" max="100"
+                value={progressInput}
+                onChange={(e) => setProgressInput(Number(e.target.value))}
+                className="flex-1"
+              />
+              <span className="text-xs font-bold text-blue-600 w-8">{progressInput}%</span>
+              <button
+                onClick={() => { onUpdateProgress(job.id, progressInput); setShowProgressEdit(false); }}
+                className="text-xs bg-blue-600 text-white px-2 py-1 rounded-lg"
+              >
+                Save
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* PICKUP ADDRESS — only for En Route */}
+      {/* PICKUP ADDRESS */}
       {isEnRoute && job.pickupAddress && (
         <div className="flex items-start gap-2 bg-orange-50 rounded-lg px-3 py-2">
           <FiMapPin size={14} className="text-orange-500 mt-0.5 shrink-0" />
@@ -170,12 +138,12 @@ function JobCard({ job }) {
         </div>
       )}
 
-      {/* TOWING SERVICE — Robert Miller special */}
-      {isEnRoute && job.serviceName && (
+      {/* TOWING SERVICE */}
+      {isEnRoute && job.service && job.service.toLowerCase().includes("tow") && (
         <div className="flex items-start gap-2 bg-orange-50 rounded-lg px-3 py-2">
           <FiTruck size={14} className="text-orange-500 mt-0.5 shrink-0" />
           <div>
-            <p className="text-xs font-semibold text-gray-700">{job.serviceName}</p>
+            <p className="text-xs font-semibold text-gray-700">{job.service}</p>
             <p className="text-xs text-gray-500">{job.pickupAddress}</p>
           </div>
         </div>
@@ -183,7 +151,6 @@ function JobCard({ job }) {
 
       {/* BOTTOM ROW */}
       <div className="flex items-center justify-between mt-auto">
-        {/* AVATARS */}
         <div className="flex -space-x-2">
           {job.avatars.map((av, i) => (
             <img
@@ -207,12 +174,13 @@ function JobCard({ job }) {
             <div className="absolute right-0 bottom-10 bg-white border border-gray-100 rounded-xl shadow-lg z-20 w-44 py-1 overflow-hidden">
               {statusOptions.map((opt) => (
                 <button
-                  key={opt}
+                  key={opt.label}
+                  onClick={opt.action}
                   className={`w-full text-left px-4 py-2 text-xs font-medium hover:bg-gray-50 transition-colors ${
-                    opt === "Cancel Job" ? "text-red-500" : "text-gray-700"
+                    opt.label === "Cancel Job" ? "text-red-500" : "text-gray-700"
                   }`}
                 >
-                  {opt}
+                  {opt.label}
                 </button>
               ))}
             </div>
@@ -228,6 +196,7 @@ export default function ActiveJobs() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
+  const { activeJobs, completeJob, updateProgress } = useJobs();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -239,8 +208,8 @@ export default function ActiveJobs() {
 
   const filteredJobs =
     activeFilter === "all"
-      ? allJobs
-      : allJobs.filter((job) => job.type === activeFilter);
+      ? activeJobs
+      : activeJobs.filter((job) => job.type === activeFilter);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
@@ -253,7 +222,7 @@ export default function ActiveJobs() {
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} />
+        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
 
@@ -283,15 +252,20 @@ export default function ActiveJobs() {
           </div>
 
           {/* JOBS GRID */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {filteredJobs.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
-
-          {filteredJobs.length === 0 && (
+          {filteredJobs.length === 0 ? (
             <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
               No jobs found for this filter.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {filteredJobs.map((job) => (
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  onComplete={completeJob}
+                  onUpdateProgress={updateProgress}
+                />
+              ))}
             </div>
           )}
 

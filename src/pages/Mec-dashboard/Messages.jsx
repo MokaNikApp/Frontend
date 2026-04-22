@@ -128,7 +128,7 @@ export default function Messages() {
       <Sidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} isOnline={isOnline} setIsOnline={setIsOnline} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} isOnline={isOnline} />
+        <Topbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} isOnline={isOnline} setIsOnline={setIsOnline} />
 
         <div className="flex flex-1 overflow-hidden relative">
 
