@@ -456,7 +456,7 @@ export default function ProfileSettings() {
                     <motion.button whileHover={{ scale:1.04 }} whileTap={{ scale:.96 }}
                       transition={SPRING}
                       className="w-full bg-white text-[#1C52AF] py-3 rounded-xl
-                                 text-xs font-black shadow-lg shadow-black/20">
+                                 text-xs font-black shadow-lg shadow-black/20 p-2">
                       Complete Profile
                     </motion.button>
                   </Magnetic>
