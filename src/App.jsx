@@ -34,6 +34,13 @@ import { JobsProvider } from "./context/JobsContext";
 import ContactPage from "./pages/ContactPage";
 import TermPage from "./pages/TermPage";
 import PrivacyPage from "./pages/PrivacyPage";
+import UserDashboardPage from "./pages/Users-admin-pages/UserDashboardPage";
+import UserMechanicPage from "./pages/Users-admin-pages/UserMechanicPage";
+import CustomerPage from "./pages/Users-admin-pages/CustomerPage";
+import UserBookingPage from "./pages/Users-admin-pages/UserBookingPage.jsx";
+
+
+// ADMINSECTION
 
 
 const App = () => {
@@ -66,6 +73,16 @@ const App = () => {
         <Route path="/services/:id" element={<ServiceDetail />} />
         <Route path="/providers" element={<Providers />} />
         <Route path="/onboarding" element={<Onboarding />} />
+
+
+        {/* ADMIN DASHBOARD */}
+        
+         <Route path="/users-dashboard" element={<UserDashboardPage />} />
+          <Route path="/users-mechanics" element={<UserMechanicPage />} />
+            <Route path="/customer-management" element={<CustomerPage />} />
+            <Route path="/users-booking" element={<UserBookingPage />}/>
+          
+        
 
         {/* MEC DASHBOARD — all wrapped in ONE JobsProvider so state is shared */}
         <Route path="/mec-dashboard/*" element={
