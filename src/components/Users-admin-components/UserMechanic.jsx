@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const statusColors = {
   Pending: {
@@ -139,6 +140,7 @@ function ConfirmToast({ message, visible }) {
 }
 
 export default function UserMechanic() {
+  const navigate = useNavigate();
   const [active, setActive] = useState("Pending");
   const [data, setData] = useState(initialData);
   const [search, setSearch] = useState("");
@@ -342,7 +344,7 @@ export default function UserMechanic() {
                       <td style={{ padding: "12px 14px", color: "#64748b", fontSize: 13, whiteSpace: "nowrap" }}>{item.date}</td>
                       <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
                         <div style={{ display: "flex", gap: 5 }}>
-                          <button onClick={() => setSelected(item)} style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
+                          <button onClick={() => navigate(`/mechanic-approval/${item.id}`)} style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
                             onMouseEnter={e => { e.target.style.borderColor = "#0f172a"; e.target.style.color = "#0f172a"; }}
                             onMouseLeave={e => { e.target.style.borderColor = "#e2e8f0"; e.target.style.color = "#334155"; }}
                           >View</button>
