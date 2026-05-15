@@ -44,6 +44,7 @@ import UserBookingPage from "./pages/Users-admin-pages/UserBookingPage";
 import SettingsPage from "./pages/Users-admin-pages/SettingsPage";
 import AdminNotificationPage from "./pages/Users-admin-pages/NotificationPage";
 import DisputeSupport from "./pages/Users-admin-pages/DisputeSupport";
+import WalletPage from "./pages/Users-admin-pages/WalletPage";
 // ADMINSECTION — add new admin page imports below this line
 
 
@@ -86,6 +87,7 @@ const App = () => {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/notifications" element={<AdminNotificationPage />} />
         <Route path="/disputes" element={<DisputeSupport />} />
+        <Route path="/wallet-payments" element={<WalletPage />} />
         {/* ADD NEW ADMIN ROUTES BELOW THIS LINE */}
 
 

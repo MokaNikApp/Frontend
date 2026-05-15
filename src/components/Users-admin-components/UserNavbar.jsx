@@ -96,7 +96,7 @@ const Navbar = ({ toggleSidebar }) => {
                   Notifications
                 </p>
                 <button
-                  onClick={() => navigate("/notification")}
+                  onClick={() => navigate("/notifications")}
                   className="text-xs text-[#1D4ED8] hover:underline"
                 >
                   View all
