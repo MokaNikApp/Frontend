@@ -344,7 +344,7 @@ export default function AdminSettings() {
                     }`}
                   >
                     <div className="w-full h-16 bg-[#EEF2FA] rounded-lg flex items-center justify-center p-2">
-                      <div className="w-8 h-10 bg-gradient-to-br from-gray-200 to-gray-600 rounded shadow-xs" />
+                      <div className="w-8 h-10 bg-linear-to-br from-gray-200 to-gray-600 rounded shadow-xs" />
                     </div>
                     <span className="text-[10px] font-bold tracking-wider text-gray-500 uppercase">System</span>
                   </button>
