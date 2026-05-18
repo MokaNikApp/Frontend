@@ -127,7 +127,7 @@ export default function MechanicApprovalPage() {
 
               <textarea
                 placeholder="Add internal notes about this candidate..."
-                className="w-full h-32 border rounded-lg p-3 text-sm outline-none"
+                className="w-full h-100 border rounded-lg p-3 text-sm outline-none"
               />
 
               <div className="flex justify-between text-xs text-gray-400 mt-2">

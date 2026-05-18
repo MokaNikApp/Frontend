@@ -1,8 +1,11 @@
-// components/Users-admin-components/AdminNotifications.jsx
 import { useState } from "react";
 import {
-  MdNotifications,
-  MdSettings,
+  MdTune,
+  MdCircle,
+  MdInfo,
+  MdCalendarToday,
+  MdPayments,
+  MdReportProblem,
 } from "react-icons/md";
 
 const Toggle = ({ enabled, onChange }) => (
@@ -30,113 +33,175 @@ export default function AdminNotifications() {
   const tabs = ["All", "System", "Bookings", "Payments"];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 p-6">
 
-      {/* Header */}
+      {/* HEADER */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Notifications</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
         <p className="text-sm text-gray-500">
           Stay updated with platform alerts, booking changes, and payment status.
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      {/* TOP BAR (FULL WIDTH) */}
+      <div className="flex items-center justify-between mb-6">
+        {/* Tabs */}
+        <div className="flex bg-gray-100 p-1 rounded-xl">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab.toLowerCase())}
+              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition ${
+                activeTab === tab.toLowerCase()
+                  ? "bg-blue-600 text-white shadow"
+                  : "text-gray-500"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-1 text-sm text-blue-600 font-semibold">
+            ✓ Mark all as read
+          </button>
+
+          <button className="w-9 h-9 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-50">
+            <MdTune className="text-gray-500 text-lg" />
+          </button>
+        </div>
+      </div>
+
+      {/* MAIN GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
 
         {/* LEFT */}
-        <div className="flex-1 space-y-4">
+        <div className="space-y-4">
 
-          {/* Tabs */}
-          <div className="flex items-center justify-between">
-            <div className="flex bg-gray-100 p-1 rounded-xl">
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab.toLowerCase())}
-                  className={`px-4 py-1.5 text-xs font-semibold rounded-lg ${
-                    activeTab === tab.toLowerCase()
-                      ? "bg-white shadow text-blue-600"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {tab}
+          {/* CARD */}
+          <div className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-start">
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <MdInfo className="text-blue-600" />
+            </div>
+
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <p className="text-xs font-bold text-blue-600">
+                  SYSTEM ALERT <span className="text-red-500">•</span>
+                </p>
+                <span className="text-xs text-gray-400">12m ago</span>
+              </div>
+
+              <p className="text-sm font-semibold mt-1">
+                Server Maintenance scheduled for Oct 30, 2:00 AM UTC.
+              </p>
+
+              <div className="mt-2 flex gap-4 text-xs">
+                <button className="text-blue-600 font-medium">Mark as Read</button>
+                <button className="text-gray-400">Dismiss</button>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD */}
+          <div className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-start">
+            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+              <MdCalendarToday className="text-purple-600" />
+            </div>
+
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <p className="text-xs font-bold text-purple-600">BOOKING UPDATE</p>
+                <span className="text-xs text-gray-400">2h ago</span>
+              </div>
+
+              <p className="text-sm font-semibold mt-1">
+                New booking request from Julian Marc for Full Engine Service.
+              </p>
+
+              <div className="mt-3 flex gap-3 text-xs">
+                <button className="bg-blue-600 text-white px-3 py-1 rounded-md">
+                  View Details
                 </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button className="text-xs text-blue-600 font-semibold">
-                Mark all as read
-              </button>
-              <MdSettings className="text-gray-500" />
+                <button className="text-gray-400">Quick Approve</button>
+              </div>
             </div>
           </div>
 
-          {/* Notification Cards */}
+          {/* CARD */}
+          <div className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-start">
+            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+              <MdPayments className="text-green-600" />
+            </div>
 
-          <div className="bg-white border rounded-xl p-4">
-            <p className="text-xs text-blue-500 font-bold mb-1">SYSTEM ALERT</p>
-            <p className="text-sm font-semibold">
-              Server Maintenance scheduled for Oct 30, 2:00 AM UTC.
-            </p>
-            <div className="mt-2 flex gap-3 text-xs text-blue-600">
-              <button>Mark as Read</button>
-              <button className="text-gray-400">Dismiss</button>
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <p className="text-xs font-bold text-green-600">PAYMENT ALERT</p>
+                <span className="text-xs text-gray-400">4h ago</span>
+              </div>
+
+              <p className="text-sm font-semibold mt-1">
+                Payout of $1,240.50 successfully processed for Mechanic: Marco Silva.
+              </p>
+
+              <div className="mt-2 flex gap-4 text-xs">
+                <button className="text-blue-600">Download Invoice</button>
+                <button className="text-gray-400">Audit Log</button>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4">
-            <p className="text-xs text-purple-500 font-bold mb-1">BOOKING UPDATE</p>
-            <p className="text-sm font-semibold">
-              New booking request from Julian Marc for Full Engine Service.
-            </p>
-            <div className="mt-2 flex gap-3 text-xs">
-              <button className="bg-blue-600 text-white px-3 py-1 rounded-lg">
-                View Details
-              </button>
-              <button className="text-gray-400">Quick Approve</button>
+          {/* CARD */}
+          <div className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-start">
+            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+              <MdReportProblem className="text-red-600" />
             </div>
-          </div>
 
-          <div className="bg-white border rounded-xl p-4">
-            <p className="text-xs text-green-500 font-bold mb-1">PAYMENT ALERT</p>
-            <p className="text-sm font-semibold">
-              Payout of $1,240.50 successfully processed for Mechanic: Marco Silva.
-            </p>
-            <div className="mt-2 flex gap-3 text-xs text-blue-600">
-              <button>Download Invoice</button>
-              <button className="text-gray-400">Audit Log</button>
-            </div>
-          </div>
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <p className="text-xs font-bold text-red-600">DISPUTE ALERT</p>
+                <span className="text-xs text-gray-400">Yesterday</span>
+              </div>
 
-          <div className="bg-white border rounded-xl p-4">
-            <p className="text-xs text-red-500 font-bold mb-1">DISPUTE ALERT</p>
-            <p className="text-sm font-semibold">
-              New dispute opened by Elena Rodriguez regarding Service #MK-7281.
-            </p>
-            <div className="mt-2 flex gap-3 text-xs">
-              <button className="bg-red-500 text-white px-3 py-1 rounded-lg">
-                Resolve Now
-              </button>
-              <button className="text-gray-400">View Evidence</button>
+              <p className="text-sm font-semibold mt-1">
+                New dispute opened by Elena Rodriguez regarding Service #MK-7281.
+              </p>
+
+              <div className="mt-3 flex gap-3 text-xs">
+                <button className="bg-red-500 text-white px-3 py-1 rounded-md">
+                  Resolve Now
+                </button>
+                <button className="text-gray-400">View Evidence</button>
+              </div>
             </div>
           </div>
 
         </div>
 
         {/* RIGHT */}
-        <div className="w-full lg:w-80 space-y-4">
+        <div className="space-y-4">
 
           {/* Activity */}
-          <div className="bg-[#1D4ED8] text-white p-5 rounded-2xl">
-            <p className="text-sm mb-2">Activity Snapshot</p>
-            <p className="text-3xl font-bold">24</p>
+          <div className="bg-blue-900 text-white p-6 rounded-2xl">
+            <p className="text-sm">Activity Snapshot</p>
+
+            <div className="flex items-center justify-between mt-2">
+              <h2 className="text-3xl font-bold">24</h2>
+              <span className="text-xs bg-white/20 px-2 py-1 rounded">
+                +12% vs last week
+              </span>
+            </div>
+
             <p className="text-xs text-blue-200 mb-4">Unread alerts</p>
 
-            <div className="flex justify-between text-xs">
+            <div className="flex justify-between text-sm">
               <div>
-                <p className="text-blue-200">Avg response</p>
+                <p className="text-blue-200">Avg response time</p>
                 <p className="font-bold">1.4h</p>
               </div>
+
               <div>
                 <p className="text-blue-200">Resolution rate</p>
                 <p className="font-bold">98.2%</p>
@@ -144,8 +209,8 @@ export default function AdminNotifications() {
             </div>
           </div>
 
-          {/* Quick Settings */}
-          <div className="bg-white p-4 rounded-xl border space-y-4">
+          {/* SETTINGS */}
+          <div className="bg-blue-50 p-5 rounded-2xl border space-y-4">
             <p className="text-xs font-bold text-gray-500">QUICK SETTINGS</p>
 
             <div className="flex justify-between items-center">
@@ -163,7 +228,7 @@ export default function AdminNotifications() {
               <Toggle enabled={slackWebhook} onChange={setSlackWebhook} />
             </div>
 
-            <div className="bg-gray-50 p-3 rounded-lg border text-xs">
+            <div className="bg-white p-3 rounded-lg border text-xs">
               <p className="font-semibold mb-1">Need help with disputes?</p>
               <p className="text-gray-500 mb-2">
                 View the specialized admin guide for handling customer service issues.
@@ -174,14 +239,13 @@ export default function AdminNotifications() {
             </div>
           </div>
 
-          {/* Status */}
-          <div className="bg-gray-100 p-3 rounded-xl text-xs text-gray-600 flex items-center gap-2">
+          {/* STATUS */}
+          <div className="bg-gray-100 p-3 rounded-xl text-xs flex items-center gap-2 text-gray-600">
             <span className="w-2 h-2 bg-green-500 rounded-full"></span>
             ALL SYSTEMS OPERATIONAL
           </div>
 
         </div>
-
       </div>
     </div>
   );

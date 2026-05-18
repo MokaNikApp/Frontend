@@ -1,44 +1,53 @@
 import {
   MdKeyboardArrowDown,
   MdCalendarToday,
+  MdFileDownload,
+  MdAdd,
+  MdFlashOn,
+  MdBuild,
+  MdSettings,
+  MdSync,
+  MdAssignment,
+  MdChevronLeft,
+  MdChevronRight,
 } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
 
 export default function UsersBookings() {
   return (
-    <div className="space-y-6">
+    <div className="bg-[#FAFBFD] min-h-screen p-4 lg:p-6 font-sans text-slate-700 antialiased space-y-5">
 
-      {/* HEADER */}
-      <div className="flex items-center justify-between">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
         <div>
-          <h1 className="text-xl font-semibold text-gray-800">
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
             Bookings Management
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-xs text-slate-500 mt-0.5">
             Overview and management of all automotive service appointments across the MokaNik network.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button className="text-sm text-blue-600">
-            Export Report
+        <div className="flex items-center gap-2">
+          <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors shadow-2xs">
+            <MdFileDownload className="text-base text-slate-500" /> Export Report
           </button>
-          <button className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
-            + New Booking
+          <button className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-[#0B44A0] text-white rounded-lg shadow-sm hover:bg-blue-800 transition-colors">
+            <MdAdd className="text-base" /> New Booking
           </button>
         </div>
       </div>
 
-      {/* FILTER TABS */}
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
+      {/* FILTER NAVIGATION & SORT ELEMENT BAR */}
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pt-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
           {["All", "Pending", "Active", "Completed", "Cancelled"].map((tab, i) => (
             <button
               key={i}
-              className={`px-4 py-1.5 rounded-lg text-sm ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
                 i === 0
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-100 text-gray-600"
+                  ? "bg-[#0B44A0] text-white shadow-xs"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
               }`}
             >
               {tab}
@@ -46,217 +55,264 @@ export default function UsersBookings() {
           ))}
         </div>
 
-        <div className="text-sm text-gray-500 flex items-center gap-1">
-          SORT BY: <span className="text-blue-600">Date (Newest)</span>
-          <MdKeyboardArrowDown />
+        <div className="flex items-center gap-1.5 self-end sm:self-auto">
+          <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">SORT BY:</span>
+          <button className="bg-white border border-slate-200/80 rounded-lg px-2.5 py-1.5 text-slate-700 font-semibold flex items-center gap-1 text-xs shadow-2xs hover:bg-slate-50">
+            Date (Newest) <MdKeyboardArrowDown className="text-slate-400 text-sm" />
+          </button>
         </div>
       </div>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-xl p-4">
+      {/* MANAGEMENT CENTRAL DATA TABLE */}
+      <div className="bg-white rounded-xl border border-slate-100 shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs text-left border-collapse">
+            <thead className="bg-slate-50/70 border-b border-slate-100 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+              <tr>
+                <th className="px-5 py-3.5">Customer Name</th>
+                <th className="px-5 py-3.5">Mechanic Assigned</th>
+                <th className="px-5 py-3.5">Service Type</th>
+                <th className="px-5 py-3.5">Date & Time</th>
+                <th className="px-5 py-3.5">Status</th>
+                <th className="px-5 py-3.5 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-slate-700 font-medium bg-white">
 
-        {/* TABLE HEADER */}
-        <div className="grid grid-cols-6 text-xs text-gray-400 pb-3 border-b">
-          <p>CUSTOMER NAME</p>
-          <p>MECHANIC ASSIGNED</p>
-          <p>SERVICE TYPE</p>
-          <p>DATE & TIME</p>
-          <p>STATUS</p>
-          <p>ACTIONS</p>
+              {/* ROW 1: JAMES SULLIVAN */}
+              <tr className="hover:bg-slate-50/40 transition-colors">
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#EAF1FF] text-[#0B44A0] flex items-center justify-center font-bold text-xs border border-blue-100/40 shrink-0">
+                      JS
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 leading-none">James Sullivan</p>
+                      <p className="text-[10px] text-slate-400 font-medium mt-0.5">Tesla Model 3 • 2021</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-2">
+                    <img src="/images/ub1.png" alt="" className="w-6 h-6 rounded-full object-cover" />
+                    <span className="font-semibold text-slate-800">Marcus Chen</span>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="inline-flex items-center gap-1 bg-[#EAF1FF] text-[#0B44A0] px-2.5 py-1 rounded-md text-[11px] font-semibold">
+                    <MdFlashOn className="text-xs" /> Electrical Diagnostic
+                  </span>
+                </td>
+                <td className="px-5 py-4">
+                  <div>
+                    <p className="font-bold text-slate-900 leading-none">Oct 24, 2023</p>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">10:30 AM</p>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="bg-[#ECFFF4] text-[#00612D] px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wide">
+                    ACTIVE
+                  </span>
+                </td>
+                <td className="px-5 py-4 text-center">
+                  <button className="bg-[#EAF1FF] text-[#0B44A0] hover:bg-[#D3E3FF] px-3 py-1.5 rounded-md text-xs font-bold transition-colors shadow-2xs">
+                    View Detail
+                  </button>
+                </td>
+              </tr>
+
+              {/* ROW 2: LINDA WHITE */}
+              <tr className="hover:bg-slate-50/40 transition-colors">
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-xs border border-slate-200/50 shrink-0">
+                      LW
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 leading-none">Linda White</p>
+                      <p className="text-[10px] text-slate-400 font-medium mt-0.5">BMW X5 • 2019</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-2">
+                    <img src="/images/ub2.png" alt="" className="w-6 h-6 rounded-full object-cover" />
+                    <span className="font-semibold text-slate-800">Robert Taylor</span>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md text-[11px] font-semibold">
+                    <MdBuild className="text-[11px]" /> Oil Change
+                  </span>
+                </td>
+                <td className="px-5 py-4">
+                  <div>
+                    <p className="font-bold text-slate-900 leading-none">Oct 25, 2023</p>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">02:00 PM</p>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="bg-[#FFF4E5] text-[#B25E00] px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wide">
+                    PENDING
+                  </span>
+                </td>
+                <td className="px-5 py-4 text-center">
+                  <button className="bg-[#EAF1FF] text-[#0B44A0] hover:bg-[#D3E3FF] px-3 py-1.5 rounded-md text-xs font-bold transition-colors shadow-2xs">
+                    View Detail
+                  </button>
+                </td>
+              </tr>
+
+              {/* ROW 3: DAVID KIM */}
+              <tr className="hover:bg-slate-50/40 transition-colors">
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#EAF1FF] text-[#0B44A0] flex items-center justify-center font-bold text-xs border border-blue-100/40 shrink-0">
+                      DK
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 leading-none">David Kim</p>
+                      <p className="text-[10px] text-slate-400 font-medium mt-0.5">Toyota Camry • 2022</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-2">
+                    <img src="/images/ub3.png" alt="" className="w-6 h-6 rounded-full object-cover" />
+                    <span className="font-semibold text-slate-800">Sarah Lopez</span>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="inline-flex items-center gap-1 bg-[#EAF1FF] text-[#0B44A0] px-2.5 py-1 rounded-md text-[11px] font-semibold">
+                    <MdSettings className="text-xs" /> Brake Repair
+                  </span>
+                </td>
+                <td className="px-5 py-4">
+                  <div>
+                    <p className="font-bold text-slate-900 leading-none">Oct 23, 2023</p>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">09:15 AM</p>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="bg-[#EAF1FF] text-[#0B44A0] px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wide">
+                    COMPLETED
+                  </span>
+                </td>
+                <td className="px-5 py-4 text-center">
+                  <button className="bg-[#EAF1FF] text-[#0B44A0] hover:bg-[#D3E3FF] px-3 py-1.5 rounded-md text-xs font-bold transition-colors shadow-2xs">
+                    View Detail
+                  </button>
+                </td>
+              </tr>
+
+              {/* ROW 4: ELENA MORETTI */}
+              <tr className="hover:bg-slate-50/40 transition-colors">
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs border border-rose-100 shrink-0">
+                      EM
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 leading-none">Elena Moretti</p>
+                      <p className="text-[10px] text-slate-400 font-medium mt-0.5">Audi Q7 • 2020</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="text-xs text-slate-400 font-medium italic">Not Assigned</span>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md text-[11px] font-semibold">
+                    <MdSync className="text-xs" /> Tire Rotation
+                  </span>
+                </td>
+                <td className="px-5 py-4">
+                  <div>
+                    <p className="font-bold text-slate-900 leading-none">Oct 26, 2023</p>
+                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">11:00 AM</p>
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="bg-[#FEECEB] text-[#BC1C1C] px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wide">
+                    CANCELLED
+                  </span>
+                </td>
+                <td className="px-5 py-4 text-center">
+                  <button className="bg-[#EAF1FF] text-[#0B44A0] hover:bg-[#D3E3FF] px-3 py-1.5 rounded-md text-xs font-bold transition-colors shadow-2xs">
+                    View Detail
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
 
-        {/* ROW 1 */}
-        <div className="grid grid-cols-6 items-center py-4 border-b">
-          {/* CUSTOMER */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-sm font-semibold">
-              JS
-            </div>
-            <div>
-              <p className="text-sm font-semibold">James Sullivan</p>
-              <p className="text-xs text-gray-400">Tesla Model 3 • 2021</p>
-            </div>
-          </div>
+        {/* PAGINATION PANEL FOOTER */}
+        <div className="flex justify-between items-center px-5 py-3 text-xs text-slate-400 border-t border-slate-100 bg-white">
+          <p className="font-medium">Showing <span className="font-bold text-slate-700">1 to 4</span> of <span className="font-bold text-slate-700">24</span> entries</p>
 
-          {/* MECHANIC */}
-          <div className="flex items-center gap-2">
-            <img src="images/ub1.png" className="w-8 h-8 rounded-full" />
-            <p className="text-sm">Marcus Chen</p>
-          </div>
-
-          {/* SERVICE */}
-          <div>
-            <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-lg">
-              Electrical Diagnostic
-            </span>
-          </div>
-
-          {/* DATE */}
-          <div>
-            <p className="text-sm">Oct 24, 2023</p>
-            <p className="text-xs text-gray-400">10:30 AM</p>
-          </div>
-
-          {/* STATUS */}
-          <div>
-            <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-              ACTIVE
-            </span>
-          </div>
-
-          {/* ACTION */}
-          <button className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs w-fit">
-            View Detail
-          </button>
-        </div>
-
-        {/* ROW 2 */}
-        <div className="grid grid-cols-6 items-center py-4 border-b">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 text-sm font-semibold">
-              LW
-            </div>
-            <div>
-              <p className="text-sm font-semibold">Linda White</p>
-              <p className="text-xs text-gray-400">BMW X5 • 2019</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <img src="images/ub2.png" className="w-8 h-8 rounded-full" />
-            <p className="text-sm">Robert Taylor</p>
-          </div>
-
-          <div>
-            <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-lg">
-              Oil Change
-            </span>
-          </div>
-
-          <div>
-            <p className="text-sm">Oct 25, 2023</p>
-            <p className="text-xs text-gray-400">02:00 PM</p>
-          </div>
-
-          <div>
-            <span className="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full">
-              PENDING
-            </span>
-          </div>
-
-          <button className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs w-fit">
-            View Detail
-          </button>
-        </div>
-
-        {/* ROW 3 */}
-        <div className="grid grid-cols-6 items-center py-4 border-b">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-sm font-semibold">
-              DK
-            </div>
-            <div>
-              <p className="text-sm font-semibold">David Kim</p>
-              <p className="text-xs text-gray-400">Toyota Camry • 2022</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <img src="images/ub3.png" className="w-8 h-8 rounded-full" />
-            <p className="text-sm">Sarah Lopez</p>
-          </div>
-
-          <div>
-            <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-lg">
-              Brake Repair
-            </span>
-          </div>
-
-          <div>
-            <p className="text-sm">Oct 23, 2023</p>
-            <p className="text-xs text-gray-400">09:15 AM</p>
-          </div>
-
-          <div>
-            <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
-              COMPLETED
-            </span>
-          </div>
-
-          <button className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs w-fit">
-            View Detail
-          </button>
-        </div>
-
-        {/* ROW 4 */}
-        <div className="grid grid-cols-6 items-center py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-sm font-semibold">
-              EM
-            </div>
-            <div>
-              <p className="text-sm font-semibold">Elena Moretti</p>
-              <p className="text-xs text-gray-400">Audi Q7 • 2020</p>
-            </div>
-          </div>
-
-          <p className="text-sm text-gray-400">Not Assigned</p>
-
-          <div>
-            <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-lg">
-              Tire Rotation
-            </span>
-          </div>
-
-          <div>
-            <p className="text-sm">Oct 26, 2023</p>
-            <p className="text-xs text-gray-400">11:00 AM</p>
-          </div>
-
-          <div>
-            <span className="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">
-              CANCELLED
-            </span>
-          </div>
-
-          <button className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs w-fit">
-            View Detail
-          </button>
-        </div>
-
-        {/* FOOTER */}
-        <div className="flex justify-between items-center pt-4 text-sm text-gray-400">
-          <p>Showing 1 to 4 of 24 entries</p>
-
-          <div className="flex gap-2">
-            <button className="w-8 h-8 bg-gray-100 rounded">1</button>
-            <button className="w-8 h-8 bg-gray-100 rounded">2</button>
-            <button className="w-8 h-8 bg-gray-100 rounded">3</button>
+          <div className="flex items-center gap-1">
+            <button className="w-6 h-6 rounded-md flex items-center justify-center bg-slate-50 text-slate-400 border border-slate-200/60 hover:bg-slate-100 transition-colors">
+              <MdChevronLeft className="text-base" />
+            </button>
+            <button className="w-6 h-6 rounded-md flex items-center justify-center font-bold bg-[#0B44A0] text-white shadow-xs">1</button>
+            <button className="w-6 h-6 rounded-md flex items-center justify-center font-bold bg-slate-50 border border-slate-200/60 text-slate-500 hover:bg-slate-100 transition-colors">2</button>
+            <button className="w-6 h-6 rounded-md flex items-center justify-center font-bold bg-slate-50 border border-slate-200/60 text-slate-500 hover:bg-slate-100 transition-colors">3</button>
+            <button className="w-6 h-6 rounded-md flex items-center justify-center bg-slate-50 text-slate-400 border border-slate-200/60 hover:bg-slate-100 transition-colors">
+              <MdChevronRight className="text-base" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* STATS */}
+      {/* STATS ANALYTICS LOWER CARDS SECTION */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        <div className="bg-blue-800 text-white p-5 rounded-xl">
-          <MdCalendarToday className="text-xl mb-2" />
-          <p className="text-2xl font-bold">128</p>
-          <p className="text-sm opacity-80">Total Bookings this month</p>
+        {/* CARD 1: TOTAL BOOKINGS THIS MONTH */}
+        <div className="bg-[#0B44A0] text-white p-5 rounded-xl shadow-xs relative overflow-hidden flex flex-col justify-between min-h-35">
+          <div className="flex justify-between items-start w-full">
+            <MdCalendarToday className="text-xl text-blue-100/90" />
+            <span className="bg-white/10 text-white text-[9px] font-bold px-2 py-0.5 rounded border border-white/5 uppercase tracking-wider">
+              Month
+            </span>
+          </div>
+          <div>
+            <p className="text-3xl font-bold tracking-tight mt-3">128</p>
+            <p className="text-xs text-blue-100/80 font-medium mt-0.5">Total Bookings this month</p>
+          </div>
         </div>
 
-        <div className="bg-gray-200 p-5 rounded-xl">
-          <p className="text-2xl font-bold">08</p>
-          <p className="text-sm text-gray-600">Bookings needing assignment</p>
+        {/* CARD 2: BOOKINGS NEEDING ASSIGNMENT */}
+        <div className="bg-[#EAF1FF]/70 border border-blue-100/30 p-5 rounded-xl relative overflow-hidden flex flex-col justify-between min-h-35">
+          <div className="flex justify-between items-start w-full">
+            <MdAssignment className="text-xl text-[#0B44A0]" />
+            <span className="bg-blue-100 text-[#0B44A0] text-[9px] px-2 py-0.5 rounded uppercase tracking-wider font-semibold">
+              Alert
+            </span>
+          </div>
+          <div>
+            <p className="text-3xl font-bold text-slate-900 tracking-tight mt-3">08</p>
+            <p className="text-xs text-slate-500 font-medium mt-0.5">Bookings needing assignment</p>
+          </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl">
-          <FaStar className="text-yellow-500 mb-2" />
-          <p className="text-2xl font-bold">94%</p>
-          <p className="text-sm text-gray-500">Customer satisfaction rate</p>
+        {/* CARD 3: CUSTOMER SATISFACTION RATE */}
+        <div className="bg-white border border-slate-100 shadow-xs p-5 rounded-xl relative overflow-hidden flex flex-col justify-between min-h-35">
+          <div className="flex justify-between items-start w-full">
+            <FaStar className="text-amber-500 text-lg" />
+            <span className="text-amber-600 font-bold text-xs tracking-tight mt-0.5">
+              4.9/5.0
+            </span>
+          </div>
+          <div>
+            <p className="text-3xl font-bold text-slate-900 tracking-tight mt-3">94%</p>
+            <p className="text-xs text-slate-400 font-medium mt-0.5">Customer satisfaction rate</p>
+          </div>
         </div>
 
       </div>
+
     </div>
   );
 }

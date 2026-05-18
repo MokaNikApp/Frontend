@@ -1,5 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  MdBuild,
+  MdAccessTime,
+  MdCheckCircle,
+  MdCancel,
+  MdSearch,
+  MdArrowUpward,
+  MdArrowDownward,
+  MdLocationOn,
+  MdCalendarToday,
+  MdPhone,
+  MdStar,
+  MdCheck,
+  MdClose,
+} from "react-icons/md";
 
 const statusColors = {
   Pending: {
@@ -51,7 +66,7 @@ function StarRating({ rating }) {
   if (!rating) return <span style={{ color: "#aaa", fontSize: 12 }}>—</span>;
   return (
     <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-      <span style={{ color: "#f59e0b", fontSize: 13 }}>★</span>
+      <MdStar style={{ color: "#f59e0b" }} size={15} />
       <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{rating}</span>
     </span>
   );
@@ -65,7 +80,6 @@ function Modal({ app, onClose, onApprove, onReject }) {
   }, [onClose]);
 
   if (!app) return null;
-  const sc = statusColors[app.status];
 
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(15,20,40,0.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16, animation: "fadeIn 0.18s ease" }}>
@@ -86,31 +100,37 @@ function Modal({ app, onClose, onApprove, onReject }) {
         <div style={{ padding: "20px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
             {[
-              { label: "Location", value: app.location, icon: "📍" },
-              { label: "Applied", value: app.date, icon: "📅" },
-              { label: "Phone", value: app.phone, icon: "📞" },
-              { label: "Rating", value: app.rating ? `★ ${app.rating}` : "N/A", icon: "⭐" },
+              { label: "Location", value: app.location, icon: <MdLocationOn size={14} style={{ color: "#94a3b8" }} /> },
+              { label: "Applied", value: app.date, icon: <MdCalendarToday size={14} style={{ color: "#94a3b8" }} /> },
+              { label: "Phone", value: app.phone, icon: <MdPhone size={14} style={{ color: "#94a3b8" }} /> },
+              { label: "Rating", value: app.rating ? app.rating : "N/A", icon: <MdStar size={14} style={{ color: "#94a3b8" }} /> },
             ].map(({ label, value, icon }) => (
               <div key={label} style={{ background: "#f8fafc", borderRadius: 12, padding: "10px 12px", border: "1px solid #e2e8f0" }}>
-                <p style={{ fontSize: 10, color: "#94a3b8", margin: "0 0 3px", textTransform: "uppercase", letterSpacing: "0.06em" }}>{icon} {label}</p>
+                <p style={{ fontSize: 10, color: "#94a3b8", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 4 }}>
+                  {icon} <span>{label}</span>
+                </p>
                 <p style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", margin: 0, wordBreak: "break-word" }}>{value}</p>
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyBetween: "space-between", marginBottom: 18 }}>
             <span style={{ fontSize: 13, color: "#64748b" }}>Current status</span>
             <span style={{ fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 20, ...getBadgeStyle(app.status) }}>{app.status}</span>
           </div>
           {app.status === "Pending" && (
             <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-              <button onClick={() => onReject(app.id)} style={{ flex: 1, padding: "12px 0", borderRadius: 12, border: "1.5px solid #fecaca", background: "#fff5f5", color: "#ef4444", fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all .2s", fontFamily: "'DM Sans', sans-serif" }}
+              <button onClick={() => onReject(app.id)} style={{ flex: 1, padding: "12px 0", borderRadius: 12, border: "1.5px solid #fecaca", background: "#fff5f5", color: "#ef4444", fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all .2s", fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                 onMouseEnter={e => { e.target.style.background = "#ef4444"; e.target.style.color = "#fff"; }}
                 onMouseLeave={e => { e.target.style.background = "#fff5f5"; e.target.style.color = "#ef4444"; }}
-              >✕ Reject</button>
-              <button onClick={() => onApprove(app.id)} style={{ flex: 1, padding: "12px 0", borderRadius: 12, border: "none", background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all .2s", fontFamily: "'DM Sans', sans-serif", boxShadow: "0 4px 12px rgba(16,185,129,0.3)" }}
+              >
+                <MdClose size={16} /> Reject
+              </button>
+              <button onClick={() => onApprove(app.id)} style={{ flex: 1, padding: "12px 0", borderRadius: 12, border: "none", background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all .2s", fontFamily: "'DM Sans', sans-serif", boxShadow: "0 4px 12px rgba(16,185,129,0.3)", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                 onMouseEnter={e => e.target.style.opacity = 0.9}
                 onMouseLeave={e => e.target.style.opacity = 1}
-              >✓ Approve</button>
+              >
+                <MdCheck size={16} /> Approve
+              </button>
             </div>
           )}
           {app.status !== "Pending" && (
@@ -134,7 +154,7 @@ function getBadgeStyle(status) {
 function ConfirmToast({ message, visible }) {
   return (
     <div style={{ position: "fixed", bottom: 28, left: "50%", transform: `translateX(-50%) translateY(${visible ? 0 : 20}px)`, opacity: visible ? 1 : 0, transition: "all 0.3s cubic-bezier(.34,1.4,.64,1)", background: "#0f172a", color: "#fff", padding: "12px 20px", borderRadius: 50, fontSize: 13, fontWeight: 600, zIndex: 2000, display: "flex", alignItems: "center", gap: 8, boxShadow: "0 8px 32px rgba(0,0,0,0.25)", pointerEvents: "none", maxWidth: "90vw", textAlign: "center", whiteSpace: "nowrap" }}>
-      <span style={{ fontSize: 16 }}>✓</span> {message}
+      <MdCheckCircle size={16} style={{ color: "#10b981" }} /> {message}
     </div>
   );
 }
@@ -183,6 +203,12 @@ export default function UserMechanic() {
 
   const counts = tabs.reduce((acc, t) => ({ ...acc, [t]: data.filter(d => d.status === t).length }), {});
 
+  const statCards = [
+    { label: "Pending", status: "Pending", icon: MdAccessTime, color: "#f59e0b", bg: "#fffbeb", border: "#fcd34d", shadow: "rgba(245,158,11,0.12)" },
+    { label: "Approved", status: "Approved", icon: MdCheckCircle, color: "#10b981", bg: "#ecfdf5", border: "#6ee7b7", shadow: "rgba(16,185,129,0.12)" },
+    { label: "Rejected", status: "Rejected", icon: MdCancel, color: "#ef4444", bg: "#fff1f2", border: "#fca5a5", shadow: "rgba(239,68,68,0.12)" },
+  ];
+
   return (
     <>
       <style>{`
@@ -212,7 +238,9 @@ export default function UserMechanic() {
           <div className="mobile-stack" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: 20 }}>
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #0f172a, #1e3a5f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🔧</div>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #0f172a, #1e3a5f)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <MdBuild style={{ color: "#fff", fontSize: 16 }} />
+                </div>
                 <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a", fontFamily: "'Sora', sans-serif", letterSpacing: "-0.5px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Mechanic Applications</h1>
               </div>
               <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Review and manage technician credentials</p>
@@ -232,13 +260,9 @@ export default function UserMechanic() {
             </div>
           </div>
 
-          {/* STAT CARDS - Compact & Responsive */}
+          {/* STAT CARDS */}
           <div className="mobile-cards" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
-            {[
-              { label: "Pending", status: "Pending", icon: "⏳", color: "#f59e0b", bg: "#fffbeb", border: "#fcd34d", shadow: "rgba(245,158,11,0.12)" },
-              { label: "Approved", status: "Approved", icon: "✅", color: "#10b981", bg: "#ecfdf5", border: "#6ee7b7", shadow: "rgba(16,185,129,0.12)" },
-              { label: "Rejected", status: "Rejected", icon: "🚫", color: "#ef4444", bg: "#fff1f2", border: "#fca5a5", shadow: "rgba(239,68,68,0.12)" },
-            ].map(({ label, status, icon, color, bg, border, shadow }) => {
+            {statCards.map(({ label, status, icon: IconComponent, color, bg, border, shadow }) => {
               const isActive = active === status;
               return (
                 <div 
@@ -267,11 +291,12 @@ export default function UserMechanic() {
                     display: "flex", 
                     alignItems: "center", 
                     justifyContent: "center", 
+                    color: isActive ? "#fff" : color,
                     fontSize: 20,
                     flexShrink: 0,
                     transition: "all .25s"
                   }}>
-                    {icon}
+                    <IconComponent size={20} />
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <p className="mobile-card-num" style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "#0f172a", fontFamily: "'Sora', sans-serif", lineHeight: 1 }}>{counts[status]}</p>
@@ -293,7 +318,9 @@ export default function UserMechanic() {
               </div>
               <div className="mobile-stack mobile-full" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                 <div style={{ position: "relative", flex: 1, minWidth: 160 }}>
-                  <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#94a3b8", pointerEvents: "none" }}>🔍</span>
+                  <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", color: "#94a3b8", pointerEvents: "none" }}>
+                    <MdSearch size={16} />
+                  </span>
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name, city, skill..." style={{ paddingLeft: 32, paddingRight: 14, paddingTop: 8, paddingBottom: 8, fontSize: 13, border: "1.5px solid #e2e8f0", borderRadius: 10, outline: "none", width: "100%", fontFamily: "'DM Sans', sans-serif", color: "#334155", background: "#f8fafc", transition: "border .2s" }}
                     onFocus={e => e.target.style.borderColor = "#94a3b8"}
                     onBlur={e => e.target.style.borderColor = "#e2e8f0"}
@@ -303,7 +330,7 @@ export default function UserMechanic() {
                   onMouseEnter={e => e.target.style.borderColor = "#94a3b8"}
                   onMouseLeave={e => e.target.style.borderColor = "#e2e8f0"}
                 >
-                  {sortDir === "desc" ? "↓" : "↑"} Date
+                  {sortDir === "desc" ? <MdArrowDownward size={14} /> : <MdArrowUpward size={14} />} Date
                 </button>
               </div>
             </div>
@@ -333,7 +360,12 @@ export default function UserMechanic() {
                           </div>
                         </div>
                       </td>
-                      <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>📍 {item.location}</td>
+                      <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                          <MdLocationOn size={16} className="text-slate-400" />
+                          <span>{item.location}</span>
+                        </div>
+                      </td>
                       <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>{item.specialty}</td>
                       <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>
                         <span style={{ background: "#f1f5f9", borderRadius: 6, padding: "3px 8px", fontSize: 12, fontWeight: 600, color: "#334155" }}>{item.exp}</span>
@@ -344,20 +376,20 @@ export default function UserMechanic() {
                       <td style={{ padding: "12px 14px", color: "#64748b", fontSize: 13, whiteSpace: "nowrap" }}>{item.date}</td>
                       <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
                         <div style={{ display: "flex", gap: 5 }}>
-                          <button onClick={() => navigate(`/mechanic-approval/${item.id}`)} style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
+                          <button onClick={() => { setSelected(item); navigate(`/mechanic-approval/${item.id}`); }} style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
                             onMouseEnter={e => { e.target.style.borderColor = "#0f172a"; e.target.style.color = "#0f172a"; }}
                             onMouseLeave={e => { e.target.style.borderColor = "#e2e8f0"; e.target.style.color = "#334155"; }}
                           >View</button>
                           {item.status === "Pending" && (
                             <>
-                              <button onClick={() => handleApprove(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#ecfdf5", color: "#059669", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
+                              <button onClick={() => handleApprove(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#ecfdf5", color: "#059669", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s", display: "inline-flex", alignItems: "center" }}
                                 onMouseEnter={e => { e.target.style.background = "#059669"; e.target.style.color = "#fff"; }}
                                 onMouseLeave={e => { e.target.style.background = "#ecfdf5"; e.target.style.color = "#059669"; }}
-                              >✓</button>
-                              <button onClick={() => handleReject(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#fff1f2", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
+                              ><MdCheck size={14} /></button>
+                              <button onClick={() => handleReject(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#fff1f2", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s", display: "inline-flex", alignItems: "center" }}
                                 onMouseEnter={e => { e.target.style.background = "#ef4444"; e.target.style.color = "#fff"; }}
                                 onMouseLeave={e => { e.target.style.background = "#fff1f2"; e.target.style.color = "#ef4444"; }}
-                              >✕</button>
+                              ><MdClose size={14} /></button>
                             </>
                           )}
                         </div>
@@ -367,7 +399,9 @@ export default function UserMechanic() {
                   {filtered.length === 0 && (
                     <tr>
                       <td colSpan={7} style={{ padding: "48px 0", textAlign: "center" }}>
-                        <div style={{ fontSize: 32, marginBottom: 10 }}>🔍</div>
+                        <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, color: "#cbd5e1" }}>
+                          <MdSearch size={36} />
+                        </div>
                         <p style={{ margin: 0, color: "#94a3b8", fontWeight: 600, fontSize: 14 }}>No {active.toLowerCase()} applications found</p>
                         {search && <p style={{ margin: "6px 0 0", color: "#cbd5e1", fontSize: 12 }}>Try clearing your search</p>}
                       </td>
@@ -400,10 +434,3 @@ export default function UserMechanic() {
     </>
   );
 }
-
-
-
-
-
-
-
