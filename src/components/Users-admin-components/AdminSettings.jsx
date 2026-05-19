@@ -53,6 +53,12 @@ export default function AdminSettings() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [inAppAlerts, setInAppAlerts] = useState(false);
 
+  // Security Specific States
+  const [sessionTimeout, setSessionTimeout] = useState("15");
+  const [loginAttempts, setLoginAttempts] = useState("5");
+  const [requireDeviceApproval, setRequireDeviceApproval] = useState(true);
+  const [reauthForPayouts, setReauthForPayouts] = useState(false);
+
   const handleSave = () => {
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
@@ -69,6 +75,10 @@ export default function AdminSettings() {
     setEmailNotifications(true);
     setInAppAlerts(false);
     setTwoFAEnabled(true);
+    setSessionTimeout("15");
+    setLoginAttempts("5");
+    setRequireDeviceApproval(true);
+    setReauthForPayouts(false);
   };
 
   return (
@@ -94,6 +104,7 @@ export default function AdminSettings() {
       {/* Main Framework Grid Layout */}
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         
+        {" "}
         {/* Left Sidebar Menu */}
         <div className="w-full lg:w-64 bg-[#ECF2F9] rounded-2xl p-4 space-y-1">
           {tabs.map((tab) => {
@@ -381,6 +392,80 @@ export default function AdminSettings() {
                     </div>
                   </div>
                   <Toggle enabled={inAppAlerts} onChange={setInAppAlerts} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Security & Auth View Layout Panel */}
+          {(activeTab === "security" || activeTab === "all") && (
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 lg:p-8 shadow-sm space-y-6">
+              <div className="flex items-center gap-2.5 border-b border-gray-50 pb-4">
+                <MdSecurity className="text-xl text-[#0B44A0]" />
+                <h2 className="text-lg font-bold text-[#0F172A]">Security & Authentication</h2>
+              </div>
+
+              {/* Threat Mitigation Constraints Array */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Session Timeout Duration</label>
+                  <div className="flex items-center bg-[#EEF2FA] rounded-xl px-4 py-3 border border-transparent focus-within:border-blue-300 transition-all">
+                    <input
+                      type="text"
+                      value={sessionTimeout}
+                      onChange={(e) => setSessionTimeout(e.target.value)}
+                      className="w-full bg-transparent font-semibold text-[#0F172A] outline-none"
+                    />
+                    <span className="font-bold text-gray-400 ml-2">Mins</span>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">Automatically sign out idle administrators to ensure dashboard containment.</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Max Login Attempts</label>
+                  <div className="flex items-center bg-[#EEF2FA] rounded-xl px-4 py-3 border border-transparent focus-within:border-blue-300 transition-all">
+                    <input
+                      type="text"
+                      value={loginAttempts}
+                      onChange={(e) => setLoginAttempts(e.target.value)}
+                      className="w-full bg-transparent font-semibold text-[#0F172A] outline-none"
+                    />
+                    <span className="font-bold text-gray-400 ml-2">Attempts</span>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">Temporary lockout parameter for sequential login failures.</p>
+                </div>
+              </div>
+
+              {/* MokaNik-Specific Operational Security Rules */}
+              <div className="space-y-4 border-t border-gray-50 pt-6">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Platform Guard Rules</h3>
+
+                {/* Mechanic Application Node Safeguard */}
+                <div className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="mt-1 bg-gray-100 text-gray-500 p-2 rounded-lg">
+                      <MdAccessTime className="text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#0F172A] text-sm">New Mechanic Device Approval</h4>
+                      <p className="text-xs text-gray-400 mt-0.5">Require manual admin authorization when a provider signs in on an unverified device.</p>
+                    </div>
+                  </div>
+                  <Toggle enabled={requireDeviceApproval} onChange={setRequireDeviceApproval} />
+                </div>
+
+                {/* Core Financial Adjustments Escrow Switch */}
+                <div className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="mt-1 bg-gray-100 text-gray-500 p-2 rounded-lg">
+                      <MdExitToApp className="text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#0F172A] text-sm">Financial Parameters Guard</h4>
+                      <p className="text-xs text-gray-400 mt-0.5">Force strict 2FA re-verification prior to modifying system service fees or withdrawal limits.</p>
+                    </div>
+                  </div>
+                  <Toggle enabled={reauthForPayouts} onChange={setReauthForPayouts} />
                 </div>
               </div>
             </div>
