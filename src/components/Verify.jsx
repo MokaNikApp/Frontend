@@ -3,86 +3,142 @@
 
 
 
-import React, { useState, useEffect } from "react"; 
+
+import React, { useState, useEffect } from "react";
 import { HiMail, HiArrowRight } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 const VerifyEmail = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const email = "user@example.com";
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
+  const email = localStorage.getItem("email");
+  const userId = localStorage.getItem("userId");
+
+  // focus first input
   useEffect(() => {
     document.getElementById("code-0")?.focus();
   }, []);
 
+  // ✅ AUTO SEND OTP AFTER PAGE LOAD
+  useEffect(() => {
+    if (email && userId) {
+      sendOtp(); // auto send OTP
+    }
+  }, []);
+
+  // timer
   useEffect(() => {
     let timer;
     if (resendTimer > 0) {
-      timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      timer = setTimeout(() => setResendTimer((p) => p - 1), 1000);
     }
     return () => clearTimeout(timer);
   }, [resendTimer]);
 
+  // ========================
+  // ✅ SEND OTP FUNCTION
+  // ========================
+  const sendOtp = async () => {
+    try {
+      setResendTimer(10);
+
+      await api.post("/otp/send", {
+        purpose: "EMAIL_VERIFICATION",
+        channel: "EMAIL",
+        userId,
+        email,
+      });
+
+      console.log("OTP sent automatically");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send OTP");
+      setResendTimer(0);
+    }
+  };
+
+  // ========================
+  // OTP INPUT HANDLERS
+  // ========================
   const handleChange = (e, index) => {
     const value = e.target.value;
-    if (/^\d$/.test(value)) {
+
+    if (/^\d?$/.test(value)) {
       const newCode = [...code];
       newCode[index] = value;
       setCode(newCode);
-      if (index < 5) document.getElementById(`code-${index + 1}`)?.focus();
+
+      if (value && index < 5) {
+        document.getElementById(`code-${index + 1}`)?.focus();
+      }
     }
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
-      e.preventDefault();
       const newCode = [...code];
+
       if (newCode[index]) {
         newCode[index] = "";
       } else if (index > 0) {
         document.getElementById(`code-${index - 1}`)?.focus();
         newCode[index - 1] = "";
       }
+
       setCode(newCode);
     }
   };
 
- const submitCode = () => {
-  const otp = code.join("");
-  if (otp.length < 6) {
-    alert("Please enter the full 6-digit code");
-    return;
-  }
+  // ========================
+  // ✅ VERIFY OTP (FIXED)
+  // ========================
+  const submitCode = async () => {
+    const otp = code.join("");
 
-  setLoading(true);
-
-  setTimeout(() => {
-    setLoading(false);
-    if (otp === "123456") {
-      alert("Email verified successfully ✅");
-
-      // Navigate only to Verify2
-      navigate("/verify2");
-    } else {
-      alert("Invalid code ❌");
+    if (otp.length !== 6) {
+      alert("Please enter full 6-digit code");
+      return;
     }
-  }, 1000);
-};
 
-  const resendCode = () => {
+    try {
+      setLoading(true);
+
+      const res = await api.post("/auth/verify-email", {
+        email,
+        otp,
+      });
+      console.log(res)
+
+      alert("Email verified successfully");
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      alert(err?.response?.data?.message || "Invalid OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ========================
+  // RESEND OTP
+  // ========================
+  const resendCode = async () => {
     if (resendTimer > 0) return;
-    setResendTimer(10);
-    alert("Verification code resent 📩");
+
+    await sendOtp();
+    alert("OTP resent successfully");
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F2F4F8]">
       <div className="flex flex-col items-center justify-center flex-grow px-4 py-10 sm:px-6">
         <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md sm:p-8">
+
           <div className="bg-[#E0E7FF] p-3 rounded-full mb-4 w-max mx-auto">
             <HiMail className="text-3xl text-[#1D52AF]" />
           </div>
@@ -92,59 +148,56 @@ const VerifyEmail = () => {
           </h1>
 
           <p className="mb-6 text-sm text-center text-gray-600 sm:text-base">
-            We've sent a 6-digit verification code to your <br />
-            <span className="font-thin text-[#1D52AF]">verifying: {email}</span>
-            <br />
-            Please enter it below to secure your account.
+            Enter the 6-digit code sent to <br />
+            <span className="text-[#1D52AF] font-medium">{email}</span>
           </p>
 
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
+          {/* OTP INPUTS */}
+          <div className="flex justify-center gap-2 mb-6">
             {code.map((digit, index) => (
               <input
                 key={index}
                 id={`code-${index}`}
-                type="text"
                 maxLength="1"
                 value={digit}
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-10 h-10 sm:w-12 sm:h-12 text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1D52AF]"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-center border rounded"
               />
             ))}
           </div>
 
+          {/* VERIFY */}
           <button
             onClick={submitCode}
             disabled={loading}
-            className="w-full bg-[#1D52AF] text-white py-2 sm:py-3 rounded mb-4 hover:bg-[#1D52AF] transition"
+            className="w-full bg-[#1D52AF] text-white py-2 sm:py-3 rounded mb-4"
           >
             {loading ? "Verifying..." : "Verify"}
           </button>
 
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <span className="text-xs text-gray-600 sm:text-sm">
-              Didn't receive any code?
-            </span>
+          {/* RESEND */}
+          <div className="text-center mt-4">
             <button
               onClick={resendCode}
               disabled={resendTimer > 0}
-              className={`text-[#1D52AF] hover:underline text-xs sm:text-sm ${resendTimer > 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+              className="text-[#1D52AF] text-sm hover:underline"
             >
-              {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend Code"}
+              {resendTimer > 0
+                ? `Resend in ${resendTimer}s`
+                : "Resend Code"}
             </button>
-          </div>
+          </div>  
 
-          <p className="mt-4 text-xs sm:text-sm text-[#1D52AF] hover:underline flex items-center justify-center gap-1">
-            <Link to="/signup" className="flex items-center gap-1">
-              Back to Sign Up <HiArrowRight className="text-sm" />
+          {/* BACK */}
+          <p className="mt-4 text-center">
+            <Link to="/signup" className="text-[#1D52AF] flex items-center justify-center gap-1">
+              Back to Sign Up <HiArrowRight />
             </Link>
           </p>
+
         </div>
       </div>
-
-      <footer className="py-4 text-xs text-center text-[#485567] sm:text-sm">
-        &copy; 2026 Your Company. All rights reserved.
-      </footer>
     </div>
   );
 };
