@@ -41,16 +41,16 @@ const statusColors = {
 };
 
 const initialData = [
-  { id: 1, name: "John Doe", location: "Lagos", exp: "5 Years", status: "Pending", date: "2026-05-01", specialty: "Engine Repair", rating: null, phone: "+234 801 234 5678" },
-  { id: 2, name: "Adewale Shola", location: "Ibadan", exp: "3 Years", status: "Approved", date: "2026-04-28", specialty: "Electrical Systems", rating: 4.8, phone: "+234 802 345 6789" },
-  { id: 3, name: "Michael Johnson", location: "Abuja", exp: "7 Years", status: "Rejected", date: "2026-04-25", specialty: "Transmission", rating: null, phone: "+234 803 456 7890" },
-  { id: 4, name: "David Ojo", location: "Port Harcourt", exp: "4 Years", status: "Pending", date: "2026-04-22", specialty: "Brake Systems", rating: null, phone: "+234 804 567 8901" },
-  { id: 5, name: "Samuel Akin", location: "Lagos", exp: "6 Years", status: "Approved", date: "2026-04-20", specialty: "AC & Cooling", rating: 4.5, phone: "+234 805 678 9012" },
-  { id: 6, name: "Chukwu Emeka", location: "Enugu", exp: "2 Years", status: "Pending", date: "2026-05-03", specialty: "Body Work", rating: null, phone: "+234 806 789 0123" },
-  { id: 7, name: "Fatima Bello", location: "Kano", exp: "8 Years", status: "Approved", date: "2026-04-15", specialty: "Engine Diagnostics", rating: 4.9, phone: "+234 807 890 1234" },
+  { id: 1, name: "John Doe", location: "Lagos", exp: "5 Years", status: "Pending", date: "2026-05-01", specialty: "Engine Repair", rating: null, phone: "+234 801 234 5678", reliability: "94.2%" },
+  { id: 2, name: "Adewale Shola", location: "Ibadan", exp: "3 Years", status: "Approved", date: "2026-04-28", specialty: "Electrical Systems", rating: 4.8, phone: "+234 802 345 6789", reliability: "96.5%" },
+  { id: 3, name: "Michael Johnson", location: "Abuja", exp: "7 Years", status: "Rejected", date: "2026-04-25", specialty: "Transmission", rating: null, phone: "+234 803 456 7890", reliability: "89.1%" },
+  { id: 4, name: "David Ojo", location: "Port Harcourt", exp: "4 Years", status: "Pending", date: "2026-04-22", specialty: "Brake Systems", rating: null, phone: "+234 804 567 8901", reliability: "91.8%" },
+  { id: 5, name: "Samuel Akin", location: "Lagos", exp: "6 Years", status: "Approved", date: "2026-04-20", specialty: "AC & Cooling", rating: 4.5, phone: "+234 805 678 9012", reliability: "97.0%" },
+  { id: 6, name: "Chukwu Emeka", location: "Enugu", exp: "2 Years", status: "Pending", date: "2026-05-03", specialty: "Body Work", rating: null, phone: "+234 806 789 0123", reliability: "90.0%" },
+  { id: 7, name: "Fatima Bello", location: "Kano", exp: "8 Years", status: "Approved", date: "2026-04-15", specialty: "Engine Diagnostics", rating: 4.9, phone: "+234 807 890 1234", reliability: "99.2%" },
 ];
 
-const avatarColors = ["#0f4c81","#1b6b44","#7c2d12","#4a1d96","#134e4a","#831843","#1e3a5f"];
+const avatarColors = ["#0f4c81", "#1b6b44", "#7c2d12", "#4a1d96", "#134e4a", "#831843", "#1e3a5f"];
 
 function Avatar({ name, size = 36 }) {
   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
@@ -58,86 +58,6 @@ function Avatar({ name, size = 36 }) {
   return (
     <div style={{ width: size, height: size, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: size * 0.38, flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>
       {initials}
-    </div>
-  );
-}
-
-function StarRating({ rating }) {
-  if (!rating) return <span style={{ color: "#aaa", fontSize: 12 }}>—</span>;
-  return (
-    <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-      <MdStar style={{ color: "#f59e0b" }} size={15} />
-      <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{rating}</span>
-    </span>
-  );
-}
-
-function Modal({ app, onClose, onApprove, onReject }) {
-  useEffect(() => {
-    const handler = (e) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [onClose]);
-
-  if (!app) return null;
-
-  return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(15,20,40,0.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16, animation: "fadeIn 0.18s ease" }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 80px rgba(0,0,0,0.18)", animation: "slideUp 0.22s cubic-bezier(.34,1.4,.64,1)", overflow: "hidden" }}>
-        <div style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)", padding: "24px 20px 18px", position: "relative" }}>
-          <button onClick={onClose} style={{ position: "absolute", top: 12, right: 12, background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", transition: "background .2s" }}
-            onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.2)"}
-            onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.1)"}
-          >×</button>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Avatar name={app.name} size={48} />
-            <div style={{ minWidth: 0 }}>
-              <p style={{ color: "#fff", fontWeight: 700, fontSize: 18, margin: 0, fontFamily: "'Sora', sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{app.name}</p>
-              <p style={{ color: "#94a3b8", fontSize: 12, margin: "3px 0 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{app.specialty} · {app.exp} experience</p>
-            </div>
-          </div>
-        </div>
-        <div style={{ padding: "20px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
-            {[
-              { label: "Location", value: app.location, icon: <MdLocationOn size={14} style={{ color: "#94a3b8" }} /> },
-              { label: "Applied", value: app.date, icon: <MdCalendarToday size={14} style={{ color: "#94a3b8" }} /> },
-              { label: "Phone", value: app.phone, icon: <MdPhone size={14} style={{ color: "#94a3b8" }} /> },
-              { label: "Rating", value: app.rating ? app.rating : "N/A", icon: <MdStar size={14} style={{ color: "#94a3b8" }} /> },
-            ].map(({ label, value, icon }) => (
-              <div key={label} style={{ background: "#f8fafc", borderRadius: 12, padding: "10px 12px", border: "1px solid #e2e8f0" }}>
-                <p style={{ fontSize: 10, color: "#94a3b8", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.06em", display: "flex", alignItems: "center", gap: 4 }}>
-                  {icon} <span>{label}</span>
-                </p>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", margin: 0, wordBreak: "break-word" }}>{value}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", justifyBetween: "space-between", marginBottom: 18 }}>
-            <span style={{ fontSize: 13, color: "#64748b" }}>Current status</span>
-            <span style={{ fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 20, ...getBadgeStyle(app.status) }}>{app.status}</span>
-          </div>
-          {app.status === "Pending" && (
-            <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
-              <button onClick={() => onReject(app.id)} style={{ flex: 1, padding: "12px 0", borderRadius: 12, border: "1.5px solid #fecaca", background: "#fff5f5", color: "#ef4444", fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all .2s", fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
-                onMouseEnter={e => { e.target.style.background = "#ef4444"; e.target.style.color = "#fff"; }}
-                onMouseLeave={e => { e.target.style.background = "#fff5f5"; e.target.style.color = "#ef4444"; }}
-              >
-                <MdClose size={16} /> Reject
-              </button>
-              <button onClick={() => onApprove(app.id)} style={{ flex: 1, padding: "12px 0", borderRadius: 12, border: "none", background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", transition: "all .2s", fontFamily: "'DM Sans', sans-serif", boxShadow: "0 4px 12px rgba(16,185,129,0.3)", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
-                onMouseEnter={e => e.target.style.opacity = 0.9}
-                onMouseLeave={e => e.target.style.opacity = 1}
-              >
-                <MdCheck size={16} /> Approve
-              </button>
-            </div>
-          )}
-          {app.status !== "Pending" && (
-            <button onClick={onClose} style={{ width: "100%", padding: "12px 0", borderRadius: 12, border: "1.5px solid #e2e8f0", background: "#f8fafc", color: "#475569", fontWeight: 600, fontSize: 14, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Close</button>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
@@ -164,7 +84,6 @@ export default function UserMechanic() {
   const [active, setActive] = useState("Pending");
   const [data, setData] = useState(initialData);
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: "" });
   const [sortDir, setSortDir] = useState("desc");
   const toastTimer = useRef(null);
@@ -179,14 +98,12 @@ export default function UserMechanic() {
 
   const handleApprove = (id) => {
     setData(d => d.map(item => item.id === id ? { ...item, status: "Approved", rating: 4.5 } : item));
-    setSelected(null);
     showToast("Mechanic approved successfully");
     setTimeout(() => setActive("Approved"), 300);
   };
 
   const handleReject = (id) => {
     setData(d => d.map(item => item.id === id ? { ...item, status: "Rejected" } : item));
-    setSelected(null);
     showToast("Application rejected");
     setTimeout(() => setActive("Rejected"), 300);
   };
@@ -376,7 +293,9 @@ export default function UserMechanic() {
                       <td style={{ padding: "12px 14px", color: "#64748b", fontSize: 13, whiteSpace: "nowrap" }}>{item.date}</td>
                       <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
                         <div style={{ display: "flex", gap: 5 }}>
-                          <button onClick={() => { setSelected(item); navigate(`/mechanic-approval/${item.id}`); }} style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
+                          <button 
+                            onClick={() => navigate(`/mechanic-approval/${item.id}`, { state: { mechanic: item } })} 
+                            style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
                             onMouseEnter={e => { e.target.style.borderColor = "#0f172a"; e.target.style.color = "#0f172a"; }}
                             onMouseLeave={e => { e.target.style.borderColor = "#e2e8f0"; e.target.style.color = "#334155"; }}
                           >View</button>
@@ -425,11 +344,6 @@ export default function UserMechanic() {
           </div>
         </div>
       </div>
-
-      {/* Modal */}
-      {selected && <Modal app={selected} onClose={() => setSelected(null)} onApprove={handleApprove} onReject={handleReject} />}
-
-      {/* Toast */}
       <ConfirmToast message={toast.message} visible={toast.visible} />
     </>
   );
