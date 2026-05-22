@@ -54,7 +54,8 @@ import MechanicApprovalPage from "./pages/Users-admin-pages/MechanicApprovalPage
 const App = () => {
   return (
     <div className="bg-gray-100">
-      <ScrollToTop />
+
+      
       <Routes>
         <Route path="/" element={<Home />} />
 
