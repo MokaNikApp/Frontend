@@ -184,7 +184,7 @@ const CustomerManagement = () => {
               {modalMode === "view" && currentUser ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                    <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
                       {currentUser.name.split(" ").map(n => n[0]).join("")}
                     </div>
                     <div>
@@ -346,7 +346,7 @@ const CustomerManagement = () => {
               <tr key={user.id} className="border-t border-gray-100 hover:bg-blue-50/50 transition-colors">
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    <div className="w-9 h-9 bg-linear-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
                       {user.name.split(" ").map(n => n[0]).join("")}
                     </div>
                     <p className="font-medium text-gray-800">{user.name}</p>
