@@ -1,25 +1,22 @@
 import React, { useState } from "react";
 import UserNavbar from "../../components/Users-admin-components/UserNavbar";
 import UserSidebar from "../../components/Users-admin-components/UserSidebar";
-import UsersBookings from "../../components/Users-admin-components/UsersBookings";
+import WalletPanel from "../../components/Users-admin-components/WalletPanel";
 
-const UserBookingPage = () => {
+const WalletPage = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
-
+      
       {/* Sidebar */}
-      <div className={`fixed top-0 left-0 z-50 h-screen w-64 bg-white transition-transform ${openSidebar ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
+      <div className={`fixed top-0 left-0 h-screen w-64 bg-white z-50 transform transition ${openSidebar ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
         <UserSidebar />
       </div>
 
       {/* Overlay */}
       {openSidebar && (
-        <div
-          className="fixed inset-0 bg-black/30 lg:hidden"
-          onClick={() => setOpenSidebar(false)}
-        />
+        <div className="fixed inset-0 bg-black/30 lg:hidden" onClick={() => setOpenSidebar(false)} />
       )}
 
       {/* Main */}
@@ -27,11 +24,11 @@ const UserBookingPage = () => {
         <UserNavbar toggleSidebar={() => setOpenSidebar(!openSidebar)} />
 
         <main className="p-6">
-          <UsersBookings />
+          <WalletPanel />
         </main>
       </div>
     </div>
   );
 };
 
-export default UserBookingPage;
+export default WalletPage;

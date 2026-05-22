@@ -33,28 +33,32 @@ import Earnings from "./pages/Mec-dashboard/Earnings";
 import Schedule from "./pages/Mec-dashboard/Schedule";
 import Messages from "./pages/Mec-dashboard/Messages";
 import { JobsProvider } from "./context/JobsContext";
+
 import ContactPage from "./pages/ContactPage";
 import TermPage from "./pages/TermPage";
 import PrivacyPage from "./pages/PrivacyPage";
+
+// ADMIN DASHBOARD PAGES
 import UserDashboardPage from "./pages/Users-admin-pages/UserDashboardPage";
 import UserMechanicPage from "./pages/Users-admin-pages/UserMechanicPage";
 import CustomerPage from "./pages/Users-admin-pages/CustomerPage";
-import UserBookingPage from "./pages/Users-admin-pages/UserBookingPage.jsx";
-
-
-// ADMINSECTION
+import UserBookingPage from "./pages/Users-admin-pages/UserBookingPage";
+import SettingsPage from "./pages/Users-admin-pages/SettingsPage";
+import AdminNotificationPage from "./pages/Users-admin-pages/NotificationPage";
+import DisputeSupport from "./pages/Users-admin-pages/DisputeSupport";
+import WalletPage from "./pages/Users-admin-pages/WalletPage";
+import MechanicApprovalPage from "./pages/Users-admin-pages/MechanicApprovalPage";
+// ADMINSECTION — add new admin page imports below this line
 
 
 const App = () => {
   return (
     <div className="bg-gray-100">
-
-      
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
 
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/verify2" element={<Verifypage2 />} />
@@ -72,7 +76,7 @@ const App = () => {
         <Route path="/profile" element={<ProfilePage />} />
 
         <Route path="/home" element={<Home />} />
-           <Route path="/contact" element={<ContactPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/terms" element={<TermPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/services" element={<Services />} />
@@ -80,15 +84,18 @@ const App = () => {
         <Route path="/providers" element={<Providers />} />
         <Route path="/onboarding" element={<Onboarding />} />
 
-
         {/* ADMIN DASHBOARD */}
-        
-         <Route path="/users-dashboard" element={<UserDashboardPage />} />
-          <Route path="/users-mechanics" element={<UserMechanicPage />} />
-            <Route path="/customer-management" element={<CustomerPage />} />
-            <Route path="/users-booking" element={<UserBookingPage />}/>
-          
-        
+        <Route path="/users-dashboard" element={<UserDashboardPage />} />
+        <Route path="/users-mechanics" element={<UserMechanicPage />} />
+        <Route path="/customer-management" element={<CustomerPage />} />
+        <Route path="/users-booking" element={<UserBookingPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/notifications" element={<AdminNotificationPage />} />
+        <Route path="/disputes" element={<DisputeSupport />} />
+        <Route path="/wallet-payments" element={<WalletPage />} />
+        <Route path="/mechanic-approval/:id" element={<MechanicApprovalPage />} />
+        {/* ADD NEW ADMIN ROUTES BELOW THIS LINE */}
+
 
         {/* MEC DASHBOARD — all wrapped in ONE JobsProvider so state is shared */}
         <Route path="/mec-dashboard/*" element={
