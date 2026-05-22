@@ -7,7 +7,9 @@ import VerifyPage from "./pages/VerifyPage";
 import Verifypage2 from "./pages/Verifypage2";
 import VerifiedPage from "./pages/VerifiedPage";
 import CarModelPage from "./pages/CarModelPage";
-import SignupPage from "./components/Signup";
+import SignupPage from "./pages/SignupPage";
+import ForgetPage from "./pages/ForgetPage";
+import ResetPage from "./pages/ResetPage";
 import BookingPageA from "./pages/BookingPageA";
 import BookServicePage from "./pages/dashboard-pages/BookServicePage";
 import MyServicePage from "./pages/dashboard-pages/MyServicePage";
@@ -46,6 +48,8 @@ import UserBookingPage from "./pages/Users-admin-pages/UserBookingPage.jsx";
 const App = () => {
   return (
     <div className="bg-gray-100">
+
+      
       <Routes>
         <Route path="/" element={<Home />} />
 
@@ -54,6 +58,8 @@ const App = () => {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/verify2" element={<Verifypage2 />} />
+      <Route path="/forgot-password" element={<ForgetPage />} />
+      <Route path="/reset-password" element={<ResetPage />} />
         <Route path="/verified" element={<VerifiedPage />} />
         <Route path="/car-model" element={<CarModelPage />} />
         <Route path="/booking/:step" element={<BookingPageA />} />
