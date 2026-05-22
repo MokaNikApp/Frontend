@@ -59,7 +59,7 @@ const Sidebar = () => {
       name: "users-dispute",
       label: "Disputes",
       icon: <MdReport />,
-      path: "/dispute",
+      path: "/disputes",
     },
     {
       name: "users-notifications",
