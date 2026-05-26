@@ -124,18 +124,13 @@
 
 
 
-
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import ScrollToTop from "./components/ScrollToTop";
 
-// AUTH PAGES
+// AUTH
 import LoginPage from "./pages/LoginPage";
 import VerifyPage from "./pages/VerifyPage";
 import Verifypage2 from "./pages/Verifypage2";
@@ -144,7 +139,7 @@ import SignupPage from "./pages/SignupPage";
 import ForgetPage from "./pages/ForgetPage";
 import ResetPage from "./pages/ResetPage";
 
-// MAIN PAGES
+// MAIN
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -153,7 +148,7 @@ import ContactPage from "./pages/ContactPage";
 import TermPage from "./pages/TermPage";
 import PrivacyPage from "./pages/PrivacyPage";
 
-// BOOKING / USER DASHBOARD
+// BOOKING / DASHBOARD
 import CarModelPage from "./pages/CarModelPage";
 import BookingPageA from "./pages/BookingPageA";
 import BookServicePage from "./pages/dashboard-pages/BookServicePage";
@@ -175,10 +170,9 @@ import CompletedJobs from "./pages/Mec-dashboard/CompletedJobs";
 import Earnings from "./pages/Mec-dashboard/Earnings";
 import Schedule from "./pages/Mec-dashboard/Schedule";
 import Messages from "./pages/Mec-dashboard/Messages";
-
 import { JobsProvider } from "./context/JobsContext";
 
-// ADMIN DASHBOARD
+// ADMIN
 import UserDashboardPage from "./pages/Users-admin-pages/UserDashboardPage";
 import UserMechanicPage from "./pages/Users-admin-pages/UserMechanicPage";
 import CustomerPage from "./pages/Users-admin-pages/CustomerPage";
@@ -189,13 +183,12 @@ import DisputeSupport from "./pages/Users-admin-pages/DisputeSupport";
 import WalletPage from "./pages/Users-admin-pages/WalletPage";
 import MechanicApprovalPage from "./pages/Users-admin-pages/MechanicApprovalPage";
 
-// CREATE REACT QUERY CLIENT
 const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="bg-gray-100 min-h-screen">
+      <div className="bg-gray-100">
         <ScrollToTop />
 
         <Routes>
@@ -217,7 +210,7 @@ const App = () => {
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/providers" element={<Providers />} />
 
-          {/* CONTACT / TERMS */}
+          {/* CONTACT */}
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/terms" element={<TermPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
@@ -230,51 +223,24 @@ const App = () => {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/book-service" element={<BookServicePage />} />
           <Route path="/my-service" element={<MyServicePage />} />
-          <Route
-            path="/service-history"
-            element={<ServiceHistoryPage />}
-          />
-          <Route
-            path="/payment-management"
-            element={<PaymentPage />}
-          />
+          <Route path="/service-history" element={<ServiceHistoryPage />} />
+          <Route path="/payment-management" element={<PaymentPage />} />
           <Route path="/notify" element={<NotificationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
 
           {/* ONBOARDING */}
           <Route path="/onboarding" element={<Onboarding />} />
 
-          {/* ADMIN DASHBOARD */}
-          <Route
-            path="/users-dashboard"
-            element={<UserDashboardPage />}
-          />
-          <Route
-            path="/users-mechanics"
-            element={<UserMechanicPage />}
-          />
-          <Route
-            path="/customer-management"
-            element={<CustomerPage />}
-          />
-          <Route
-            path="/users-booking"
-            element={<UserBookingPage />}
-          />
+          {/* ADMIN */}
+          <Route path="/users-dashboard" element={<UserDashboardPage />} />
+          <Route path="/users-mechanics" element={<UserMechanicPage />} />
+          <Route path="/customer-management" element={<CustomerPage />} />
+          <Route path="/users-booking" element={<UserBookingPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route
-            path="/notifications"
-            element={<AdminNotificationPage />}
-          />
+          <Route path="/notifications" element={<AdminNotificationPage />} />
           <Route path="/disputes" element={<DisputeSupport />} />
-          <Route
-            path="/wallet-payments"
-            element={<WalletPage />}
-          />
-          <Route
-            path="/mechanic-approval/:id"
-            element={<MechanicApprovalPage />}
-          />
+          <Route path="/wallet-payments" element={<WalletPage />} />
+          <Route path="/mechanic-approval/:id" element={<MechanicApprovalPage />} />
 
           {/* MEC DASHBOARD */}
           <Route
@@ -285,7 +251,6 @@ const App = () => {
               </JobsProvider>
             }
           />
-
           <Route
             path="/mec-dashboard/job-requests"
             element={
@@ -294,7 +259,6 @@ const App = () => {
               </JobsProvider>
             }
           />
-
           <Route
             path="/mec-dashboard/active-jobs"
             element={
@@ -303,7 +267,6 @@ const App = () => {
               </JobsProvider>
             }
           />
-
           <Route
             path="/mec-dashboard/completed-jobs"
             element={
@@ -312,7 +275,6 @@ const App = () => {
               </JobsProvider>
             }
           />
-
           <Route
             path="/mec-dashboard/earnings"
             element={
@@ -321,7 +283,6 @@ const App = () => {
               </JobsProvider>
             }
           />
-
           <Route
             path="/mec-dashboard/schedule"
             element={
@@ -330,7 +291,6 @@ const App = () => {
               </JobsProvider>
             }
           />
-
           <Route
             path="/mec-dashboard/messages"
             element={
