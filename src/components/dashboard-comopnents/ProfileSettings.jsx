@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
 import {
@@ -6,11 +7,21 @@ import {
   HiOutlineShieldCheck, HiOutlineHome, HiOutlineChevronRight,
   HiOutlineLocationMarker, HiOutlineMail, HiOutlinePhone,
   HiOutlineCalendar, HiOutlineUser, HiOutlineCheck, HiOutlineStar,
-  HiX, HiEye, HiEyeOff, HiCheckCircle,
+  HiX, HiEye, HiEyeOff, HiCheckCircle, HiOutlineBadgeCheck,
+  HiOutlineExclamationCircle,
 } from "react-icons/hi";
+import api from "../../api/axios";
 
 const SPRING = { type: "spring", stiffness: 320, damping: 28 };
 const EASE   = { duration: 0.45, ease: [0.22, 1, 0.36, 1] };
+
+function getInitials(firstName = "", lastName = "") {
+  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "??";
+}
+
+function capitalize(str = "") {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 
 function Magnetic({ children, strength = 0.25 }) {
   const ref = useRef(null);
@@ -95,18 +106,25 @@ function Field({ label, type="text", value, onChange, placeholder, error, suffix
   );
 }
 
-function ModalActions({ onCancel, onConfirm, confirmLabel="Save" }) {
+function ModalActions({ onCancel, onConfirm, confirmLabel="Save", loading=false }) {
   return (
     <div className="flex gap-3 pt-2">
       <motion.button whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }} onClick={onCancel}
+        disabled={loading}
         className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-bold
-                   text-gray-600 hover:bg-gray-50 transition-colors">
+                   text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50">
         Cancel
       </motion.button>
       <motion.button whileHover={{ scale:1.02, boxShadow:"0 8px 20px rgba(28,82,175,.35)" }}
-        whileTap={{ scale:0.97 }} onClick={onConfirm}
+        whileTap={{ scale:0.97 }} onClick={onConfirm} disabled={loading}
         className="flex-1 py-2.5 rounded-xl bg-[#1C52AF] text-sm font-bold text-white
-                   shadow-md shadow-[#1C52AF]/30">
+                   shadow-md shadow-[#1C52AF]/30 disabled:opacity-60 flex items-center justify-center gap-2">
+        {loading && (
+          <svg className="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+        )}
         {confirmLabel}
       </motion.button>
     </div>
@@ -114,10 +132,13 @@ function ModalActions({ onCancel, onConfirm, confirmLabel="Save" }) {
 }
 
 export default function ProfileSettings() {
-  const [ready,  setReady]  = useState(false);
-  const [toast,  setToast]  = useState("");
-  const [mod,    setMod]    = useState("");
-  const [err,    setErr]    = useState({});
+  const [ready,   setReady]   = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [fetchErr,setFetchErr]= useState(null);
+  const [toast,   setToast]   = useState("");
+  const [mod,     setMod]     = useState("");
+  const [err,     setErr]     = useState({});
+  const [saving,  setSaving]  = useState(false);
 
   const notify = (m) => setToast(m);
   const open   = (k) => { setMod(k); setErr({}); };
@@ -125,27 +146,74 @@ export default function ProfileSettings() {
 
   useEffect(() => { requestAnimationFrame(() => setReady(true)); }, []);
 
+  // ── Profile state seeded from API ─────────────────────────────────────────
+  const [raw, setRaw] = useState(null); // full API response
   const [profile, setProfile] = useState({
-    name:"Alex Johnson", email:"alex@example.com",
-    phone:"+1 (555) 000-1234", birthday:"Jun 12, 1992",
+    firstName: "", lastName: "", email: "",
+    phoneNumber: "", address: "", city: "", state: "",
+    role: "", isEmailVerified: false, isVerified: false,
+    profileImage: null,
   });
-  const [editBuf, setEditBuf] = useState(profile);
+  const [editBuf, setEditBuf] = useState({});
 
-  const saveProfile = () => {
-    const e={};
-    if (!editBuf.name.trim())  e.name  = "Name is required";
-    if (!editBuf.email.trim()) e.email = "Email is required";
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const { data } = await api.get("/auth/profile");
+        setRaw(data);
+        setProfile({
+          firstName:       data.firstName       ?? "",
+          lastName:        data.lastName        ?? "",
+          email:           data.email           ?? "",
+          phoneNumber:     data.phoneNumber     ?? "",
+          address:         data.address         ?? "",
+          city:            data.city            ?? "",
+          state:           data.state           ?? "",
+          role:            data.role            ?? "",
+          isEmailVerified: data.isEmailVerified ?? false,
+          isVerified:      data.isVerified      ?? false,
+          profileImage:    data.profileImage    ?? null,
+        });
+      } catch (e) {
+        setFetchErr(e?.response?.data?.message || e.message || "Failed to load profile.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const fullName = `${profile.firstName} ${profile.lastName}`.trim();
+  const initials = getInitials(profile.firstName, profile.lastName);
+  const location = [profile.address, capitalize(profile.city), profile.state?.toUpperCase()]
+    .filter(Boolean).join(", ");
+
+  const saveProfile = async () => {
+    const e = {};
+    if (!editBuf.firstName?.trim()) e.firstName = "First name is required";
+    if (!editBuf.email?.trim())     e.email     = "Email is required";
     if (Object.keys(e).length) return setErr(e);
-    setProfile(editBuf); close(); notify("Profile updated ✓");
+    // Optimistic local update — swap for a PATCH call when endpoint is available
+    setProfile(prev => ({ ...prev, ...editBuf }));
+    close();
+    notify("Profile updated ✓");
   };
 
-  const [addrs, setAddrs] = useState([
-    { id:1, type:"Home",   addr:"123 Maple St, San Francisco, CA 94105", def:true  },
-    { id:2, type:"Office", addr:"456 Market St, San Francisco, CA 94103", def:false },
-  ]);
+  // ── Addresses ─────────────────────────────────────────────────────────────
+  const [addrs, setAddrs] = useState([]);
   const [addrBuf, setAddrBuf] = useState({ type:"Home", addr:"" });
 
-  const addAddr  = () => {
+  useEffect(() => {
+    if (!profile.address) return;
+    setAddrs([{
+      id: 1,
+      type: "Home",
+      addr: location,
+      def: true,
+    }]);
+  }, [profile.address, profile.city, profile.state]);
+
+  const addAddr = () => {
     if (!addrBuf.addr.trim()) return setErr({ addr:"Address is required" });
     setAddrs(p=>[...p,{...addrBuf,id:Date.now(),def:false}]);
     setAddrBuf({ type:"Home", addr:"" }); close(); notify("Address added ✓");
@@ -153,30 +221,75 @@ export default function ProfileSettings() {
   const delAddr = (id) => { setAddrs(p=>p.filter(a=>a.id!==id)); notify("Address removed"); };
   const defAddr = (id) => setAddrs(p=>p.map(a=>({...a,def:a.id===id})));
 
-  const [vehs, setVehs] = useState([
-    { id:1, name:"Tesla Model 3",    status:"Serviced Oct 12", tag:"ok"   },
-    { id:2, name:"BMW X5",           status:"Due in 500 mi",   tag:"warn" },
-    { id:3, name:"Audi A4",          status:"Good Condition",  tag:"ok"   },
-    { id:4, name:"Mercedes C-Class", status:"Serviced Sep 5",  tag:"ok"   },
-  ]);
-  const [vehBuf, setVehBuf] = useState({ name:"", status:"Good Condition" });
-  const tagColor = { ok:"text-emerald-600 bg-emerald-50", warn:"text-amber-600 bg-amber-50" };
+  // ── Vehicles ──────────────────────────────────────────────────────────────
+  const EMPTY_VEH = { brand:"", model:"", year:"", plateNumber:"", color:"", vin:"", mileage:"", engine:"" };
+  const [vehs,        setVehs]        = useState([]);
+  const [vehsLoading, setVehsLoading] = useState(true);
+  const [vehsErr,     setVehsErr]     = useState(null);
+  const [vehBuf,      setVehBuf]      = useState(EMPTY_VEH);
+  const [vehSaving,   setVehSaving]   = useState(false);
 
-  const addVeh = () => {
-    if (!vehBuf.name.trim()) return setErr({ vehName:"Vehicle name is required" });
-    setVehs(p=>[...p,{...vehBuf,id:Date.now(),tag:"ok"}]);
-    setVehBuf({ name:"", status:"Good Condition" }); close(); notify("Vehicle added ✓");
+  const statusTag = (s) => s === "active" ? "ok" : "warn";
+  const tagColor  = { ok:"text-emerald-600 bg-emerald-50", warn:"text-amber-600 bg-amber-50" };
+  const vehLabel  = (v) => [v.year, v.brand, v.model].filter(Boolean).join(" ");
+  const vehSub    = (v) => [v.color, v.plateNumber].filter(Boolean).join(" · ") || v.status;
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setVehsLoading(true);
+        const { data } = await api.get("/vehicles");
+        setVehs(Array.isArray(data) ? data : []);
+      } catch (e) {
+        setVehsErr(e?.response?.data?.message || e.message || "Failed to load vehicles.");
+      } finally {
+        setVehsLoading(false);
+      }
+    })();
+  }, []);
+
+  const addVeh = async () => {
+    const e = {};
+    if (!vehBuf.brand.trim()) e.brand = "Brand is required";
+    if (!vehBuf.model.trim()) e.model = "Model is required";
+    if (!vehBuf.year)         e.year  = "Year is required";
+    if (Object.keys(e).length) return setErr(e);
+
+    const payload = {
+      brand:       vehBuf.brand.trim(),
+      model:       vehBuf.model.trim(),
+      year:        Number(vehBuf.year),
+      plateNumber: vehBuf.plateNumber.trim() || undefined,
+      color:       vehBuf.color.trim()       || undefined,
+      vin:         vehBuf.vin.trim()         || undefined,
+      mileage:     vehBuf.mileage ? Number(vehBuf.mileage) : undefined,
+      engine:      vehBuf.engine.trim()      || null,
+    };
+
+    try {
+      setVehSaving(true);
+      const { data } = await api.post("/vehicles", payload);
+      setVehs(prev => [...prev, data]);
+      setVehBuf(EMPTY_VEH);
+      close();
+      notify("Vehicle added ✓");
+    } catch (e) {
+      setErr({ vehApi: e?.response?.data?.message || e.message || "Could not add vehicle." });
+    } finally {
+      setVehSaving(false);
+    }
   };
 
+  // ── Security ──────────────────────────────────────────────────────────────
   const [pwd,  setPwd]  = useState({ cur:"", nw:"", cf:"" });
   const [show, setShow] = useState({ cur:false, nw:false, cf:false });
   const toggleShow = (k) => setShow(p=>({...p,[k]:!p[k]}));
 
   const savePwd = () => {
     const e={};
-    if (!pwd.cur.trim())    e.cur = "Required";
-    if (pwd.nw.length < 8)  e.nw  = "Min 8 characters";
-    if (pwd.nw !== pwd.cf)  e.cf  = "Passwords don't match";
+    if (!pwd.cur.trim())   e.cur = "Required";
+    if (pwd.nw.length < 8) e.nw  = "Min 8 characters";
+    if (pwd.nw !== pwd.cf) e.cf  = "Passwords don't match";
     if (Object.keys(e).length) return setErr(e);
     setPwd({ cur:"", nw:"", cf:"" }); close(); notify("Password updated ✓");
   };
@@ -189,6 +302,33 @@ export default function ProfileSettings() {
       onClick={()=>toggleShow(k)} className="text-gray-400 hover:text-gray-700 transition-colors">
       {show[k] ? <HiEyeOff className="w-4 h-4" /> : <HiEye className="w-4 h-4" />}
     </motion.button>
+  );
+
+  // ── Loading / Error screens ───────────────────────────────────────────────
+  if (loading) return (
+    <div className="min-h-screen bg-[#f5f6fa] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-3">
+        <svg className="animate-spin h-8 w-8 text-[#1C52AF]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+        <p className="text-sm font-bold text-gray-400">Loading profile…</p>
+      </div>
+    </div>
+  );
+
+  if (fetchErr) return (
+    <div className="min-h-screen bg-[#f5f6fa] flex items-center justify-center">
+      <div className="bg-white rounded-3xl border border-red-100 shadow-sm p-8 max-w-sm w-full text-center space-y-3">
+        <HiOutlineExclamationCircle className="w-10 h-10 text-red-400 mx-auto" />
+        <p className="text-sm font-bold text-gray-800">Failed to load profile</p>
+        <p className="text-xs text-gray-500">{fetchErr}</p>
+        <button onClick={() => window.location.reload()}
+          className="mt-2 px-5 py-2 rounded-xl bg-[#1C52AF] text-white text-sm font-bold">
+          Retry
+        </button>
+      </div>
+    </div>
   );
 
   return (
@@ -211,12 +351,17 @@ export default function ProfileSettings() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                 <motion.div whileHover={{ scale:1.06 }} transition={SPRING}
                   className="relative shrink-0 cursor-pointer">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br
-                                  from-[#1C52AF] to-[#0e3480] flex items-center justify-center
-                                  text-white font-black text-2xl tracking-tight select-none
-                                  shadow-lg shadow-[#1C52AF]/30">
-                    AJ
-                  </div>
+                  {profile.profileImage ? (
+                    <img src={profile.profileImage} alt={fullName}
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-lg shadow-[#1C52AF]/20" />
+                  ) : (
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br
+                                    from-[#1C52AF] to-[#0e3480] flex items-center justify-center
+                                    text-white font-black text-2xl tracking-tight select-none
+                                    shadow-lg shadow-[#1C52AF]/30">
+                      {initials}
+                    </div>
+                  )}
                   <motion.span animate={{ scale:[1,1.4,1] }}
                     transition={{ duration:2.6, repeat:Infinity, ease:"easeInOut" }}
                     className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400
@@ -224,26 +369,52 @@ export default function ProfileSettings() {
                 </motion.div>
 
                 <div className="flex-1 min-w-0">
-                  <motion.h1 key={profile.name}
+                  <motion.h1 key={fullName}
                     initial={{ opacity:0, x:-8 }} animate={{ opacity:1, x:0 }} transition={EASE}
                     className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-                    {profile.name}
+                    {fullName || "—"}
                   </motion.h1>
                   <motion.p key={profile.email}
                     initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:.05,...EASE }}
                     className="text-sm text-gray-400 mt-0.5">{profile.email}
                   </motion.p>
                   <div className="flex flex-wrap gap-2 mt-3">
-                    <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
-                                 text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />Active
-                    </motion.span>
-                    <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
-                                 text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200">
-                      <HiOutlineStar className="w-3 h-3" />Pro
-                    </motion.span>
+                    {/* Role badge */}
+                    {profile.role && (
+                      <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                                   text-xs font-bold bg-blue-50 text-[#1C52AF] border border-blue-200 capitalize">
+                        {profile.role}
+                      </motion.span>
+                    )}
+                    {/* Email verified badge */}
+                    {profile.isEmailVerified ? (
+                      <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                                   text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                        <HiCheckCircle className="w-3 h-3" />Email Verified
+                      </motion.span>
+                    ) : (
+                      <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                                   text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200">
+                        <HiOutlineExclamationCircle className="w-3 h-3" />Email Unverified
+                      </motion.span>
+                    )}
+                    {/* Account verified badge */}
+                    {profile.isVerified ? (
+                      <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                                   text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                        <HiOutlineBadgeCheck className="w-3 h-3" />Verified
+                      </motion.span>
+                    ) : (
+                      <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                                   text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200">
+                        Unverified
+                      </motion.span>
+                    )}
                   </div>
                 </div>
 
@@ -251,7 +422,7 @@ export default function ProfileSettings() {
                   <motion.button
                     whileHover={{ scale:1.04, boxShadow:"0 12px 28px rgba(28,82,175,.4)" }}
                     whileTap={{ scale:0.96 }} transition={SPRING}
-                    onClick={()=>{ setEditBuf(profile); open("edit"); }}
+                    onClick={()=>{ setEditBuf({ ...profile }); open("edit"); }}
                     className="flex items-center gap-2 bg-[#1C52AF] text-white
                                px-5 py-2.5 rounded-xl text-sm font-bold
                                shadow-md shadow-[#1C52AF]/30">
@@ -280,16 +451,18 @@ export default function ProfileSettings() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { label:"Name",     value:profile.name,     icon:HiOutlineUser     },
-                    { label:"Email",    value:profile.email,    icon:HiOutlineMail     },
-                    { label:"Phone",    value:profile.phone,    icon:HiOutlinePhone    },
-                    { label:"Birthday", value:profile.birthday, icon:HiOutlineCalendar },
+                    { label:"First Name",   value: profile.firstName,   icon: HiOutlineUser          },
+                    { label:"Last Name",    value: profile.lastName,    icon: HiOutlineUser          },
+                    { label:"Email",        value: profile.email,       icon: HiOutlineMail          },
+                    { label:"Phone",        value: profile.phoneNumber, icon: HiOutlinePhone         },
+                    { label:"Address",      value: location,            icon: HiOutlineLocationMarker},
                   ].map((item,i)=>(
                     <motion.div key={item.label}
                       initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
                       transition={{ delay:0.1+i*0.06,...EASE }}
-                      whileHover={{ backgroundColor:"#f8f9ff", x:2 }} transition={SPRING}
-                      className="p-4 rounded-2xl border border-gray-100 cursor-default transition-colors">
+                      whileHover={{ backgroundColor:"#f8f9ff", x:2 }}
+                      className={`p-4 rounded-2xl border border-gray-100 cursor-default transition-colors
+                                  ${item.label === "Address" ? "sm:col-span-2" : ""}`}>
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <item.icon className="w-3.5 h-3.5 text-gray-400" />
                         <span className="text-[10px] uppercase tracking-[.12em] font-black text-gray-400">
@@ -298,7 +471,7 @@ export default function ProfileSettings() {
                       </div>
                       <motion.p key={item.value}
                         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={EASE}
-                        className="text-sm font-bold text-gray-900">{item.value}
+                        className="text-sm font-bold text-gray-900">{item.value || "—"}
                       </motion.p>
                     </motion.div>
                   ))}
@@ -316,7 +489,7 @@ export default function ProfileSettings() {
                     </span>
                     <h2 className="text-sm font-black text-gray-900 tracking-tight">Addresses</h2>
                   </div>
-                  <motion.button whileHover={{ scale:1.05 }} whileTap={{ scale:0.95 }}
+                  <motion.button whileHover={{ scale:1.05 }} whileTap={{ scale:.95 }}
                     transition={SPRING}
                     onClick={()=>{ setAddrBuf({type:"Home",addr:""}); open("addr"); }}
                     className="flex items-center gap-1.5 text-[#1C52AF] text-xs font-bold
@@ -368,7 +541,7 @@ export default function ProfileSettings() {
                 whileHover={{ y:-3, boxShadow:"0 16px 32px rgba(0,0,0,.09)" }} transition={SPRING}
                 className="rounded-3xl overflow-hidden border border-gray-100 shadow-sm h-40 sm:h-50">
                 <iframe title="location-map" loading="lazy" className="w-full h-full border-0"
-                  src="https://maps.google.com/maps?q=San+Francisco,CA&t=&z=13&ie=UTF8&iwloc=&output=embed" />
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(location || "Nigeria")}&t=&z=13&ie=UTF8&iwloc=&output=embed`} />
               </motion.div>
             </div>
 
@@ -393,7 +566,22 @@ export default function ProfileSettings() {
                   </motion.button>
                 </div>
                 <div className="space-y-2">
-                  {vehs.slice(0,2).map((v,i)=>(
+                  {vehsLoading && (
+                    <div className="flex items-center justify-center py-4 gap-2 text-gray-400">
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                      </svg>
+                      <span className="text-xs font-bold">Loading…</span>
+                    </div>
+                  )}
+                  {!vehsLoading && vehsErr && (
+                    <p className="text-xs text-red-500 font-semibold text-center py-2">{vehsErr}</p>
+                  )}
+                  {!vehsLoading && !vehsErr && vehs.length === 0 && (
+                    <p className="text-xs text-gray-400 text-center py-4">No vehicles yet.</p>
+                  )}
+                  {!vehsLoading && vehs.slice(0,2).map((v,i)=>(
                     <motion.div key={v.id}
                       initial={{ opacity:0, x:-8 }} animate={{ opacity:1, x:0 }}
                       transition={{ delay:i*.06,...EASE }}
@@ -404,16 +592,16 @@ export default function ProfileSettings() {
                         <HiOutlineTruck className="w-3.5 h-3.5 text-[#1C52AF]" />
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-gray-900 truncate">{v.name}</p>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagColor[v.tag]}`}>
-                          {v.status}
+                        <p className="text-sm font-bold text-gray-900 truncate">{vehLabel(v)}</p>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagColor[statusTag(v.status)]}`}>
+                          {vehSub(v)}
                         </span>
                       </div>
                     </motion.div>
                   ))}
                 </div>
                 <motion.button whileHover={{ scale:1.02 }} whileTap={{ scale:.98 }} transition={SPRING}
-                  onClick={()=>{ setVehBuf({name:"",status:"Good Condition"}); open("veh"); }}
+                  onClick={()=>{ setVehBuf(EMPTY_VEH); open("veh"); }}
                   className="w-full mt-4 flex items-center justify-center gap-2 py-2.5
                              border-2 border-dashed border-gray-200 rounded-2xl
                              text-xs font-bold text-gray-400
@@ -441,25 +629,34 @@ export default function ProfileSettings() {
                     <h2 className="text-sm font-black tracking-tight">Profile</h2>
                   </div>
                   <p className="text-xs text-blue-200 mb-5 leading-relaxed">
-                    Complete your profile to unlock all premium features.
+                    {profile.isEmailVerified && profile.isVerified
+                      ? "Your profile is fully verified and active."
+                      : "Complete verification to unlock all features."}
                   </p>
                   <div className="flex items-center gap-3 mb-1.5">
                     <div className="flex-1 bg-white/20 rounded-full h-2 overflow-hidden">
-                      <motion.div initial={{ width:0 }} animate={{ width:"85%" }}
+                      <motion.div initial={{ width:0 }}
+                        animate={{ width: profile.isEmailVerified && profile.isVerified ? "100%" : profile.isEmailVerified ? "60%" : "30%" }}
                         transition={{ duration:1.4, ease:[.22,1,.36,1], delay:.6 }}
                         className="h-full bg-gradient-to-r from-white to-blue-200 rounded-full" />
                     </div>
-                    <span className="text-xs font-black text-white/90">85%</span>
+                    <span className="text-xs font-black text-white/90">
+                      {profile.isEmailVerified && profile.isVerified ? "100%" : profile.isEmailVerified ? "60%" : "30%"}
+                    </span>
                   </div>
-                  <p className="text-[10px] text-blue-300 font-bold mb-4">Level 4 · 2 tasks left</p>
-                  <Magnetic strength={0.15}>
-                    <motion.button whileHover={{ scale:1.04 }} whileTap={{ scale:.96 }}
-                      transition={SPRING}
-                      className="w-full bg-white text-[#1C52AF] py-3 rounded-xl
-                                 text-xs font-black shadow-lg shadow-black/20 p-2">
-                      Complete Profile
-                    </motion.button>
-                  </Magnetic>
+                  <p className="text-[10px] text-blue-300 font-bold mb-4">
+                    {!profile.isEmailVerified ? "Verify your email to continue" : !profile.isVerified ? "Awaiting account verification" : "All checks passed"}
+                  </p>
+                  {(!profile.isEmailVerified || !profile.isVerified) && (
+                    <Magnetic strength={0.15}>
+                      <motion.button whileHover={{ scale:1.04 }} whileTap={{ scale:.96 }}
+                        transition={SPRING}
+                        className="w-full bg-white text-[#1C52AF] py-3 rounded-xl
+                                   text-xs font-black shadow-lg shadow-black/20 p-2">
+                        {!profile.isEmailVerified ? "Verify Email" : "Complete Profile"}
+                      </motion.button>
+                    </Magnetic>
+                  )}
                 </div>
               </motion.div>
 
@@ -475,8 +672,8 @@ export default function ProfileSettings() {
                 </div>
                 <div className="space-y-1">
                   {[
-                    { icon:HiOutlineLockClosed,  label:"Password",      badge:null  },
-                    { icon:HiOutlineShieldCheck, label:"2-Factor Auth",  badge:"On"  },
+                    { icon:HiOutlineLockClosed,  label:"Password",     badge:null },
+                    { icon:HiOutlineShieldCheck, label:"2-Factor Auth", badge:"On" },
                   ].map(item=>(
                     <motion.button key={item.label}
                       whileHover={{ x:4, backgroundColor:"#f8f9ff" }} whileTap={{ scale:.98 }}
@@ -505,19 +702,33 @@ export default function ProfileSettings() {
       {/* MODALS */}
       <Modal open={mod==="edit"} onClose={close} title="Edit Profile">
         <div className="space-y-4">
-          <Field label="Full Name" value={editBuf.name}
-            onChange={e=>setEditBuf(p=>({...p,name:e.target.value}))}
-            placeholder="Your name" error={err.name} />
-          <Field label="Email" type="email" value={editBuf.email}
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="First Name" value={editBuf.firstName ?? ""}
+              onChange={e=>setEditBuf(p=>({...p,firstName:e.target.value}))}
+              placeholder="First name" error={err.firstName} />
+            <Field label="Last Name" value={editBuf.lastName ?? ""}
+              onChange={e=>setEditBuf(p=>({...p,lastName:e.target.value}))}
+              placeholder="Last name" />
+          </div>
+          <Field label="Email" type="email" value={editBuf.email ?? ""}
             onChange={e=>setEditBuf(p=>({...p,email:e.target.value}))}
             placeholder="you@example.com" error={err.email} />
-          <Field label="Phone" type="tel" value={editBuf.phone}
-            onChange={e=>setEditBuf(p=>({...p,phone:e.target.value}))}
-            placeholder="+1 (555) 000-0000" />
-          <Field label="Birthday" value={editBuf.birthday}
-            onChange={e=>setEditBuf(p=>({...p,birthday:e.target.value}))}
-            placeholder="Jun 12, 1992" />
-          <ModalActions onCancel={close} onConfirm={saveProfile} confirmLabel="Save Changes" />
+          <Field label="Phone" type="tel" value={editBuf.phoneNumber ?? ""}
+            onChange={e=>setEditBuf(p=>({...p,phoneNumber:e.target.value}))}
+            placeholder="+234 800 000 0000" />
+          <Field label="Address" value={editBuf.address ?? ""}
+            onChange={e=>setEditBuf(p=>({...p,address:e.target.value}))}
+            placeholder="Street address" />
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="City" value={editBuf.city ?? ""}
+              onChange={e=>setEditBuf(p=>({...p,city:e.target.value}))}
+              placeholder="City" />
+            <Field label="State" value={editBuf.state ?? ""}
+              onChange={e=>setEditBuf(p=>({...p,state:e.target.value}))}
+              placeholder="State" />
+          </div>
+          <ModalActions onCancel={close} onConfirm={saveProfile}
+            confirmLabel="Save Changes" loading={saving} />
         </div>
       </Modal>
 
@@ -547,27 +758,56 @@ export default function ProfileSettings() {
         </div>
       </Modal>
 
-      <Modal open={mod==="veh"} onClose={close} title="Add Vehicle">
-        <div className="space-y-4">
-          <Field label="Vehicle Name" value={vehBuf.name}
-            onChange={e=>setVehBuf(p=>({...p,name:e.target.value}))}
-            placeholder="e.g. Tesla Model 3" error={err.vehName} />
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</label>
-            <select value={vehBuf.status} onChange={e=>setVehBuf(p=>({...p,status:e.target.value}))}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50
-                         text-sm font-medium outline-none focus:border-[#1C52AF]
-                         focus:ring-2 focus:ring-[#1C52AF]/20 transition-all">
-              {["Good Condition","Serviced Recently","Due for Service","Pending Repair"]
-                .map(o=><option key={o}>{o}</option>)}
-            </select>
+      <Modal open={mod==="veh"} onClose={()=>{ setVehBuf(EMPTY_VEH); close(); }} title="Add Vehicle">
+        <div className="space-y-3 overflow-y-auto max-h-[60vh] pr-1">
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Brand *" value={vehBuf.brand}
+              onChange={e=>setVehBuf(p=>({...p,brand:e.target.value}))}
+              placeholder="e.g. Toyota" error={err.brand} />
+            <Field label="Model *" value={vehBuf.model}
+              onChange={e=>setVehBuf(p=>({...p,model:e.target.value}))}
+              placeholder="e.g. Camry" error={err.model} />
           </div>
-          <ModalActions onCancel={close} onConfirm={addVeh} confirmLabel="Add Vehicle" />
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Year *" type="number" value={vehBuf.year}
+              onChange={e=>setVehBuf(p=>({...p,year:e.target.value}))}
+              placeholder="2020" error={err.year} />
+            <Field label="Color" value={vehBuf.color}
+              onChange={e=>setVehBuf(p=>({...p,color:e.target.value}))}
+              placeholder="e.g. Silver" />
+          </div>
+          <Field label="Plate Number" value={vehBuf.plateNumber}
+            onChange={e=>setVehBuf(p=>({...p,plateNumber:e.target.value}))}
+            placeholder="e.g. ABC-1234" />
+          <Field label="VIN" value={vehBuf.vin}
+            onChange={e=>setVehBuf(p=>({...p,vin:e.target.value}))}
+            placeholder="17-character VIN" />
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Mileage (km)" type="number" value={vehBuf.mileage}
+              onChange={e=>setVehBuf(p=>({...p,mileage:e.target.value}))}
+              placeholder="e.g. 15000" />
+            <Field label="Engine" value={vehBuf.engine}
+              onChange={e=>setVehBuf(p=>({...p,engine:e.target.value}))}
+              placeholder="e.g. 2.5L V6" />
+          </div>
+          {err.vehApi && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100">
+              <HiOutlineExclamationCircle className="w-4 h-4 text-red-500 shrink-0" />
+              <p className="text-xs text-red-600 font-semibold">{err.vehApi}</p>
+            </div>
+          )}
+        </div>
+        <div className="pt-4">
+          <ModalActions onCancel={()=>{ setVehBuf(EMPTY_VEH); close(); }}
+            onConfirm={addVeh} confirmLabel="Add Vehicle" loading={vehSaving} />
         </div>
       </Modal>
 
       <Modal open={mod==="viewVeh"} onClose={close} title={`All Vehicles (${vehs.length})`}>
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
+          {vehs.length === 0 && (
+            <p className="text-center text-sm text-gray-400 py-6">No vehicles registered yet.</p>
+          )}
           <AnimatePresence>
             {vehs.map((v,i)=>(
               <motion.div key={v.id}
@@ -580,10 +820,18 @@ export default function ProfileSettings() {
                   <HiOutlineTruck className="w-3.5 h-3.5 text-[#1C52AF]" />
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-gray-900">{v.name}</p>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagColor[v.tag]}`}>
-                    {v.status}
-                  </span>
+                  <p className="text-sm font-bold text-gray-900">{vehLabel(v)}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagColor[statusTag(v.status)]}`}>
+                      {v.status}
+                    </span>
+                    {v.plateNumber && (
+                      <span className="text-[10px] text-gray-400 font-semibold">{v.plateNumber}</span>
+                    )}
+                    {v.mileage != null && (
+                      <span className="text-[10px] text-gray-400 font-semibold">{v.mileage.toLocaleString()} km</span>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             ))}

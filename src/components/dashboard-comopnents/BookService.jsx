@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   HiOutlineSparkles,
@@ -11,113 +11,133 @@ import {
   HiCalendar,
   HiClock,
 } from "react-icons/hi";
+ import api from "../../api/axios";
 import Background2 from "../../assets/images/Background2.png";
 
+// Map API category to icon
+const getServiceIcon = (category) => {
+  const iconMap = {
+    oil_change: <HiOutlineSparkles className="text-3xl" />,
+    tire_rotation: <HiOutlineCog className="text-3xl" />,
+    brake_repair: <HiOutlineBeaker className="text-3xl" />,
+    engine_diagnostic: <HiOutlineLightningBolt className="text-3xl" />,
+    ac_service: <HiOutlineCloud className="text-3xl" />,
+    electrical: <HiOutlineLightningBolt className="text-3xl" />,
+    suspension: <HiOutlineAdjustments className="text-3xl" />,
+    transmission: <HiOutlineCog className="text-3xl" />,
+  };
+  return iconMap[category] || <HiOutlineSparkles className="text-3xl" />;
+};
+
 const BookService = () => {
-  const [selectedServices, setSelectedServices] = useState([]);
   const navigate = useNavigate();
+
+  // API Data
+  const [services, setServices] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [bookingLoading, setBookingLoading] = useState(false);
+
+  // Selection State
+  const [selectedServices, setSelectedServices] = useState([]);
   const [selectedMechanic, setSelectedMechanic] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState("San Francisco, CA 94103");
-  const [selectedVehicle, setSelectedVehicle] = useState("2022 Tesla Model 3 (Gray)");
+  const [selectedVehicleId, setSelectedVehicleId] = useState("");
 
-  const services = [
+  // Fetch services and vehicles from API
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch both in parallel
+        const [servicesRes, vehiclesRes] = await Promise.all([
+          api.get("/services"),
+          api.get("/vehicles"),
+        ]);
+
+        const servicesData = servicesRes.data?.data || servicesRes.data || [];
+        const vehiclesData = vehiclesRes.data?.data || vehiclesRes.data || [];
+
+        if (!Array.isArray(servicesData)) {
+          throw new Error("Invalid services response format");
+        }
+        if (!Array.isArray(vehiclesData)) {
+          throw new Error("Invalid vehicles response format");
+        }
+
+        if (isMounted) {
+          setServices(servicesData);
+          setVehicles(vehiclesData);
+          // Auto-select first vehicle if available
+          if (vehiclesData.length > 0) {
+            setSelectedVehicleId(vehiclesData[0].id);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+        if (isMounted) {
+          setError(err.response?.data?.message || err.message || "Failed to load data. Please try again.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const mechanics = [
     {
       id: 1,
-      icon: <HiOutlineSparkles className="text-3xl" />,
-      title: "Full Oil Change",
-      price: 89.0,
+      name: "Marco Rossi",
+      rating: "4.9 (120 reviews)",
+      badge: "EXPERT",
+      services: [
+        "e1c742c1-2255-4450-8734-30fbcf954b01",
+        "b1a39b4f-1064-485d-b76b-0e3b52523e4e",
+        "99d3622d-4c23-4cc9-bd3d-677ab12678d7",
+        "2c15e1ed-9350-4fd2-9a75-8b6e58d2a90e",
+        "38a57dc4-efc1-44e2-8e1d-3747e77818b3",
+        "51515703-155a-4293-a6ff-05e775ef992e",
+        "d3b53409-3a98-47fd-9c23-f27f572f4cec",
+      ],
     },
     {
       id: 2,
-      icon: <HiOutlineCog className="text-3xl" />,
-      title: "Tire Rotation",
-      price: 45.0,
+      name: "Lara Smith",
+      rating: "4.8 (95 reviews)",
+      badge: "SENIOR",
+      services: [
+        "b1a39b4f-1064-485d-b76b-0e3b52523e4e",
+        "99d3622d-4c23-4cc9-bd3d-677ab12678d7",
+        "e1c742c1-2255-4450-8734-30fbcf954b01",
+        "c8543f14-fbcf-41d6-95f6-e6447e68de81",
+      ],
     },
     {
       id: 3,
-      icon: <HiOutlineBeaker className="text-3xl" />,
-      title: "Brake Repair",
-      price: 120.0,
-    },
-    {
-      id: 4,
-      icon: <HiOutlineLightningBolt className="text-3xl" />,
-      title: "Engine Diagnostic",
-      price: 99.0,
-    },
-    {
-      id: 5,
-      icon: <HiOutlineCloud className="text-3xl" />,
-      title: "AC Service",
-      price: 75.0,
-    },
-    {
-      id: 6,
-      icon: <HiOutlineAdjustments className="text-3xl" />,
-      title: "Battery Replacement",
-      price: 150.0,
-    },
-    {
-      id: 7,
-      icon: <HiOutlineSparkles className="text-3xl" />,
-      title: "Spark Plug Replacement",
-      price: 65.0,
-    },
-    {
-      id: 8,
-      icon: <HiOutlineCog className="text-3xl" />,
-      title: "Air Filter Replacement",
-      price: 40.0,
-    },
-    {
-      id: 9,
-      icon: <HiOutlineBeaker className="text-3xl" />,
-      title: "Transmission Service",
-      price: 200.0,
-    },
-    {
-      id: 10,
-      icon: <HiOutlineLightningBolt className="text-3xl" />,
-      title: "Wheel Alignment",
-      price: 85.0,
-    },
-    {
-      id: 11,
-      icon: <HiOutlineCloud className="text-3xl" />,
-      title: "Suspension Service",
-      price: 180.0,
-    },
-    {
-      id: 12,
-      icon: <HiOutlineAdjustments className="text-3xl" />,
-      title: "Other Service",
-      price: 0,
-    },
-  ];
-
-  const mechanics = [
-    { 
-      id: 1, 
-      name: "Marco Rossi", 
-      rating: "4.9 (120 reviews)", 
-      badge: "EXPERT",
-      services: [1, 2, 3, 4, 9, 10, 11] // Full range of services
-    },
-    { 
-      id: 2, 
-      name: "Lara Smith", 
-      rating: "4.8 (95 reviews)", 
-      badge: "SENDER",
-      services: [2, 3, 5, 6, 8] // Tire, Brake, AC, Battery, Air Filter
-    },
-    { 
-      id: 3, 
-      name: "John Doe", 
-      rating: "4.7 (80 reviews)", 
+      name: "John Doe",
+      rating: "4.7 (80 reviews)",
       badge: "FAST",
-      services: [1, 4, 5, 7, 12] // Oil, Diagnostics, AC, Spark Plugs, Other
+      services: [
+        "51515703-155a-4293-a6ff-05e775ef992e",
+        "2c15e1ed-9350-4fd2-9a75-8b6e58d2a90e",
+        "e1c742c1-2255-4450-8734-30fbcf954b01",
+        "c8543f14-fbcf-41d6-95f6-e6447e68de81",
+      ],
     },
   ];
 
@@ -145,6 +165,10 @@ const BookService = () => {
     return mechanics.find((m) => m.id === selectedMechanic)?.name || "";
   };
 
+  const getSelectedVehicle = () => {
+    return vehicles.find((v) => v.id === selectedVehicleId);
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return null;
     const date = new Date(dateString + "T00:00:00");
@@ -155,188 +179,220 @@ const BookService = () => {
     });
   };
 
-  const subtotal = getSelectedServicesData().reduce((sum, s) => sum + s.price, 0);
+  const subtotal = getSelectedServicesData().reduce(
+    (sum, s) => sum + parseFloat(s.price || 0),
+    0
+  );
   const serviceFee = subtotal > 0 ? 10.0 : 0;
   const tax = subtotal > 0 ? Math.round((subtotal + serviceFee) * 0.05 * 100) / 100 : 0;
   const total = subtotal + serviceFee + tax;
+
+  const handleConfirmBooking = async () => {
+    if (selectedServices.length === 0) return;
+
+    const selectedVehicle = getSelectedVehicle();
+    const selectedMechanicData = mechanics.find((m) => m.id === selectedMechanic);
+
+    const bookingPayload = {
+      vehicleId: selectedVehicleId,
+      vehicle: selectedVehicle
+        ? `${selectedVehicle.year} ${selectedVehicle.brand} ${selectedVehicle.model} (${selectedVehicle.color})`
+        : selectedVehicleId,
+      location: selectedLocation,
+      date: selectedDate,
+      time: selectedTime,
+      mechanicId: selectedMechanic,
+      mechanicName: selectedMechanicData?.name || null,
+      services: getSelectedServicesData().map((s) => ({
+        id: s.id,
+        name: s.name,
+        price: parseFloat(s.price),
+        duration: s.estimatedDurationMinutes,
+      })),
+      pricing: {
+        subtotal: subtotal,
+        serviceFee: serviceFee,
+        tax: tax,
+        total: total,
+      },
+      notes: "",
+    };
+
+    console.log("Booking Payload:", bookingPayload);
+
+    try {
+      setBookingLoading(true);
+      // Replace with your actual booking endpoint
+      // const response = await api.post("/bookings", bookingPayload);
+      // navigate("/payment-management", { state: { booking: response.data } });
+      
+      // For now, navigate with payload in state
+      navigate("/payment-management", { state: { booking: bookingPayload } });
+    } catch (err) {
+      console.error("Booking failed:", err);
+      alert("Failed to create booking. Please try again.");
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  // Loading State
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1D52AF] mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error State
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center p-6">
+        <div className="text-center max-w-md">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-4">
+            <p className="text-red-700 font-semibold mb-2">Error Loading Data</p>
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#1D52AF] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-[#1645a0] transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <style>{`
         @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes slideInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-12px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
-
         @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+          from { opacity: 0; transform: scale(0.98); }
+          to { opacity: 1; transform: scale(1); }
         }
-
         .animate-slide-in-up {
           animation: slideInUp 0.4s ease-out forwards;
           opacity: 0;
         }
-
         .animate-slide-in-down {
           animation: slideInDown 0.4s ease-out forwards;
           opacity: 0;
         }
-
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out forwards;
           opacity: 0;
         }
-
         .animate-scale-in {
           animation: scaleIn 0.3s ease-out forwards;
           opacity: 0;
         }
-
         .service-card {
           transition: all 0.25s ease;
           position: relative;
         }
-
         .service-card:hover {
           transform: translateY(-4px);
           box-shadow: 0 8px 16px rgba(29, 82, 175, 0.08);
         }
-
         .service-card.selected {
           background: linear-gradient(135deg, #1D52AF 0%, #1a4a9e 100%);
           color: white;
           box-shadow: 0 8px 20px rgba(29, 82, 175, 0.25);
           border-color: #1D52AF;
         }
-
         .mechanic-item {
           transition: all 0.25s ease;
           position: relative;
         }
-
         .mechanic-item:hover {
           transform: translateX(3px);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
         }
-
         .mechanic-item.selected {
           border-color: #1D52AF;
           background: linear-gradient(135deg, #f0f7ff 0%, #e8f1ff 100%);
           box-shadow: 0 2px 8px rgba(29, 82, 175, 0.1);
         }
-
         .time-slot {
           transition: all 0.25s ease;
           position: relative;
         }
-
         .time-slot:hover {
           transform: translateY(-2px);
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
-
         .time-slot.selected {
           background: #1D52AF;
           color: white;
           border-color: #1D52AF;
           box-shadow: 0 4px 12px rgba(29, 82, 175, 0.25);
         }
-
         .summary-item {
           animation: slideInUp 0.3s ease-out;
         }
-
         .summary-card {
           transition: all 0.25s ease-out;
         }
-
         .input-field {
           transition: all 0.25s ease;
           background: linear-gradient(to bottom, #ffffff, #fafbfc);
         }
-
         .input-field:focus {
           box-shadow: 0 0 0 3px rgba(29, 82, 175, 0.1);
           border-color: #1D52AF;
           background: #ffffff;
         }
-
         .select-field {
           transition: all 0.25s ease;
           background: linear-gradient(to bottom, #ffffff, #fafbfc);
         }
-
         .select-field:focus {
           box-shadow: 0 0 0 3px rgba(29, 82, 175, 0.1);
           border-color: #1D52AF;
           background: #ffffff;
         }
-
         .btn-confirm {
           transition: all 0.25s ease;
           position: relative;
         }
-
         .btn-confirm:hover:not(:disabled) {
           transform: translateY(-2px);
           box-shadow: 0 8px 16px rgba(29, 82, 175, 0.25);
         }
-
         .btn-confirm:active:not(:disabled) {
           transform: translateY(0);
         }
-
         .btn-apply {
           transition: all 0.2s ease;
         }
-
         .btn-apply:hover {
           background: #dbe4f0;
         }
-
         .stagger-1 { animation-delay: 0.05s; }
         .stagger-2 { animation-delay: 0.1s; }
         .stagger-3 { animation-delay: 0.15s; }
-
         .card-base {
           background: white;
           border: 1px solid #f0f1f3;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-
         .card-base:hover {
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
@@ -347,7 +403,6 @@ const BookService = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Location & Vehicle */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-slide-in-up stagger-1">
-            {/* Service Location */}
             <div className="flex flex-col">
               <label className="font-semibold text-gray-800 mb-3 text-sm tracking-wide">
                 Service Location
@@ -366,20 +421,30 @@ const BookService = () => {
               </div>
             </div>
 
-            {/* Vehicle Select */}
             <div className="flex flex-col">
               <label className="font-semibold text-gray-800 mb-3 text-sm tracking-wide">
                 Vehicle
               </label>
-              <select 
-                value={selectedVehicle}
-                onChange={(e) => setSelectedVehicle(e.target.value)}
+              <select
+                value={selectedVehicleId}
+                onChange={(e) => setSelectedVehicleId(e.target.value)}
                 className="select-field w-full border border-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm appearance-none"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231D52AF' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', paddingRight: '32px' }}
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231D52AF' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 12px center",
+                  paddingRight: "32px",
+                }}
               >
-                <option>2022 Tesla Model 3 (Gray)</option>
-                <option>2023 Toyota Camry (White)</option>
-                <option>2021 Honda Civic (Blue)</option>
+                {vehicles.length === 0 ? (
+                  <option value="">No vehicles found</option>
+                ) : (
+                  vehicles.map((vehicle) => (
+                    <option key={vehicle.id} value={vehicle.id}>
+                      {vehicle.year} {vehicle.brand} {vehicle.model} ({vehicle.color}) - {vehicle.plateNumber}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
           </div>
@@ -391,36 +456,48 @@ const BookService = () => {
                 {selectedMechanic ? `${getMechanicName()}'s Services` : "Select Service"}
               </h2>
               <p className="text-sm text-gray-500 mt-1">
-                {selectedMechanic 
+                {selectedMechanic
                   ? `Available services offered by ${getMechanicName()}`
-                  : "Choose one or more services for your vehicle"
-                }
+                  : "Choose one or more services for your vehicle"}
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {(selectedMechanic ? getMechanicServices() : services).map((service, index) => (
-                <button
-                  key={service.id}
-                  onClick={() => toggleService(service.id)}
-                  className={`service-card flex flex-col items-center justify-center p-5 rounded-lg text-center space-y-3 border-2 animate-slide-in-up transition-all ${
-                    selectedServices.includes(service.id)
-                      ? "selected"
-                      : "bg-white text-gray-900 border-gray-100 hover:border-gray-200"
-                  }`}
-                  style={{ animationDelay: `${150 + index * 30}ms` }}
-                >
-                  <div className="transition-all duration-300">
-                    {service.icon}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{service.title}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {service.price > 0 ? `$${service.price.toFixed(2)}` : "Get custom quote"}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
+
+            {services.length === 0 ? (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+                <p className="text-sm text-yellow-800">No services available at the moment.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {(selectedMechanic ? getMechanicServices() : services).map((service, index) => (
+                  <button
+                    key={service.id}
+                    onClick={() => toggleService(service.id)}
+                    className={`service-card flex flex-col items-center justify-center p-5 rounded-lg text-center space-y-3 border-2 animate-slide-in-up transition-all ${
+                      selectedServices.includes(service.id)
+                        ? "selected"
+                        : "bg-white text-gray-900 border-gray-100 hover:border-gray-200"
+                    }`}
+                    style={{ animationDelay: `${150 + index * 30}ms` }}
+                  >
+                    <div className="transition-all duration-300">
+                      {getServiceIcon(service.category)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">{service.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        ${parseFloat(service.price || 0).toFixed(2)}
+                      </p>
+                      {service.estimatedDurationMinutes && (
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          {service.estimatedDurationMinutes} min
+                        </p>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
             {selectedMechanic && getMechanicServices().length === 0 && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
                 <p className="text-sm text-yellow-800">This mechanic doesn't offer any services.</p>
@@ -432,8 +509,6 @@ const BookService = () => {
             {/* Schedule Card */}
             <div className="card-base p-6 rounded-lg">
               <h3 className="text-lg font-bold text-gray-900 mb-5">Schedule</h3>
-
-              {/* Date Picker */}
               <div className="mb-5">
                 <label className="block mb-2 font-semibold text-gray-800 text-sm">
                   Select Date
@@ -445,8 +520,6 @@ const BookService = () => {
                   className="input-field w-full border border-gray-100 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
-
-              {/* Time Slots */}
               <div>
                 <label className="block mb-3 font-semibold text-gray-800 text-sm">
                   Time Slots
@@ -474,15 +547,13 @@ const BookService = () => {
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 Available Mechanics
               </h3>
-
-              {/* Mechanic List */}
               <div className="space-y-2.5">
                 {mechanics.map((mech) => (
                   <button
                     key={mech.id}
                     onClick={() => {
                       setSelectedMechanic(mech.id);
-                      setSelectedServices([]); // Clear services when mechanic changes
+                      setSelectedServices([]);
                     }}
                     className={`mechanic-item w-full flex items-center justify-between p-3 border-2 rounded-lg transition-all ${
                       selectedMechanic === mech.id
@@ -490,7 +561,6 @@ const BookService = () => {
                         : "bg-white border-gray-100 hover:border-gray-200"
                     }`}
                   >
-                    {/* Image + Info */}
                     <div className="flex items-center gap-3 flex-1">
                       <img
                         src={Background2}
@@ -502,17 +572,17 @@ const BookService = () => {
                         <div className="flex items-center gap-2 mt-0.5">
                           <p className="text-xs text-gray-500">{mech.rating}</p>
                           <span className="text-xs text-blue-600 font-medium">•</span>
-                          <p className="text-xs text-blue-600 font-medium">{mech.services.length} services</p>
+                          <p className="text-xs text-blue-600 font-medium">
+                            {mech.services.length} services
+                          </p>
                         </div>
                       </div>
                     </div>
-
-                    {/* Badge */}
                     <div
                       className={`text-xs px-2.5 py-1 rounded-full font-bold flex-shrink-0 ml-2 ${
                         mech.badge === "EXPERT"
                           ? "bg-green-100 text-green-700"
-                          : mech.badge === "SENDER"
+                          : mech.badge === "SENIOR"
                           ? "bg-blue-100 text-blue-700"
                           : "bg-yellow-100 text-yellow-700"
                       }`}
@@ -528,68 +598,70 @@ const BookService = () => {
 
         {/* Right Column (Summary) */}
         <div className="space-y-6 animate-slide-in-down">
-          <div className="card-base rounded-xl p-6 overflow-y-auto sticky top-6" style={{ maxHeight: 'calc(100vh - 10px)' }}>
-            {/* Header */}
+          <div
+            className="card-base rounded-xl p-6 overflow-y-auto sticky top-6"
+            style={{ maxHeight: "calc(100vh - 10px)" }}
+          >
             <div className="bg-gradient-to-br from-[#1D52AF] to-[#1645a0] text-white p-5 rounded-lg mb-6 shadow-lg">
               <p className="text-lg font-bold">Book Summary</p>
               <p className="text-xs opacity-80 mt-2">Order #MK-78219</p>
             </div>
 
-            {/* Content */}
             <div className="space-y-4 summary-card">
-              {/* Location */}
               <div className="summary-item flex items-start gap-3 pb-4 border-b border-gray-100">
-                <div className="bg-blue-50 p-2.5 rounded-lg text-lg flex-shrink-0">
-                  📍
-                </div>
+                <div className="bg-blue-50 p-2.5 rounded-lg text-lg flex-shrink-0">📍</div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Location</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                    Location
+                  </p>
                   <p className="text-sm font-semibold text-gray-900 mt-1">
                     {selectedLocation || "Not selected"}
                   </p>
                 </div>
               </div>
 
-              {/* Vehicle */}
               <div className="summary-item flex items-start gap-3 pb-4 border-b border-gray-100">
-                <div className="bg-blue-50 p-2.5 rounded-lg text-lg flex-shrink-0">
-                  🚗
-                </div>
+                <div className="bg-blue-50 p-2.5 rounded-lg text-lg flex-shrink-0">🚗</div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Vehicle</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                    Vehicle
+                  </p>
                   <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {selectedVehicle || "Not selected"}
+                    {getSelectedVehicle()
+                      ? `${getSelectedVehicle().year} ${getSelectedVehicle().brand} ${getSelectedVehicle().model} (${getSelectedVehicle().color})`
+                      : "Not selected"}
                   </p>
                 </div>
               </div>
 
-              {/* Date */}
               <div className="summary-item flex items-start gap-3 pb-4 border-b border-gray-100">
                 <div className="bg-blue-50 p-2.5 rounded-lg text-lg flex-shrink-0">
                   <HiCalendar className="text-[#1D52AF]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Date</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                    Date
+                  </p>
                   <p className="text-sm font-semibold text-gray-900 mt-1">
                     {selectedDate ? formatDate(selectedDate) : "Not selected"}
                   </p>
                 </div>
               </div>
 
-              {/* Time */}
               <div className="summary-item flex items-start gap-3 pb-4 border-b border-gray-100">
                 <div className="bg-blue-50 p-2.5 rounded-lg text-lg flex-shrink-0">
                   <HiClock className="text-[#1D52AF]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Time</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                    Time
+                  </p>
                   <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {selectedTime ? selectedTime : "Not selected"}
+                    {selectedTime || "Not selected"}
                   </p>
                 </div>
               </div>
 
-              {/* Mechanic */}
               <div className="summary-item flex items-start gap-3 pb-4 border-b border-gray-100">
                 <img
                   src={Background2}
@@ -597,14 +669,17 @@ const BookService = () => {
                   className="w-10 h-10 rounded-full object-cover flex-shrink-0 ring-2 ring-blue-100"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Mechanic</p>
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                    Mechanic
+                  </p>
                   <p className="text-sm font-semibold text-gray-900 mt-1">
-                    {selectedMechanic ? mechanics.find((m) => m.id === selectedMechanic)?.name : "Not selected"}
+                    {selectedMechanic
+                      ? mechanics.find((m) => m.id === selectedMechanic)?.name
+                      : "Not selected"}
                   </p>
                 </div>
               </div>
 
-              {/* Services */}
               {getSelectedServicesData().length > 0 && (
                 <div className="pb-4 border-b border-gray-100">
                   <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-3">
@@ -616,11 +691,9 @@ const BookService = () => {
                         key={service.id}
                         className="summary-item flex items-center justify-between p-3 bg-blue-50 rounded-lg text-sm"
                       >
-                        <span className="font-semibold text-gray-800">
-                          {service.title}
-                        </span>
+                        <span className="font-semibold text-gray-800">{service.name}</span>
                         <span className="text-[#1D52AF] font-bold">
-                          ${service.price.toFixed(2)}
+                          ${parseFloat(service.price || 0).toFixed(2)}
                         </span>
                       </div>
                     ))}
@@ -628,41 +701,30 @@ const BookService = () => {
                 </div>
               )}
 
-              {/* Pricing */}
               {getSelectedServicesData().length > 0 && (
                 <>
                   <div className="space-y-3 text-sm pb-4 border-b border-gray-100">
                     <div className="flex justify-between items-center">
                       <p className="text-gray-600 font-medium">Subtotal</p>
-                      <p className="font-bold text-gray-900">
-                        ${subtotal.toFixed(2)}
-                      </p>
+                      <p className="font-bold text-gray-900">${subtotal.toFixed(2)}</p>
                     </div>
                     <div className="flex justify-between items-center">
                       <p className="text-gray-600 font-medium">Service Fee</p>
-                      <p className="font-bold text-gray-900">
-                        ${serviceFee.toFixed(2)}
-                      </p>
+                      <p className="font-bold text-gray-900">${serviceFee.toFixed(2)}</p>
                     </div>
                     <div className="flex justify-between items-center">
                       <p className="text-gray-600 font-medium">Tax (5%)</p>
-                      <p className="font-bold text-gray-900">
-                        ${tax.toFixed(2)}
-                      </p>
+                      <p className="font-bold text-gray-900">${tax.toFixed(2)}</p>
                     </div>
                   </div>
 
-                  {/* Total */}
                   <div className="flex justify-between items-center py-4 border-b border-gray-100">
                     <p className="text-gray-800 font-bold text-base">Total</p>
-                    <p className="text-2xl font-bold text-[#1D52AF]">
-                      ${total.toFixed(2)}
-                    </p>
+                    <p className="text-2xl font-bold text-[#1D52AF]">${total.toFixed(2)}</p>
                   </div>
                 </>
               )}
 
-              {/* Promo */}
               {getSelectedServicesData().length > 0 && (
                 <div className="flex gap-2">
                   <input
@@ -675,24 +737,25 @@ const BookService = () => {
                 </div>
               )}
 
-              {/* Button */}
-             <button
-              disabled={selectedServices.length === 0}
-              onClick={() => {
-                if (selectedServices.length > 0) {
-                  navigate("/payment-management");
-                }
-              }}
-              className={`btn-confirm w-full py-3 rounded-lg font-bold flex items-center justify-center gap-2 text-base transition-all ${
-                selectedServices.length > 0
-                  ? "bg-gradient-to-r from-[#1D52AF] to-[#1645a0] text-white shadow-lg hover:shadow-xl"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Confirm Booking →
-            </button>
+              <button
+                disabled={selectedServices.length === 0 || bookingLoading}
+                onClick={handleConfirmBooking}
+                className={`btn-confirm w-full py-3 rounded-lg font-bold flex items-center justify-center gap-2 text-base transition-all ${
+                  selectedServices.length > 0 && !bookingLoading
+                    ? "bg-gradient-to-r from-[#1D52AF] to-[#1645a0] text-white shadow-lg hover:shadow-xl"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                {bookingLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>Confirm Booking →</>
+                )}
+              </button>
 
-              {/* Note */}
               <p className="text-xs text-gray-400 leading-relaxed text-center">
                 By confirming, you agree to MokaNik's Terms of Service and Privacy Policy.
                 Cancellation is free up to 24h before.
@@ -700,7 +763,6 @@ const BookService = () => {
             </div>
           </div>
 
-          {/* Map Card */}
           <div className="card-base p-6 rounded-xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-blue-50 p-2.5 rounded-lg">
@@ -708,7 +770,6 @@ const BookService = () => {
               </div>
               <h2 className="font-bold text-gray-900">Service Location</h2>
             </div>
-
             <div className="w-full h-32 rounded-lg overflow-hidden border border-gray-100">
               <iframe
                 title="map"
@@ -725,3 +786,11 @@ const BookService = () => {
 };
 
 export default BookService;
+
+
+
+
+
+
+
+

@@ -74,7 +74,7 @@ const BookingE = ({ currentStep = 5, totalSteps = 5 }) => {
           {/* Bottom Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <button
-              onClick={() => navigate("/portal")}
+              onClick={() => navigate("/home")}
               className="flex-1 bg-[#1D52AF] text-white py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Go to Portal

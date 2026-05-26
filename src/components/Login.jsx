@@ -45,12 +45,12 @@ const Login = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      toast.success("Welcome back! Redirecting...", { autoClose: 1500 });
+      toast.success("Welcome back!", { autoClose: 1500 });
 
       // Role-based navigation
       setTimeout(() => {
         if (user.role === "provider" || user.role === "mechanic") {
-          navigate("/mechanic/dashboard");
+          navigate("/mec-dashboard");
         } else {
           navigate("/dashboard");
         }
