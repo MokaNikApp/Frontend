@@ -1,5 +1,12 @@
+
+
+
+
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   HiOutlineSparkles,
   HiOutlineCog,
@@ -11,7 +18,7 @@ import {
   HiCalendar,
   HiClock,
 } from "react-icons/hi";
- import api from "../../api/axios";
+import api from "../../api/axios";
 import Background2 from "../../assets/images/Background2.png";
 
 // Map API category to icon
@@ -29,6 +36,48 @@ const getServiceIcon = (category) => {
   return iconMap[category] || <HiOutlineSparkles className="text-3xl" />;
 };
 
+// Parse location string into address components
+const parseLocation = (loc) => {
+  if (!loc || !loc.trim()) {
+    return { serviceAddress: "", serviceCity: "", serviceState: "", serviceZip: "" };
+  }
+
+  const normalized = loc.trim().replace(/,\s*,/g, ",").replace(/\s+/g, " ");
+  const parts = normalized.split(",").map((s) => s.trim()).filter(Boolean);
+
+  let serviceAddress = "";
+  let serviceCity = "";
+  let serviceState = "";
+  let serviceZip = "";
+
+  if (parts.length === 0) {
+    return { serviceAddress, serviceCity, serviceState, serviceZip };
+  }
+
+  const zipRegex = /\b(\d{5,6})\b/;
+  const lastPart = parts[parts.length - 1] || "";
+  const lastZipMatch = lastPart.match(zipRegex);
+
+  if (lastZipMatch) {
+    serviceZip = lastZipMatch[1];
+    const statePart = lastPart.replace(zipRegex, "").trim();
+    if (statePart) serviceState = statePart;
+  } else {
+    serviceState = lastPart;
+  }
+
+  if (parts.length >= 3) {
+    serviceAddress = parts[0];
+    serviceCity = parts[1];
+  } else if (parts.length === 2) {
+    serviceCity = parts[0];
+  } else if (parts.length === 1 && !lastZipMatch) {
+    serviceState = parts[0];
+  }
+
+  return { serviceAddress, serviceCity, serviceState, serviceZip };
+};
+
 const BookService = () => {
   const navigate = useNavigate();
 
@@ -44,7 +93,7 @@ const BookService = () => {
   const [selectedMechanic, setSelectedMechanic] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState("San Francisco, CA 94103");
+  const [selectedLocation, setSelectedLocation] = useState("123 Service St, Ikeja, Lagos, 100001");
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
 
   // Fetch services and vehicles from API
@@ -56,7 +105,6 @@ const BookService = () => {
         setLoading(true);
         setError(null);
 
-        // Fetch both in parallel
         const [servicesRes, vehiclesRes] = await Promise.all([
           api.get("/services"),
           api.get("/vehicles"),
@@ -65,17 +113,12 @@ const BookService = () => {
         const servicesData = servicesRes.data?.data || servicesRes.data || [];
         const vehiclesData = vehiclesRes.data?.data || vehiclesRes.data || [];
 
-        if (!Array.isArray(servicesData)) {
-          throw new Error("Invalid services response format");
-        }
-        if (!Array.isArray(vehiclesData)) {
-          throw new Error("Invalid vehicles response format");
-        }
+        if (!Array.isArray(servicesData)) throw new Error("Invalid services response format");
+        if (!Array.isArray(vehiclesData)) throw new Error("Invalid vehicles response format");
 
         if (isMounted) {
           setServices(servicesData);
           setVehicles(vehiclesData);
-          // Auto-select first vehicle if available
           if (vehiclesData.length > 0) {
             setSelectedVehicleId(vehiclesData[0].id);
           }
@@ -83,20 +126,17 @@ const BookService = () => {
       } catch (err) {
         console.error("Failed to fetch data:", err);
         if (isMounted) {
-          setError(err.response?.data?.message || err.message || "Failed to load data. Please try again.");
+          const errorMsg = err.response?.data?.message || err.message || "Failed to load data. Please try again.";
+          setError(errorMsg);
+          toast.error(errorMsg);
         }
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchData();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   const mechanics = [
@@ -151,9 +191,7 @@ const BookService = () => {
     );
   };
 
-  const getSelectedServicesData = () => {
-    return services.filter((s) => selectedServices.includes(s.id));
-  };
+  const getSelectedServicesData = () => services.filter((s) => selectedServices.includes(s.id));
 
   const getMechanicServices = () => {
     if (!selectedMechanic) return services;
@@ -161,82 +199,90 @@ const BookService = () => {
     return services.filter((s) => mechanic?.services.includes(s.id));
   };
 
-  const getMechanicName = () => {
-    return mechanics.find((m) => m.id === selectedMechanic)?.name || "";
-  };
+  const getMechanicName = () => mechanics.find((m) => m.id === selectedMechanic)?.name || "";
 
-  const getSelectedVehicle = () => {
-    return vehicles.find((v) => v.id === selectedVehicleId);
-  };
+  const getSelectedVehicle = () => vehicles.find((v) => v.id === selectedVehicleId);
 
   const formatDate = (dateString) => {
     if (!dateString) return null;
     const date = new Date(dateString + "T00:00:00");
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
-  const subtotal = getSelectedServicesData().reduce(
-    (sum, s) => sum + parseFloat(s.price || 0),
-    0
-  );
+  const subtotal = getSelectedServicesData().reduce((sum, s) => sum + parseFloat(s.price || 0), 0);
   const serviceFee = subtotal > 0 ? 10.0 : 0;
   const tax = subtotal > 0 ? Math.round((subtotal + serviceFee) * 0.05 * 100) / 100 : 0;
   const total = subtotal + serviceFee + tax;
 
   const handleConfirmBooking = async () => {
-    if (selectedServices.length === 0) return;
+    if (selectedServices.length === 0) {
+      toast.warning("Please select at least one service.");
+      return;
+    }
+    if (!selectedDate) {
+      toast.warning("Please select a date.");
+      return;
+    }
+    if (!selectedTime) {
+      toast.warning("Please select a time slot.");
+      return;
+    }
+    if (!selectedVehicleId) {
+      toast.warning("Please select a vehicle.");
+      return;
+    }
 
-    const selectedVehicle = getSelectedVehicle();
-    const selectedMechanicData = mechanics.find((m) => m.id === selectedMechanic);
+    const [primaryServiceId, ...additionalServiceIds] = selectedServices;
+
+    const additionalServiceNames = services
+      .filter((s) => additionalServiceIds.includes(s.id))
+      .map((s) => s.name);
+
+    const { serviceAddress, serviceCity, serviceState, serviceZip } = parseLocation(selectedLocation);
+
+    if (!serviceAddress && !serviceCity && !serviceState) {
+      toast.warning("Please enter a valid service location.");
+      return;
+    }
 
     const bookingPayload = {
       vehicleId: selectedVehicleId,
-      vehicle: selectedVehicle
-        ? `${selectedVehicle.year} ${selectedVehicle.brand} ${selectedVehicle.model} (${selectedVehicle.color})`
-        : selectedVehicleId,
-      location: selectedLocation,
-      date: selectedDate,
-      time: selectedTime,
-      mechanicId: selectedMechanic,
-      mechanicName: selectedMechanicData?.name || null,
-      services: getSelectedServicesData().map((s) => ({
-        id: s.id,
-        name: s.name,
-        price: parseFloat(s.price),
-        duration: s.estimatedDurationMinutes,
-      })),
-      pricing: {
-        subtotal: subtotal,
-        serviceFee: serviceFee,
-        tax: tax,
-        total: total,
-      },
+      serviceId: primaryServiceId,
+      scheduledDate: selectedDate,
+      scheduledTime: selectedTime,
+      serviceAddress,
+      serviceCity,
+      serviceState,
+      serviceZip,
       notes: "",
+      additionalServices: additionalServiceNames,
     };
 
     console.log("Booking Payload:", bookingPayload);
 
     try {
       setBookingLoading(true);
-      // Replace with your actual booking endpoint
-      // const response = await api.post("/bookings", bookingPayload);
-      // navigate("/payment-management", { state: { booking: response.data } });
+      const response = await api.post("/bookings", bookingPayload);
+
+      const bookingData = response.data?.data || response.data;
       
-      // For now, navigate with payload in state
-      navigate("/payment-management", { state: { booking: bookingPayload } });
+      toast.success("Booking confirmed! Redirecting to payment...");
+      
+      setTimeout(() => {
+        navigate("/payment-management", { state: { booking: bookingData } });
+      }, 1500);
     } catch (err) {
       console.error("Booking failed:", err);
-      alert("Failed to create booking. Please try again.");
+      const message =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Failed to create booking. Please try again.";
+      toast.error(message);
     } finally {
       setBookingLoading(false);
     }
   };
 
-  // Loading State
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center">
@@ -248,7 +294,6 @@ const BookService = () => {
     );
   }
 
-  // Error State
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center p-6">
@@ -270,6 +315,21 @@ const BookService = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      
+      {/* ... rest of your JSX stays exactly the same ... */}
+      
       <style>{`
         @keyframes slideInUp {
           from { opacity: 0; transform: translateY(12px); }
@@ -415,7 +475,7 @@ const BookService = () => {
                   type="text"
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
-                  placeholder="Enter location"
+                  placeholder="e.g. 123 Service St, Ikeja, Lagos, 100001"
                   className="input-field w-full pl-10 pr-4 py-2.5 border border-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
@@ -786,11 +846,3 @@ const BookService = () => {
 };
 
 export default BookService;
-
-
-
-
-
-
-
-

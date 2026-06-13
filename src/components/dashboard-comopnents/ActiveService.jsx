@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React from "react";
 import Background from '../../assets/images/Background.png';
 import { useNavigate } from "react-router-dom";
