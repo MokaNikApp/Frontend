@@ -158,6 +158,7 @@ import DashboardPage from "./pages/dashboard-pages/DashboardPage";
 import PaymentPage from "./pages/dashboard-pages/PaymentPage";
 import NotificationPage from "./pages/dashboard-pages/NotificationPage";
 import ProfilePage from "./pages/dashboard-pages/ProfilePage";
+import VechiclePage from "./pages/dashboard-pages/VechiclePage";
 
 // ONBOARDING
 import Onboarding from "./pages/Onboarding";
@@ -227,7 +228,7 @@ const App = () => {
           <Route path="/payment-management" element={<PaymentPage />} />
           <Route path="/notify" element={<NotificationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-
+          <Route path="/vehicles" element={<VechiclePage />} />
           {/* ONBOARDING */}
           <Route path="/onboarding" element={<Onboarding />} />
 

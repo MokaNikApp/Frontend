@@ -1,4 +1,377 @@
-import { useState, useEffect, useRef } from "react";
+// import { useState, useEffect, useRef } from "react";
+// import { useNavigate } from "react-router-dom";
+// import {
+//   MdBuild,
+//   MdAccessTime,
+//   MdCheckCircle,
+//   MdCancel,
+//   MdSearch,
+//   MdArrowUpward,
+//   MdArrowDownward,
+//   MdLocationOn,
+//   MdCalendarToday,
+//   MdPhone,
+//   MdStar,
+//   MdCheck,
+//   MdClose,
+// } from "react-icons/md";
+// import api from "../../api/axios";
+
+// const statusColors = {
+//   Pending: {
+//     badge: "bg-amber-100 text-amber-700 border border-amber-200",
+//     tab: "bg-amber-500 text-white shadow-lg shadow-amber-200",
+//     card: "border-amber-200 bg-amber-50",
+//     icon: "text-amber-500 bg-amber-100",
+//     glow: "shadow-amber-100",
+//   },
+//   Approved: {
+//     badge: "bg-emerald-100 text-emerald-700 border border-emerald-200",
+//     tab: "bg-emerald-500 text-white shadow-lg shadow-emerald-200",
+//     card: "border-emerald-200 bg-emerald-50",
+//     icon: "text-emerald-500 bg-emerald-100",
+//     glow: "shadow-emerald-100",
+//   },
+//   Rejected: {
+//     badge: "bg-rose-100 text-rose-700 border border-rose-200",
+//     tab: "bg-rose-500 text-white shadow-lg shadow-rose-200",
+//     card: "border-rose-200 bg-rose-50",
+//     icon: "text-rose-500 bg-rose-100",
+//     glow: "shadow-rose-100",
+//   },
+// };
+
+// const initialData = [
+//   { id: 1, name: "John Doe", location: "Lagos", exp: "5 Years", status: "Pending", date: "2026-05-01", specialty: "Engine Repair", rating: null, phone: "+234 801 234 5678", reliability: "94.2%" },
+//   { id: 2, name: "Adewale Shola", location: "Ibadan", exp: "3 Years", status: "Approved", date: "2026-04-28", specialty: "Electrical Systems", rating: 4.8, phone: "+234 802 345 6789", reliability: "96.5%" },
+//   { id: 3, name: "Michael Johnson", location: "Abuja", exp: "7 Years", status: "Rejected", date: "2026-04-25", specialty: "Transmission", rating: null, phone: "+234 803 456 7890", reliability: "89.1%" },
+//   { id: 4, name: "David Ojo", location: "Port Harcourt", exp: "4 Years", status: "Pending", date: "2026-04-22", specialty: "Brake Systems", rating: null, phone: "+234 804 567 8901", reliability: "91.8%" },
+//   { id: 5, name: "Samuel Akin", location: "Lagos", exp: "6 Years", status: "Approved", date: "2026-04-20", specialty: "AC & Cooling", rating: 4.5, phone: "+234 805 678 9012", reliability: "97.0%" },
+//   { id: 6, name: "Chukwu Emeka", location: "Enugu", exp: "2 Years", status: "Pending", date: "2026-05-03", specialty: "Body Work", rating: null, phone: "+234 806 789 0123", reliability: "90.0%" },
+//   { id: 7, name: "Fatima Bello", location: "Kano", exp: "8 Years", status: "Approved", date: "2026-04-15", specialty: "Engine Diagnostics", rating: 4.9, phone: "+234 807 890 1234", reliability: "99.2%" },
+// ];
+
+// const avatarColors = ["#0f4c81", "#1b6b44", "#7c2d12", "#4a1d96", "#134e4a", "#831843", "#1e3a5f"];
+
+// function Avatar({ name, size = 36 }) {
+//   const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
+//   const color = avatarColors[name.charCodeAt(0) % avatarColors.length];
+//   return (
+//     <div style={{ width: size, height: size, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: size * 0.38, flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>
+//       {initials}
+//     </div>
+//   );
+// }
+
+// function getBadgeStyle(status) {
+//   const map = {
+//     Pending: { background: "#fef3c7", color: "#b45309", border: "1px solid #fde68a" },
+//     Approved: { background: "#d1fae5", color: "#065f46", border: "1px solid #a7f3d0" },
+//     Rejected: { background: "#fee2e2", color: "#991b1b", border: "1px solid #fecaca" },
+//   };
+//   return map[status] || {};
+// }
+
+// function ConfirmToast({ message, visible }) {
+//   return (
+//     <div style={{ position: "fixed", bottom: 28, left: "50%", transform: `translateX(-50%) translateY(${visible ? 0 : 20}px)`, opacity: visible ? 1 : 0, transition: "all 0.3s cubic-bezier(.34,1.4,.64,1)", background: "#0f172a", color: "#fff", padding: "12px 20px", borderRadius: 50, fontSize: 13, fontWeight: 600, zIndex: 2000, display: "flex", alignItems: "center", gap: 8, boxShadow: "0 8px 32px rgba(0,0,0,0.25)", pointerEvents: "none", maxWidth: "90vw", textAlign: "center", whiteSpace: "nowrap" }}>
+//       <MdCheckCircle size={16} style={{ color: "#10b981" }} /> {message}
+//     </div>
+//   );
+// }
+
+// export default function UserMechanic() {
+//   const navigate = useNavigate();
+//   const [active, setActive] = useState("Pending");
+//   const [data, setData] = useState(initialData);
+//   const [search, setSearch] = useState("");
+//   const [toast, setToast] = useState({ visible: false, message: "" });
+//   const [sortDir, setSortDir] = useState("desc");
+//   const toastTimer = useRef(null);
+
+//   const tabs = ["Pending", "Approved", "Rejected"];
+
+//   const showToast = (message) => {
+//     clearTimeout(toastTimer.current);
+//     setToast({ visible: true, message });
+//     toastTimer.current = setTimeout(() => setToast(t => ({ ...t, visible: false })), 2800);
+//   };
+
+//   const handleApprove = (id) => {
+//     setData(d => d.map(item => item.id === id ? { ...item, status: "Approved", rating: 4.5 } : item));
+//     showToast("Mechanic approved successfully");
+//     setTimeout(() => setActive("Approved"), 300);
+//   };
+
+//   const handleReject = (id) => {
+//     setData(d => d.map(item => item.id === id ? { ...item, status: "Rejected" } : item));
+//     showToast("Application rejected");
+//     setTimeout(() => setActive("Rejected"), 300);
+//   };
+
+//   const filtered = data
+//     .filter(d => d.status === active)
+//     .filter(d =>
+//       search === "" ||
+//       d.name.toLowerCase().includes(search.toLowerCase()) ||
+//       d.location.toLowerCase().includes(search.toLowerCase()) ||
+//       d.specialty.toLowerCase().includes(search.toLowerCase())
+//     )
+//     .sort((a, b) => sortDir === "desc" ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date));
+
+//   const counts = tabs.reduce((acc, t) => ({ ...acc, [t]: data.filter(d => d.status === t).length }), {});
+
+//   const statCards = [
+//     { label: "Pending", status: "Pending", icon: MdAccessTime, color: "#f59e0b", bg: "#fffbeb", border: "#fcd34d", shadow: "rgba(245,158,11,0.12)" },
+//     { label: "Approved", status: "Approved", icon: MdCheckCircle, color: "#10b981", bg: "#ecfdf5", border: "#6ee7b7", shadow: "rgba(16,185,129,0.12)" },
+//     { label: "Rejected", status: "Rejected", icon: MdCancel, color: "#ef4444", bg: "#fff1f2", border: "#fca5a5", shadow: "rgba(239,68,68,0.12)" },
+//   ];
+
+//   return (
+//     <>
+//       <style>{`
+//         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+//         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+//         @keyframes slideUp { from { opacity: 0; transform: translateY(32px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
+//         @keyframes rowIn { from { opacity: 0; transform: translateX(-8px) } to { opacity: 1; transform: translateX(0) } }
+//         * { box-sizing: border-box; }
+//         body { font-family: 'DM Sans', sans-serif; margin: 0; padding: 0; }
+
+//         @media (max-width: 640px) {
+//           .mobile-stack { flex-direction: column !important; align-items: stretch !important; }
+//           .mobile-full { width: 100% !important; }
+//           .mobile-hide { display: none !important; }
+//           .mobile-pad { padding: 12px 14px !important; }
+//           .mobile-scroll { -webkit-overflow-scrolling: touch; }
+//           .mobile-cards { display: flex !important; flex-wrap: nowrap !important; overflow-x: auto !important; gap: 10px !important; }
+//           .mobile-card { min-width: 140px !important; flex: 0 0 auto !important; padding: 14px 16px !important; }
+//           .mobile-card-num { font-size: 24px !important; }
+//         }
+//       `}</style>
+
+//       <div style={{ minHeight: "100vh", padding: "20px 12px", fontFamily: "'DM Sans', sans-serif", background: "#f8fafc" }}>
+//         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+//           {/* HEADER */}
+//           <div className="mobile-stack" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: 20 }}>
+//             <div style={{ minWidth: 0 }}>
+//               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+//                 <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #0f172a, #1e3a5f)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+//                   <MdBuild style={{ color: "#fff", fontSize: 16 }} />
+//                 </div>
+//                 <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a", fontFamily: "'Sora', sans-serif", letterSpacing: "-0.5px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Mechanic Applications</h1>
+//               </div>
+//               <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Review and manage technician credentials</p>
+//             </div>
+
+//             {/* Tabs */}
+//             <div className="mobile-full" style={{ display: "flex", gap: 4, background: "#e2e8f0", padding: 4, borderRadius: 50, overflowX: "auto", flexShrink: 0 }}>
+//               {tabs.map(tab => {
+//                 const isActive = active === tab;
+//                 return (
+//                   <button key={tab} onClick={() => setActive(tab)} style={{ padding: "7px 14px", borderRadius: 50, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 12, transition: "all .22s cubic-bezier(.34,1.4,.64,1)", fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", gap: 5, flexShrink: 0, ...(isActive ? { background: tab === "Pending" ? "#f59e0b" : tab === "Approved" ? "#10b981" : "#ef4444", color: "#fff", boxShadow: `0 4px 12px ${tab === "Pending" ? "rgba(245,158,11,0.35)" : tab === "Approved" ? "rgba(16,185,129,0.35)" : "rgba(239,68,68,0.35)"}` } : { background: "transparent", color: "#64748b" }) }}>
+//                     {tab}
+//                     <span style={{ background: isActive ? "rgba(255,255,255,0.25)" : "#cbd5e1", color: isActive ? "#fff" : "#475569", borderRadius: 50, padding: "1px 6px", fontSize: 10, fontWeight: 700 }}>{counts[tab]}</span>
+//                   </button>
+//                 );
+//               })}
+//             </div>
+//           </div>
+
+//           {/* STAT CARDS */}
+//           <div className="mobile-cards" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
+//             {statCards.map(({ label, status, icon: IconComponent, color, bg, border, shadow }) => {
+//               const isActive = active === status;
+//               return (
+//                 <div 
+//                   key={status} 
+//                   onClick={() => setActive(status)} 
+//                   className="mobile-card"
+//                   style={{ 
+//                     borderRadius: 14, 
+//                     padding: "16px 18px", 
+//                     border: `1.5px solid ${isActive ? border : "#e2e8f0"}`, 
+//                     background: isActive ? bg : "#fff", 
+//                     cursor: "pointer", 
+//                     transition: "all .25s", 
+//                     boxShadow: isActive ? `0 6px 20px ${shadow}` : "0 1px 4px rgba(0,0,0,0.06)", 
+//                     transform: isActive ? "translateY(-2px)" : "none",
+//                     display: "flex",
+//                     alignItems: "center",
+//                     gap: 12
+//                   }}
+//                 >
+//                   <div style={{ 
+//                     width: 40, 
+//                     height: 40, 
+//                     borderRadius: 10, 
+//                     background: isActive ? color : "#f1f5f9", 
+//                     display: "flex", 
+//                     alignItems: "center", 
+//                     justifyContent: "center", 
+//                     color: isActive ? "#fff" : color,
+//                     fontSize: 20,
+//                     flexShrink: 0,
+//                     transition: "all .25s"
+//                   }}>
+//                     <IconComponent size={20} />
+//                   </div>
+//                   <div style={{ minWidth: 0 }}>
+//                     <p className="mobile-card-num" style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "#0f172a", fontFamily: "'Sora', sans-serif", lineHeight: 1 }}>{counts[status]}</p>
+//                     <p style={{ margin: "2px 0 0", fontSize: 12, fontWeight: 600, color: "#64748b" }}>{label}</p>
+//                   </div>
+//                 </div>
+//               );
+//             })}
+//           </div>
+
+//           {/* TABLE SECTION */}
+//           <div style={{ background: "#fff", borderRadius: 16, border: "1.5px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}>
+
+//             {/* Table toolbar */}
+//             <div className="mobile-stack mobile-pad" style={{ padding: "14px 18px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+//               <div style={{ minWidth: 0 }}>
+//                 <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0f172a", fontFamily: "'Sora', sans-serif" }}>Application Queue</h2>
+//                 <p style={{ margin: "2px 0 0", fontSize: 12, color: "#94a3b8" }}>{filtered.length} record{filtered.length !== 1 ? "s" : ""} shown</p>
+//               </div>
+//               <div className="mobile-stack mobile-full" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+//                 <div style={{ position: "relative", flex: 1, minWidth: 160 }}>
+//                   <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", color: "#94a3b8", pointerEvents: "none" }}>
+//                     <MdSearch size={16} />
+//                   </span>
+//                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name, city, skill..." style={{ paddingLeft: 32, paddingRight: 14, paddingTop: 8, paddingBottom: 8, fontSize: 13, border: "1.5px solid #e2e8f0", borderRadius: 10, outline: "none", width: "100%", fontFamily: "'DM Sans', sans-serif", color: "#334155", background: "#f8fafc", transition: "border .2s" }}
+//                     onFocus={e => e.target.style.borderColor = "#94a3b8"}
+//                     onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+//                   />
+//                 </div>
+//                 <button onClick={() => setSortDir(d => d === "desc" ? "asc" : "desc")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", fontSize: 13, fontWeight: 600, border: "1.5px solid #e2e8f0", borderRadius: 10, background: "#f8fafc", color: "#475569", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .2s", flexShrink: 0, whiteSpace: "nowrap" }}
+//                   onMouseEnter={e => e.target.style.borderColor = "#94a3b8"}
+//                   onMouseLeave={e => e.target.style.borderColor = "#e2e8f0"}
+//                 >
+//                   {sortDir === "desc" ? <MdArrowDownward size={14} /> : <MdArrowUpward size={14} />} Date
+//                 </button>
+//               </div>
+//             </div>
+
+//             {/* Table */}
+//             <div className="mobile-scroll" style={{ overflowX: "auto" }}>
+//               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 700 }}>
+//                 <thead>
+//                   <tr style={{ background: "#f8fafc" }}>
+//                     {["Technician", "Location", "Specialty", "Exp", "Status", "Date", "Action"].map(h => (
+//                       <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em", borderBottom: "1px solid #f1f5f9", whiteSpace: "nowrap" }}>{h}</th>
+//                     ))}
+//                   </tr>
+//                 </thead>
+//                 <tbody>
+//                   {filtered.map((item, i) => (
+//                     <tr key={item.id} style={{ borderBottom: "1px solid #f8fafc", transition: "background .15s", animation: `rowIn 0.25s ease ${i * 0.04}s both`, cursor: "pointer" }}
+//                       onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
+//                       onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+//                     >
+//                       <td style={{ padding: "12px 14px" }}>
+//                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+//                           <Avatar name={item.name} size={34} />
+//                           <div style={{ minWidth: 0 }}>
+//                             <p style={{ margin: 0, fontWeight: 700, color: "#0f172a", fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</p>
+//                             <p className="mobile-hide" style={{ margin: 0, fontSize: 11, color: "#94a3b8" }}>{item.phone}</p>
+//                           </div>
+//                         </div>
+//                       </td>
+//                       <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>
+//                         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+//                           <MdLocationOn size={16} className="text-slate-400" />
+//                           <span>{item.location}</span>
+//                         </div>
+//                       </td>
+//                       <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>{item.specialty}</td>
+//                       <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>
+//                         <span style={{ background: "#f1f5f9", borderRadius: 6, padding: "3px 8px", fontSize: 12, fontWeight: 600, color: "#334155" }}>{item.exp}</span>
+//                       </td>
+//                       <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
+//                         <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 20, ...getBadgeStyle(item.status) }}>{item.status}</span>
+//                       </td>
+//                       <td style={{ padding: "12px 14px", color: "#64748b", fontSize: 13, whiteSpace: "nowrap" }}>{item.date}</td>
+//                       <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
+//                         <div style={{ display: "flex", gap: 5 }}>
+//                           <button 
+//                             onClick={() => navigate(`/mechanic-approval/${item.id}`, { state: { mechanic: item } })} 
+//                             style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
+//                             onMouseEnter={e => { e.target.style.borderColor = "#0f172a"; e.target.style.color = "#0f172a"; }}
+//                             onMouseLeave={e => { e.target.style.borderColor = "#e2e8f0"; e.target.style.color = "#334155"; }}
+//                           >View</button>
+//                           {item.status === "Pending" && (
+//                             <>
+//                               <button onClick={() => handleApprove(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#ecfdf5", color: "#059669", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s", display: "inline-flex", alignItems: "center" }}
+//                                 onMouseEnter={e => { e.target.style.background = "#059669"; e.target.style.color = "#fff"; }}
+//                                 onMouseLeave={e => { e.target.style.background = "#ecfdf5"; e.target.style.color = "#059669"; }}
+//                               ><MdCheck size={14} /></button>
+//                               <button onClick={() => handleReject(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#fff1f2", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s", display: "inline-flex", alignItems: "center" }}
+//                                 onMouseEnter={e => { e.target.style.background = "#ef4444"; e.target.style.color = "#fff"; }}
+//                                 onMouseLeave={e => { e.target.style.background = "#fff1f2"; e.target.style.color = "#ef4444"; }}
+//                               ><MdClose size={14} /></button>
+//                             </>
+//                           )}
+//                         </div>
+//                       </td>
+//                     </tr>
+//                   ))}
+//                   {filtered.length === 0 && (
+//                     <tr>
+//                       <td colSpan={7} style={{ padding: "48px 0", textAlign: "center" }}>
+//                         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, color: "#cbd5e1" }}>
+//                           <MdSearch size={36} />
+//                         </div>
+//                         <p style={{ margin: 0, color: "#94a3b8", fontWeight: 600, fontSize: 14 }}>No {active.toLowerCase()} applications found</p>
+//                         {search && <p style={{ margin: "6px 0 0", color: "#cbd5e1", fontSize: 12 }}>Try clearing your search</p>}
+//                       </td>
+//                     </tr>
+//                   )}
+//                 </tbody>
+//               </table>
+//             </div>
+
+//             {/* Footer */}
+//             <div className="mobile-stack mobile-pad" style={{ padding: "12px 18px", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+//               <p style={{ margin: 0, fontSize: 12, color: "#94a3b8" }}>Total: <strong style={{ color: "#475569" }}>{data.length}</strong></p>
+//               <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+//                 {["All", ...tabs].map(t => (
+//                   <span key={t} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: "#f1f5f9", color: "#64748b", fontWeight: 600 }}>
+//                     {t === "All" ? `All: ${data.length}` : `${t}: ${counts[t]}`}
+//                   </span>
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//       <ConfirmToast message={toast.message} visible={toast.visible} />
+//     </>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MdBuild,
@@ -9,12 +382,25 @@ import {
   MdArrowUpward,
   MdArrowDownward,
   MdLocationOn,
-  MdCalendarToday,
   MdPhone,
   MdStar,
   MdCheck,
   MdClose,
+  MdRefresh,
+  MdErrorOutline,
 } from "react-icons/md";
+import api from "../../api/axios";
+
+// --- Status mapping from API verificationStatus to UI status ---
+const STATUS_MAP = {
+  pending: "Pending",
+  in_review: "Pending",
+  verified: "Approved",
+  approved: "Approved",
+  rejected: "Rejected",
+};
+
+const UI_TABS = ["Pending", "Approved", "Rejected"];
 
 const statusColors = {
   Pending: {
@@ -40,23 +426,54 @@ const statusColors = {
   },
 };
 
-const initialData = [
-  { id: 1, name: "John Doe", location: "Lagos", exp: "5 Years", status: "Pending", date: "2026-05-01", specialty: "Engine Repair", rating: null, phone: "+234 801 234 5678", reliability: "94.2%" },
-  { id: 2, name: "Adewale Shola", location: "Ibadan", exp: "3 Years", status: "Approved", date: "2026-04-28", specialty: "Electrical Systems", rating: 4.8, phone: "+234 802 345 6789", reliability: "96.5%" },
-  { id: 3, name: "Michael Johnson", location: "Abuja", exp: "7 Years", status: "Rejected", date: "2026-04-25", specialty: "Transmission", rating: null, phone: "+234 803 456 7890", reliability: "89.1%" },
-  { id: 4, name: "David Ojo", location: "Port Harcourt", exp: "4 Years", status: "Pending", date: "2026-04-22", specialty: "Brake Systems", rating: null, phone: "+234 804 567 8901", reliability: "91.8%" },
-  { id: 5, name: "Samuel Akin", location: "Lagos", exp: "6 Years", status: "Approved", date: "2026-04-20", specialty: "AC & Cooling", rating: 4.5, phone: "+234 805 678 9012", reliability: "97.0%" },
-  { id: 6, name: "Chukwu Emeka", location: "Enugu", exp: "2 Years", status: "Pending", date: "2026-05-03", specialty: "Body Work", rating: null, phone: "+234 806 789 0123", reliability: "90.0%" },
-  { id: 7, name: "Fatima Bello", location: "Kano", exp: "8 Years", status: "Approved", date: "2026-04-15", specialty: "Engine Diagnostics", rating: 4.9, phone: "+234 807 890 1234", reliability: "99.2%" },
+const avatarColors = [
+  "#0f4c81", "#1b6b44", "#7c2d12", "#4a1d96",
+  "#134e4a", "#831843", "#1e3a5f",
 ];
 
-const avatarColors = ["#0f4c81", "#1b6b44", "#7c2d12", "#4a1d96", "#134e4a", "#831843", "#1e3a5f"];
+// --- Helpers ---
+
+function getUiStatus(provider) {
+  if (provider.isApproved) return "Approved";
+  if (provider.rejectionReason) return "Rejected";
+  const vs = (provider.verificationStatus || "").toLowerCase();
+  return STATUS_MAP[vs] || "Pending";
+}
+
+function formatDate(isoString) {
+  if (!isoString) return "—";
+  return new Date(isoString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
 
 function Avatar({ name, size = 36 }) {
-  const initials = name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
-  const color = avatarColors[name.charCodeAt(0) % avatarColors.length];
+  const initials = name
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "?";
+  const color = avatarColors[(name?.charCodeAt(0) || 0) % avatarColors.length];
   return (
-    <div style={{ width: size, height: size, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: size * 0.38, flexShrink: 0, fontFamily: "'DM Sans', sans-serif" }}>
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: color,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#fff",
+        fontWeight: 700,
+        fontSize: size * 0.38,
+        flexShrink: 0,
+        fontFamily: "'DM Sans', sans-serif",
+      }}
+    >
       {initials}
     </div>
   );
@@ -73,57 +490,171 @@ function getBadgeStyle(status) {
 
 function ConfirmToast({ message, visible }) {
   return (
-    <div style={{ position: "fixed", bottom: 28, left: "50%", transform: `translateX(-50%) translateY(${visible ? 0 : 20}px)`, opacity: visible ? 1 : 0, transition: "all 0.3s cubic-bezier(.34,1.4,.64,1)", background: "#0f172a", color: "#fff", padding: "12px 20px", borderRadius: 50, fontSize: 13, fontWeight: 600, zIndex: 2000, display: "flex", alignItems: "center", gap: 8, boxShadow: "0 8px 32px rgba(0,0,0,0.25)", pointerEvents: "none", maxWidth: "90vw", textAlign: "center", whiteSpace: "nowrap" }}>
+    <div
+      style={{
+        position: "fixed",
+        bottom: 28,
+        left: "50%",
+        transform: `translateX(-50%) translateY(${visible ? 0 : 20}px)`,
+        opacity: visible ? 1 : 0,
+        transition: "all 0.3s cubic-bezier(.34,1.4,.64,1)",
+        background: "#0f172a",
+        color: "#fff",
+        padding: "12px 20px",
+        borderRadius: 50,
+        fontSize: 13,
+        fontWeight: 600,
+        zIndex: 2000,
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+        pointerEvents: "none",
+        maxWidth: "90vw",
+        textAlign: "center",
+        whiteSpace: "nowrap",
+      }}
+    >
       <MdCheckCircle size={16} style={{ color: "#10b981" }} /> {message}
     </div>
   );
 }
 
+// --- Main Component ---
+
 export default function UserMechanic() {
   const navigate = useNavigate();
   const [active, setActive] = useState("Pending");
-  const [data, setData] = useState(initialData);
+  const [providers, setProviders] = useState([]);
+  const [overview, setOverview] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState({ visible: false, message: "" });
   const [sortDir, setSortDir] = useState("desc");
   const toastTimer = useRef(null);
 
-  const tabs = ["Pending", "Approved", "Rejected"];
+  // Fetch providers + overview
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [providersRes, overviewRes] = await Promise.all([
+        api.get("/admin/providers"),
+        api.get("/admin/providers/overview"),
+      ]);
+      setProviders(providersRes.data?.data || []);
+      setOverview(overviewRes.data);
+    } catch (err) {
+      console.error("Failed to fetch providers:", err);
+      setError(err.response?.data?.message || "Failed to load providers");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const showToast = (message) => {
     clearTimeout(toastTimer.current);
     setToast({ visible: true, message });
-    toastTimer.current = setTimeout(() => setToast(t => ({ ...t, visible: false })), 2800);
+    toastTimer.current = setTimeout(
+      () => setToast((t) => ({ ...t, visible: false })),
+      2800
+    );
   };
 
-  const handleApprove = (id) => {
-    setData(d => d.map(item => item.id === id ? { ...item, status: "Approved", rating: 4.5 } : item));
-    showToast("Mechanic approved successfully");
-    setTimeout(() => setActive("Approved"), 300);
+  const handleApprove = async (id) => {
+    try {
+      await api.patch(`/admin/providers/${id}/approve`);
+      await fetchData(); // refresh
+      showToast("Mechanic approved successfully");
+      setTimeout(() => setActive("Approved"), 300);
+    } catch (err) {
+      showToast(err.response?.data?.message || "Approval failed");
+    }
   };
 
-  const handleReject = (id) => {
-    setData(d => d.map(item => item.id === id ? { ...item, status: "Rejected" } : item));
-    showToast("Application rejected");
-    setTimeout(() => setActive("Rejected"), 300);
+  const handleReject = async (id) => {
+    try {
+      await api.patch(`/admin/providers/${id}/reject`, {
+        reason: "Application rejected by admin",
+      });
+      await fetchData(); // refresh
+      showToast("Application rejected");
+      setTimeout(() => setActive("Rejected"), 300);
+    } catch (err) {
+      showToast(err.response?.data?.message || "Rejection failed");
+    }
   };
 
-  const filtered = data
-    .filter(d => d.status === active)
-    .filter(d =>
-      search === "" ||
-      d.name.toLowerCase().includes(search.toLowerCase()) ||
-      d.location.toLowerCase().includes(search.toLowerCase()) ||
-      d.specialty.toLowerCase().includes(search.toLowerCase())
+  // Enrich provider data with UI status
+  const enriched = providers.map((p) => ({
+    ...p,
+    uiStatus: getUiStatus(p),
+    displayName: `${p.user?.firstName || ""} ${p.user?.lastName || ""}`.trim() || p.workshopName || "Unknown",
+    location: p.user?.city || p.serviceAreas?.[0] || "—",
+    phone: p.user?.phoneNumber || p.businessPhoneNumber || "—",
+    date: p.submittedAt || p.createdAt,
+  }));
+
+  const filtered = enriched
+    .filter((d) => d.uiStatus === active)
+    .filter(
+      (d) =>
+        search === "" ||
+        d.displayName.toLowerCase().includes(search.toLowerCase()) ||
+        d.location.toLowerCase().includes(search.toLowerCase()) ||
+        d.primarySpecialization?.toLowerCase().includes(search.toLowerCase())
     )
-    .sort((a, b) => sortDir === "desc" ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date));
+    .sort((a, b) =>
+      sortDir === "desc"
+        ? new Date(b.date) - new Date(a.date)
+        : new Date(a.date) - new Date(b.date)
+    );
 
-  const counts = tabs.reduce((acc, t) => ({ ...acc, [t]: data.filter(d => d.status === t).length }), {});
+  const counts = UI_TABS.reduce((acc, t) => {
+    acc[t] = enriched.filter((d) => d.uiStatus === t).length;
+    return acc;
+  }, {});
+
+  // Also use overview counts if available
+  const overviewCounts = {
+    Pending: overview?.pendingProviders ?? counts.Pending,
+    Approved: overview?.approvedProviders ?? counts.Approved,
+    Rejected: overview?.rejectedProviders ?? counts.Rejected,
+  };
 
   const statCards = [
-    { label: "Pending", status: "Pending", icon: MdAccessTime, color: "#f59e0b", bg: "#fffbeb", border: "#fcd34d", shadow: "rgba(245,158,11,0.12)" },
-    { label: "Approved", status: "Approved", icon: MdCheckCircle, color: "#10b981", bg: "#ecfdf5", border: "#6ee7b7", shadow: "rgba(16,185,129,0.12)" },
-    { label: "Rejected", status: "Rejected", icon: MdCancel, color: "#ef4444", bg: "#fff1f2", border: "#fca5a5", shadow: "rgba(239,68,68,0.12)" },
+    {
+      label: "Pending",
+      status: "Pending",
+      icon: MdAccessTime,
+      color: "#f59e0b",
+      bg: "#fffbeb",
+      border: "#fcd34d",
+      shadow: "rgba(245,158,11,0.12)",
+    },
+    {
+      label: "Approved",
+      status: "Approved",
+      icon: MdCheckCircle,
+      color: "#10b981",
+      bg: "#ecfdf5",
+      border: "#6ee7b7",
+      shadow: "rgba(16,185,129,0.12)",
+    },
+    {
+      label: "Rejected",
+      status: "Rejected",
+      icon: MdCancel,
+      color: "#ef4444",
+      bg: "#fff1f2",
+      border: "#fca5a5",
+      shadow: "rgba(239,68,68,0.12)",
+    },
   ];
 
   return (
@@ -133,6 +664,7 @@ export default function UserMechanic() {
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(32px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
         @keyframes rowIn { from { opacity: 0; transform: translateX(-8px) } to { opacity: 1; transform: translateX(0) } }
+        @keyframes spin { to { transform: rotate(360deg) } }
         * { box-sizing: border-box; }
         body { font-family: 'DM Sans', sans-serif; margin: 0; padding: 0; }
 
@@ -148,29 +680,138 @@ export default function UserMechanic() {
         }
       `}</style>
 
-      <div style={{ minHeight: "100vh", padding: "20px 12px", fontFamily: "'DM Sans', sans-serif", background: "#f8fafc" }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          padding: "20px 12px",
+          fontFamily: "'DM Sans', sans-serif",
+          background: "#f8fafc",
+        }}
+      >
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-
           {/* HEADER */}
-          <div className="mobile-stack" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: 20 }}>
+          <div
+            className="mobile-stack"
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 16,
+              marginBottom: 20,
+            }}
+          >
             <div style={{ minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #0f172a, #1e3a5f)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  marginBottom: 6,
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: "linear-gradient(135deg, #0f172a, #1e3a5f)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
                   <MdBuild style={{ color: "#fff", fontSize: 16 }} />
                 </div>
-                <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a", fontFamily: "'Sora', sans-serif", letterSpacing: "-0.5px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Mechanic Applications</h1>
+                <h1
+                  style={{
+                    margin: 0,
+                    fontSize: 20,
+                    fontWeight: 800,
+                    color: "#0f172a",
+                    fontFamily: "'Sora', sans-serif",
+                    letterSpacing: "-0.5px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  Mechanic Applications
+                </h1>
               </div>
-              <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Review and manage technician credentials</p>
+              <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>
+                Review and manage technician credentials
+              </p>
             </div>
 
             {/* Tabs */}
-            <div className="mobile-full" style={{ display: "flex", gap: 4, background: "#e2e8f0", padding: 4, borderRadius: 50, overflowX: "auto", flexShrink: 0 }}>
-              {tabs.map(tab => {
+            <div
+              className="mobile-full"
+              style={{
+                display: "flex",
+                gap: 4,
+                background: "#e2e8f0",
+                padding: 4,
+                borderRadius: 50,
+                overflowX: "auto",
+                flexShrink: 0,
+              }}
+            >
+              {UI_TABS.map((tab) => {
                 const isActive = active === tab;
                 return (
-                  <button key={tab} onClick={() => setActive(tab)} style={{ padding: "7px 14px", borderRadius: 50, border: "none", cursor: "pointer", fontWeight: 700, fontSize: 12, transition: "all .22s cubic-bezier(.34,1.4,.64,1)", fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", gap: 5, flexShrink: 0, ...(isActive ? { background: tab === "Pending" ? "#f59e0b" : tab === "Approved" ? "#10b981" : "#ef4444", color: "#fff", boxShadow: `0 4px 12px ${tab === "Pending" ? "rgba(245,158,11,0.35)" : tab === "Approved" ? "rgba(16,185,129,0.35)" : "rgba(239,68,68,0.35)"}` } : { background: "transparent", color: "#64748b" }) }}>
+                  <button
+                    key={tab}
+                    onClick={() => setActive(tab)}
+                    style={{
+                      padding: "7px 14px",
+                      borderRadius: 50,
+                      border: "none",
+                      cursor: "pointer",
+                      fontWeight: 700,
+                      fontSize: 12,
+                      transition: "all .22s cubic-bezier(.34,1.4,.64,1)",
+                      fontFamily: "'DM Sans', sans-serif",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                      flexShrink: 0,
+                      ...(isActive
+                        ? {
+                            background:
+                              tab === "Pending"
+                                ? "#f59e0b"
+                                : tab === "Approved"
+                                ? "#10b981"
+                                : "#ef4444",
+                            color: "#fff",
+                            boxShadow: `0 4px 12px ${
+                              tab === "Pending"
+                                ? "rgba(245,158,11,0.35)"
+                                : tab === "Approved"
+                                ? "rgba(16,185,129,0.35)"
+                                : "rgba(239,68,68,0.35)"
+                            }`,
+                          }
+                        : { background: "transparent", color: "#64748b" }),
+                    }}
+                  >
                     {tab}
-                    <span style={{ background: isActive ? "rgba(255,255,255,0.25)" : "#cbd5e1", color: isActive ? "#fff" : "#475569", borderRadius: 50, padding: "1px 6px", fontSize: 10, fontWeight: 700 }}>{counts[tab]}</span>
+                    <span
+                      style={{
+                        background: isActive
+                          ? "rgba(255,255,255,0.25)"
+                          : "#cbd5e1",
+                        color: isActive ? "#fff" : "#475569",
+                        borderRadius: 50,
+                        padding: "1px 6px",
+                        fontSize: 10,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {overviewCounts[tab] ?? counts[tab] ?? 0}
+                    </span>
                   </button>
                 );
               })}
@@ -178,169 +819,657 @@ export default function UserMechanic() {
           </div>
 
           {/* STAT CARDS */}
-          <div className="mobile-cards" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
-            {statCards.map(({ label, status, icon: IconComponent, color, bg, border, shadow }) => {
-              const isActive = active === status;
-              return (
-                <div 
-                  key={status} 
-                  onClick={() => setActive(status)} 
-                  className="mobile-card"
-                  style={{ 
-                    borderRadius: 14, 
-                    padding: "16px 18px", 
-                    border: `1.5px solid ${isActive ? border : "#e2e8f0"}`, 
-                    background: isActive ? bg : "#fff", 
-                    cursor: "pointer", 
-                    transition: "all .25s", 
-                    boxShadow: isActive ? `0 6px 20px ${shadow}` : "0 1px 4px rgba(0,0,0,0.06)", 
-                    transform: isActive ? "translateY(-2px)" : "none",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12
-                  }}
-                >
-                  <div style={{ 
-                    width: 40, 
-                    height: 40, 
-                    borderRadius: 10, 
-                    background: isActive ? color : "#f1f5f9", 
-                    display: "flex", 
-                    alignItems: "center", 
-                    justifyContent: "center", 
-                    color: isActive ? "#fff" : color,
-                    fontSize: 20,
-                    flexShrink: 0,
-                    transition: "all .25s"
-                  }}>
-                    <IconComponent size={20} />
+          <div
+            className="mobile-cards"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 12,
+              marginBottom: 20,
+            }}
+          >
+            {statCards.map(
+              ({ label, status, icon: IconComponent, color, bg, border, shadow }) => {
+                const isActive = active === status;
+                return (
+                  <div
+                    key={status}
+                    onClick={() => setActive(status)}
+                    className="mobile-card"
+                    style={{
+                      borderRadius: 14,
+                      padding: "16px 18px",
+                      border: `1.5px solid ${isActive ? border : "#e2e8f0"}`,
+                      background: isActive ? bg : "#fff",
+                      cursor: "pointer",
+                      transition: "all .25s",
+                      boxShadow: isActive
+                        ? `0 6px 20px ${shadow}`
+                        : "0 1px 4px rgba(0,0,0,0.06)",
+                      transform: isActive ? "translateY(-2px)" : "none",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 10,
+                        background: isActive ? color : "#f1f5f9",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: isActive ? "#fff" : color,
+                        fontSize: 20,
+                        flexShrink: 0,
+                        transition: "all .25s",
+                      }}
+                    >
+                      <IconComponent size={20} />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p
+                        className="mobile-card-num"
+                        style={{
+                          margin: 0,
+                          fontSize: 28,
+                          fontWeight: 800,
+                          color: "#0f172a",
+                          fontFamily: "'Sora', sans-serif",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {overviewCounts[status] ?? counts[status] ?? 0}
+                      </p>
+                      <p
+                        style={{
+                          margin: "2px 0 0",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "#64748b",
+                        }}
+                      >
+                        {label}
+                      </p>
+                    </div>
                   </div>
-                  <div style={{ minWidth: 0 }}>
-                    <p className="mobile-card-num" style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "#0f172a", fontFamily: "'Sora', sans-serif", lineHeight: 1 }}>{counts[status]}</p>
-                    <p style={{ margin: "2px 0 0", fontSize: 12, fontWeight: 600, color: "#64748b" }}>{label}</p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
           </div>
 
           {/* TABLE SECTION */}
-          <div style={{ background: "#fff", borderRadius: 16, border: "1.5px solid #e2e8f0", overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}>
-
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              border: "1.5px solid #e2e8f0",
+              overflow: "hidden",
+              boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+            }}
+          >
             {/* Table toolbar */}
-            <div className="mobile-stack mobile-pad" style={{ padding: "14px 18px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <div
+              className="mobile-stack mobile-pad"
+              style={{
+                padding: "14px 18px",
+                borderBottom: "1px solid #f1f5f9",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                flexWrap: "wrap",
+              }}
+            >
               <div style={{ minWidth: 0 }}>
-                <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0f172a", fontFamily: "'Sora', sans-serif" }}>Application Queue</h2>
-                <p style={{ margin: "2px 0 0", fontSize: 12, color: "#94a3b8" }}>{filtered.length} record{filtered.length !== 1 ? "s" : ""} shown</p>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: "#0f172a",
+                    fontFamily: "'Sora', sans-serif",
+                  }}
+                >
+                  Application Queue
+                </h2>
+                <p
+                  style={{
+                    margin: "2px 0 0",
+                    fontSize: 12,
+                    color: "#94a3b8",
+                  }}
+                >
+                  {loading
+                    ? "Loading..."
+                    : `${filtered.length} record${
+                        filtered.length !== 1 ? "s" : ""
+                      } shown`}
+                </p>
               </div>
-              <div className="mobile-stack mobile-full" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+              <div
+                className="mobile-stack mobile-full"
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
                 <div style={{ position: "relative", flex: 1, minWidth: 160 }}>
-                  <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", color: "#94a3b8", pointerEvents: "none" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 11,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "#94a3b8",
+                      pointerEvents: "none",
+                    }}
+                  >
                     <MdSearch size={16} />
                   </span>
-                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name, city, skill..." style={{ paddingLeft: 32, paddingRight: 14, paddingTop: 8, paddingBottom: 8, fontSize: 13, border: "1.5px solid #e2e8f0", borderRadius: 10, outline: "none", width: "100%", fontFamily: "'DM Sans', sans-serif", color: "#334155", background: "#f8fafc", transition: "border .2s" }}
-                    onFocus={e => e.target.style.borderColor = "#94a3b8"}
-                    onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search name, city, skill..."
+                    style={{
+                      paddingLeft: 32,
+                      paddingRight: 14,
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      fontSize: 13,
+                      border: "1.5px solid #e2e8f0",
+                      borderRadius: 10,
+                      outline: "none",
+                      width: "100%",
+                      fontFamily: "'DM Sans', sans-serif",
+                      color: "#334155",
+                      background: "#f8fafc",
+                      transition: "border .2s",
+                    }}
+                    onFocus={(e) => (e.target.style.borderColor = "#94a3b8")}
+                    onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                   />
                 </div>
-                <button onClick={() => setSortDir(d => d === "desc" ? "asc" : "desc")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", fontSize: 13, fontWeight: 600, border: "1.5px solid #e2e8f0", borderRadius: 10, background: "#f8fafc", color: "#475569", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .2s", flexShrink: 0, whiteSpace: "nowrap" }}
-                  onMouseEnter={e => e.target.style.borderColor = "#94a3b8"}
-                  onMouseLeave={e => e.target.style.borderColor = "#e2e8f0"}
+                <button
+                  onClick={() => setSortDir((d) => (d === "desc" ? "asc" : "desc"))}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "8px 14px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    border: "1.5px solid #e2e8f0",
+                    borderRadius: 10,
+                    background: "#f8fafc",
+                    color: "#475569",
+                    cursor: "pointer",
+                    fontFamily: "'DM Sans', sans-serif",
+                    transition: "all .2s",
+                    flexShrink: 0,
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.borderColor = "#94a3b8")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.borderColor = "#e2e8f0")
+                  }
                 >
-                  {sortDir === "desc" ? <MdArrowDownward size={14} /> : <MdArrowUpward size={14} />} Date
+                  {sortDir === "desc" ? (
+                    <MdArrowDownward size={14} />
+                  ) : (
+                    <MdArrowUpward size={14} />
+                  )}{" "}
+                  Date
+                </button>
+                <button
+                  onClick={fetchData}
+                  disabled={loading}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "8px 12px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    border: "1.5px solid #e2e8f0",
+                    borderRadius: 10,
+                    background: "#f8fafc",
+                    color: "#475569",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    fontFamily: "'DM Sans', sans-serif",
+                    transition: "all .2s",
+                    flexShrink: 0,
+                    opacity: loading ? 0.6 : 1,
+                  }}
+                  title="Refresh"
+                >
+                  <MdRefresh
+                    size={16}
+                    style={{
+                      animation: loading ? "spin 1s linear infinite" : "none",
+                    }}
+                  />
                 </button>
               </div>
             </div>
 
+            {/* Error state */}
+            {error && (
+              <div
+                style={{
+                  padding: "32px 18px",
+                  textAlign: "center",
+                  color: "#ef4444",
+                }}
+              >
+                <MdErrorOutline size={36} style={{ marginBottom: 10 }} />
+                <p style={{ margin: 0, fontWeight: 600, fontSize: 14 }}>
+                  {error}
+                </p>
+                <button
+                  onClick={fetchData}
+                  style={{
+                    marginTop: 12,
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    border: "1.5px solid #fecaca",
+                    background: "#fff1f2",
+                    color: "#ef4444",
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: "pointer",
+                  }}
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+
+            {/* Loading state */}
+            {loading && !error && (
+              <div style={{ padding: "48px 18px", textAlign: "center" }}>
+                <MdRefresh
+                  size={32}
+                  style={{
+                    color: "#cbd5e1",
+                    animation: "spin 1s linear infinite",
+                    marginBottom: 12,
+                  }}
+                />
+                <p style={{ margin: 0, color: "#94a3b8", fontWeight: 600 }}>
+                  Loading providers...
+                </p>
+              </div>
+            )}
+
             {/* Table */}
-            <div className="mobile-scroll" style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 700 }}>
-                <thead>
-                  <tr style={{ background: "#f8fafc" }}>
-                    {["Technician", "Location", "Specialty", "Exp", "Status", "Date", "Action"].map(h => (
-                      <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em", borderBottom: "1px solid #f1f5f9", whiteSpace: "nowrap" }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((item, i) => (
-                    <tr key={item.id} style={{ borderBottom: "1px solid #f8fafc", transition: "background .15s", animation: `rowIn 0.25s ease ${i * 0.04}s both`, cursor: "pointer" }}
-                      onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
-                      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                    >
-                      <td style={{ padding: "12px 14px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <Avatar name={item.name} size={34} />
-                          <div style={{ minWidth: 0 }}>
-                            <p style={{ margin: 0, fontWeight: 700, color: "#0f172a", fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</p>
-                            <p className="mobile-hide" style={{ margin: 0, fontSize: 11, color: "#94a3b8" }}>{item.phone}</p>
+            {!loading && !error && (
+              <div className="mobile-scroll" style={{ overflowX: "auto" }}>
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    minWidth: 700,
+                  }}
+                >
+                  <thead>
+                    <tr style={{ background: "#f8fafc" }}>
+                      {[
+                        "Technician",
+                        "Location",
+                        "Specialty",
+                        "Exp",
+                        "Status",
+                        "Date",
+                        "Action",
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          style={{
+                            padding: "10px 14px",
+                            textAlign: "left",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: "#94a3b8",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            borderBottom: "1px solid #f1f5f9",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((item, i) => (
+                      <tr
+                        key={item.id}
+                        style={{
+                          borderBottom: "1px solid #f8fafc",
+                          transition: "background .15s",
+                          animation: `rowIn 0.25s ease ${i * 0.04}s both`,
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.background = "#f8fafc")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.background = "transparent")
+                        }
+                      >
+                        <td style={{ padding: "12px 14px" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 10,
+                            }}
+                          >
+                            <Avatar name={item.displayName} size={34} />
+                            <div style={{ minWidth: 0 }}>
+                              <p
+                                style={{
+                                  margin: 0,
+                                  fontWeight: 700,
+                                  color: "#0f172a",
+                                  fontSize: 14,
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {item.displayName}
+                              </p>
+                              <p
+                                className="mobile-hide"
+                                style={{
+                                  margin: 0,
+                                  fontSize: 11,
+                                  color: "#94a3b8",
+                                }}
+                              >
+                                {item.phone}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                          <MdLocationOn size={16} className="text-slate-400" />
-                          <span>{item.location}</span>
-                        </div>
-                      </td>
-                      <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>{item.specialty}</td>
-                      <td style={{ padding: "12px 14px", color: "#475569", whiteSpace: "nowrap" }}>
-                        <span style={{ background: "#f1f5f9", borderRadius: 6, padding: "3px 8px", fontSize: 12, fontWeight: 600, color: "#334155" }}>{item.exp}</span>
-                      </td>
-                      <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
-                        <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 20, ...getBadgeStyle(item.status) }}>{item.status}</span>
-                      </td>
-                      <td style={{ padding: "12px 14px", color: "#64748b", fontSize: 13, whiteSpace: "nowrap" }}>{item.date}</td>
-                      <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
-                        <div style={{ display: "flex", gap: 5 }}>
-                          <button 
-                            onClick={() => navigate(`/mechanic-approval/${item.id}`, { state: { mechanic: item } })} 
-                            style={{ padding: "5px 10px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#334155", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s" }}
-                            onMouseEnter={e => { e.target.style.borderColor = "#0f172a"; e.target.style.color = "#0f172a"; }}
-                            onMouseLeave={e => { e.target.style.borderColor = "#e2e8f0"; e.target.style.color = "#334155"; }}
-                          >View</button>
-                          {item.status === "Pending" && (
-                            <>
-                              <button onClick={() => handleApprove(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#ecfdf5", color: "#059669", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s", display: "inline-flex", alignItems: "center" }}
-                                onMouseEnter={e => { e.target.style.background = "#059669"; e.target.style.color = "#fff"; }}
-                                onMouseLeave={e => { e.target.style.background = "#ecfdf5"; e.target.style.color = "#059669"; }}
-                              ><MdCheck size={14} /></button>
-                              <button onClick={() => handleReject(item.id)} style={{ padding: "5px 8px", borderRadius: 8, border: "none", background: "#fff1f2", color: "#ef4444", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all .18s", display: "inline-flex", alignItems: "center" }}
-                                onMouseEnter={e => { e.target.style.background = "#ef4444"; e.target.style.color = "#fff"; }}
-                                onMouseLeave={e => { e.target.style.background = "#fff1f2"; e.target.style.color = "#ef4444"; }}
-                              ><MdClose size={14} /></button>
-                            </>
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            color: "#475569",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                            }}
+                          >
+                            <MdLocationOn
+                              size={16}
+                              className="text-slate-400"
+                            />
+                            <span>{item.location}</span>
+                          </div>
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            color: "#475569",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {item.primarySpecialization || "—"}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            color: "#475569",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          <span
+                            style={{
+                              background: "#f1f5f9",
+                              borderRadius: 6,
+                              padding: "3px 8px",
+                              fontSize: 12,
+                              fontWeight: 600,
+                              color: "#334155",
+                            }}
+                          >
+                            {item.yearsOfExperience
+                              ? `${item.yearsOfExperience} yrs`
+                              : "—"}
+                          </span>
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              padding: "3px 8px",
+                              borderRadius: 20,
+                              ...getBadgeStyle(item.uiStatus),
+                            }}
+                          >
+                            {item.uiStatus}
+                          </span>
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            color: "#64748b",
+                            fontSize: 13,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {formatDate(item.date)}
+                        </td>
+                        <td
+                          style={{
+                            padding: "12px 14px",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: 5 }}>
+                            <button
+                              onClick={() =>
+                                navigate(`/mechanic-approval/${item.id}`, {
+                                  state: { mechanic: item },
+                                })
+                              }
+                              style={{
+                                padding: "5px 10px",
+                                borderRadius: 8,
+                                border: "1.5px solid #e2e8f0",
+                                background: "#fff",
+                                color: "#334155",
+                                fontSize: 11,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                                fontFamily: "'DM Sans', sans-serif",
+                                transition: "all .18s",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.borderColor = "#0f172a";
+                                e.target.style.color = "#0f172a";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.borderColor = "#e2e8f0";
+                                e.target.style.color = "#334155";
+                              }}
+                            >
+                              View
+                            </button>
+                            {item.uiStatus === "Pending" && (
+                              <>
+                                <button
+                                  onClick={() => handleApprove(item.id)}
+                                  style={{
+                                    padding: "5px 8px",
+                                    borderRadius: 8,
+                                    border: "none",
+                                    background: "#ecfdf5",
+                                    color: "#059669",
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    cursor: "pointer",
+                                    fontFamily: "'DM Sans', sans-serif",
+                                    transition: "all .18s",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.background = "#059669";
+                                    e.target.style.color = "#fff";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.background = "#ecfdf5";
+                                    e.target.style.color = "#059669";
+                                  }}
+                                >
+                                  <MdCheck size={14} />
+                                </button>
+                                <button
+                                  onClick={() => handleReject(item.id)}
+                                  style={{
+                                    padding: "5px 8px",
+                                    borderRadius: 8,
+                                    border: "none",
+                                    background: "#fff1f2",
+                                    color: "#ef4444",
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    cursor: "pointer",
+                                    fontFamily: "'DM Sans', sans-serif",
+                                    transition: "all .18s",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.background = "#ef4444";
+                                    e.target.style.color = "#fff";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.background = "#fff1f2";
+                                    e.target.style.color = "#ef4444";
+                                  }}
+                                >
+                                  <MdClose size={14} />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {filtered.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={7}
+                          style={{ padding: "48px 0", textAlign: "center" }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginBottom: 10,
+                              color: "#cbd5e1",
+                            }}
+                          >
+                            <MdSearch size={36} />
+                          </div>
+                          <p
+                            style={{
+                              margin: 0,
+                              color: "#94a3b8",
+                              fontWeight: 600,
+                              fontSize: 14,
+                            }}
+                          >
+                            No {active.toLowerCase()} applications found
+                          </p>
+                          {search && (
+                            <p
+                              style={{
+                                margin: "6px 0 0",
+                                color: "#cbd5e1",
+                                fontSize: 12,
+                              }}
+                            >
+                              Try clearing your search
+                            </p>
                           )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {filtered.length === 0 && (
-                    <tr>
-                      <td colSpan={7} style={{ padding: "48px 0", textAlign: "center" }}>
-                        <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, color: "#cbd5e1" }}>
-                          <MdSearch size={36} />
-                        </div>
-                        <p style={{ margin: 0, color: "#94a3b8", fontWeight: 600, fontSize: 14 }}>No {active.toLowerCase()} applications found</p>
-                        {search && <p style={{ margin: "6px 0 0", color: "#cbd5e1", fontSize: 12 }}>Try clearing your search</p>}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             {/* Footer */}
-            <div className="mobile-stack mobile-pad" style={{ padding: "12px 18px", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <p style={{ margin: 0, fontSize: 12, color: "#94a3b8" }}>Total: <strong style={{ color: "#475569" }}>{data.length}</strong></p>
-              <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-                {["All", ...tabs].map(t => (
-                  <span key={t} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: "#f1f5f9", color: "#64748b", fontWeight: 600 }}>
-                    {t === "All" ? `All: ${data.length}` : `${t}: ${counts[t]}`}
-                  </span>
-                ))}
+            {!loading && !error && (
+              <div
+                className="mobile-stack mobile-pad"
+                style={{
+                  padding: "12px 18px",
+                  borderTop: "1px solid #f1f5f9",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 8,
+                  flexWrap: "wrap",
+                }}
+              >
+                <p style={{ margin: 0, fontSize: 12, color: "#94a3b8" }}>
+                  Total:{" "}
+                  <strong style={{ color: "#475569" }}>
+                    {providers.length}
+                  </strong>
+                </p>
+                <div
+                  style={{ display: "flex", gap: 5, flexWrap: "wrap" }}
+                >
+                  {["All", ...UI_TABS].map((t) => (
+                    <span
+                      key={t}
+                      style={{
+                        fontSize: 10,
+                        padding: "2px 8px",
+                        borderRadius: 20,
+                        background: "#f1f5f9",
+                        color: "#64748b",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {t === "All"
+                        ? `All: ${providers.length}`
+                        : `${t}: ${overviewCounts[t] ?? counts[t] ?? 0}`}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

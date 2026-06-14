@@ -22,6 +22,7 @@ const Sidebar = () => {
 
   const mainMenu = [
     { name: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
+    { name: "Vehicles", icon: <MdSchool />, path: "/vehicles" },
     { name: "Book Service", icon: <MdSchool />, path: "/book-service" },
     { name: "My Services", icon: <MdSchool />, path: "/my-service" },
     { name: "Service History", icon: <MdPayment />, path: "/service-history" },

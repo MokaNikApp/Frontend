@@ -10,6 +10,7 @@ import Background from '../../assets/images/Background.png'
 import ActiveService from "../../components/dashboard-comopnents/ActiveService";
 import RecentActivity from "./RecentActivity";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 const Dashboard = () => {
 

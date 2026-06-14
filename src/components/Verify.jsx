@@ -91,7 +91,7 @@ const VerifyEmail = () => {
       setTimeout(() => {
         // provider → onboarding; customer → login (or dashboard)
         if (role === "provider") navigate("/booking/1");
-        else navigate("/login");
+        else navigate("/verified");
       }, 1900);
 
     } catch (err) {

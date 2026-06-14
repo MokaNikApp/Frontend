@@ -1,14 +1,11 @@
-
-
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
 import {
   HiPencil, HiOutlineTruck, HiOutlinePlus, HiOutlineLockClosed,
   HiOutlineShieldCheck, HiOutlineHome, HiOutlineChevronRight,
   HiOutlineLocationMarker, HiOutlineMail, HiOutlinePhone,
-  HiOutlineCalendar, HiOutlineUser, HiOutlineCheck, HiOutlineStar,
-  HiX, HiEye, HiEyeOff, HiCheckCircle, HiOutlineBadgeCheck,
-  HiOutlineExclamationCircle,
+  HiOutlineUser, HiOutlineCheck, HiX, HiEye, HiEyeOff,
+  HiCheckCircle, HiOutlineBadgeCheck, HiOutlineExclamationCircle,
 } from "react-icons/hi";
 import api from "../../api/axios";
 
@@ -146,34 +143,39 @@ export default function ProfileSettings() {
 
   useEffect(() => { requestAnimationFrame(() => setReady(true)); }, []);
 
-  // ── Profile state seeded from API ─────────────────────────────────────────
-  const [raw, setRaw] = useState(null); // full API response
+  // ── Profile state ──────────────────────────────────────────────────────────
+  const [raw, setRaw] = useState(null);
   const [profile, setProfile] = useState({
-    firstName: "", lastName: "", email: "",
+    id: "", firstName: "", lastName: "", email: "",
     phoneNumber: "", address: "", city: "", state: "",
-    role: "", isEmailVerified: false, isVerified: false,
-    profileImage: null,
+    role: "", status: "", isEmailVerified: false, isVerified: false,
+    isActive: true, profileImage: null,
   });
   const [editBuf, setEditBuf] = useState({});
 
+  // Fetch profile
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
         const { data } = await api.get("/auth/profile");
-        setRaw(data);
+        const u = data.user ?? data;
+        setRaw(u);
         setProfile({
-          firstName:       data.firstName       ?? "",
-          lastName:        data.lastName        ?? "",
-          email:           data.email           ?? "",
-          phoneNumber:     data.phoneNumber     ?? "",
-          address:         data.address         ?? "",
-          city:            data.city            ?? "",
-          state:           data.state           ?? "",
-          role:            data.role            ?? "",
-          isEmailVerified: data.isEmailVerified ?? false,
-          isVerified:      data.isVerified      ?? false,
-          profileImage:    data.profileImage    ?? null,
+          id:              u.id              ?? "",
+          firstName:       u.firstName       ?? "",
+          lastName:        u.lastName        ?? "",
+          email:           u.email           ?? "",
+          phoneNumber:     u.phoneNumber     ?? "",
+          address:         u.address         ?? "",
+          city:            u.city            ?? "",
+          state:           u.state           ?? "",
+          role:            u.role            ?? "",
+          status:          u.status          ?? "",
+          isEmailVerified: u.isEmailVerified ?? false,
+          isVerified:      u.isVerified      ?? false,
+          isActive:        u.isActive        ?? true,
+          profileImage:    u.profileImage    ?? null,
         });
       } catch (e) {
         setFetchErr(e?.response?.data?.message || e.message || "Failed to load profile.");
@@ -188,15 +190,52 @@ export default function ProfileSettings() {
   const location = [profile.address, capitalize(profile.city), profile.state?.toUpperCase()]
     .filter(Boolean).join(", ");
 
+  // ── SAVE PROFILE via PUT /users/profile ───────────────────────────────────
   const saveProfile = async () => {
     const e = {};
     if (!editBuf.firstName?.trim()) e.firstName = "First name is required";
+    if (!editBuf.lastName?.trim())  e.lastName  = "Last name is required";
     if (!editBuf.email?.trim())     e.email     = "Email is required";
     if (Object.keys(e).length) return setErr(e);
-    // Optimistic local update — swap for a PATCH call when endpoint is available
-    setProfile(prev => ({ ...prev, ...editBuf }));
-    close();
-    notify("Profile updated ✓");
+
+    setSaving(true);
+    try {
+      const { data } = await api.put("/users/profile", {
+        firstName:   editBuf.firstName.trim(),
+        lastName:    editBuf.lastName.trim(),
+        email:       editBuf.email.trim(),
+        phoneNumber: editBuf.phoneNumber?.trim() || undefined,
+        address:     editBuf.address?.trim()     || undefined,
+        city:        editBuf.city?.trim()        || undefined,
+        state:       editBuf.state?.trim()       || undefined,
+      });
+
+      const u = data.user ?? data;
+      setRaw(u);
+      setProfile(prev => ({
+        ...prev,
+        id:              u.id              ?? prev.id,
+        firstName:       u.firstName       ?? prev.firstName,
+        lastName:        u.lastName        ?? prev.lastName,
+        email:           u.email           ?? prev.email,
+        phoneNumber:     u.phoneNumber     ?? prev.phoneNumber,
+        address:         u.address         ?? prev.address,
+        city:            u.city            ?? prev.city,
+        state:           u.state           ?? prev.state,
+        role:            u.role            ?? prev.role,
+        status:          u.status          ?? prev.status,
+        isEmailVerified: u.isEmailVerified ?? prev.isEmailVerified,
+        isVerified:      u.isVerified      ?? prev.isVerified,
+        isActive:        u.isActive        ?? prev.isActive,
+        profileImage:    u.profileImage    ?? prev.profileImage,
+      }));
+      close();
+      notify("Profile updated ✓");
+    } catch (err) {
+      setErr({ api: err?.response?.data?.message || err.message || "Failed to update profile." });
+    } finally {
+      setSaving(false);
+    }
   };
 
   // ── Addresses ─────────────────────────────────────────────────────────────
@@ -280,18 +319,34 @@ export default function ProfileSettings() {
     }
   };
 
-  // ── Security ──────────────────────────────────────────────────────────────
-  const [pwd,  setPwd]  = useState({ cur:"", nw:"", cf:"" });
-  const [show, setShow] = useState({ cur:false, nw:false, cf:false });
+  // ── Security / Password ───────────────────────────────────────────────────
+  const [pwd,       setPwd]       = useState({ cur:"", nw:"", cf:"" });
+  const [show,      setShow]      = useState({ cur:false, nw:false, cf:false });
+  const [pwdSaving, setPwdSaving] = useState(false);
   const toggleShow = (k) => setShow(p=>({...p,[k]:!p[k]}));
 
-  const savePwd = () => {
-    const e={};
-    if (!pwd.cur.trim())   e.cur = "Required";
+  const savePwd = async () => {
+    const e = {};
+    if (!pwd.cur.trim())   e.cur = "Current password is required";
     if (pwd.nw.length < 8) e.nw  = "Min 8 characters";
     if (pwd.nw !== pwd.cf) e.cf  = "Passwords don't match";
     if (Object.keys(e).length) return setErr(e);
-    setPwd({ cur:"", nw:"", cf:"" }); close(); notify("Password updated ✓");
+
+    setPwdSaving(true);
+    try {
+      await api.post("/auth/change-password", {
+        currentPassword:     pwd.cur,
+        newPassword:         pwd.nw,
+        confirmNewPassword:  pwd.cf,
+      });
+      setPwd({ cur:"", nw:"", cf:"" });
+      close();
+      notify("Password updated ✓");
+    } catch (err) {
+      setErr({ api: err?.response?.data?.message || err.message || "Failed to update password." });
+    } finally {
+      setPwdSaving(false);
+    }
   };
 
   const wrap = { hidden:{ opacity:0 }, visible:{ opacity:1, transition:{ staggerChildren:0.07 } } };
@@ -379,7 +434,6 @@ export default function ProfileSettings() {
                     className="text-sm text-gray-400 mt-0.5">{profile.email}
                   </motion.p>
                   <div className="flex flex-wrap gap-2 mt-3">
-                    {/* Role badge */}
                     {profile.role && (
                       <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
                         className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
@@ -387,7 +441,6 @@ export default function ProfileSettings() {
                         {profile.role}
                       </motion.span>
                     )}
-                    {/* Email verified badge */}
                     {profile.isEmailVerified ? (
                       <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
                         className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
@@ -401,7 +454,6 @@ export default function ProfileSettings() {
                         <HiOutlineExclamationCircle className="w-3 h-3" />Email Unverified
                       </motion.span>
                     )}
-                    {/* Account verified badge */}
                     {profile.isVerified ? (
                       <motion.span whileHover={{ scale:1.08 }} transition={SPRING}
                         className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full
@@ -699,7 +751,9 @@ export default function ProfileSettings() {
         </div>
       </motion.div>
 
-      {/* MODALS */}
+      {/* ── MODALS ───────────────────────────────────────────────────────────── */}
+
+      {/* Edit Profile */}
       <Modal open={mod==="edit"} onClose={close} title="Edit Profile">
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -708,7 +762,7 @@ export default function ProfileSettings() {
               placeholder="First name" error={err.firstName} />
             <Field label="Last Name" value={editBuf.lastName ?? ""}
               onChange={e=>setEditBuf(p=>({...p,lastName:e.target.value}))}
-              placeholder="Last name" />
+              placeholder="Last name" error={err.lastName} />
           </div>
           <Field label="Email" type="email" value={editBuf.email ?? ""}
             onChange={e=>setEditBuf(p=>({...p,email:e.target.value}))}
@@ -727,11 +781,20 @@ export default function ProfileSettings() {
               onChange={e=>setEditBuf(p=>({...p,state:e.target.value}))}
               placeholder="State" />
           </div>
+
+          {err.api && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100">
+              <HiOutlineExclamationCircle className="w-4 h-4 text-red-500 shrink-0" />
+              <p className="text-xs text-red-600 font-semibold">{err.api}</p>
+            </div>
+          )}
+
           <ModalActions onCancel={close} onConfirm={saveProfile}
             confirmLabel="Save Changes" loading={saving} />
         </div>
       </Modal>
 
+      {/* Add Address */}
       <Modal open={mod==="addr"} onClose={close} title="Add Address">
         <div className="space-y-4">
           <div className="space-y-1.5">
@@ -758,6 +821,7 @@ export default function ProfileSettings() {
         </div>
       </Modal>
 
+      {/* Add Vehicle */}
       <Modal open={mod==="veh"} onClose={()=>{ setVehBuf(EMPTY_VEH); close(); }} title="Add Vehicle">
         <div className="space-y-3 overflow-y-auto max-h-[60vh] pr-1">
           <div className="grid grid-cols-2 gap-3">
@@ -803,6 +867,7 @@ export default function ProfileSettings() {
         </div>
       </Modal>
 
+      {/* View All Vehicles */}
       <Modal open={mod==="viewVeh"} onClose={close} title={`All Vehicles (${vehs.length})`}>
         <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
           {vehs.length === 0 && (
@@ -839,6 +904,7 @@ export default function ProfileSettings() {
         </div>
       </Modal>
 
+      {/* Security Settings */}
       <Modal open={mod==="sec"} onClose={close} title="Security Settings">
         <div className="space-y-5">
           <div>
@@ -857,6 +923,14 @@ export default function ProfileSettings() {
                 placeholder="Repeat new password" error={err.cf} suffix={<EyeBtn k="cf" />} />
             </div>
           </div>
+
+          {err.api && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100">
+              <HiOutlineExclamationCircle className="w-4 h-4 text-red-500 shrink-0" />
+              <p className="text-xs text-red-600 font-semibold">{err.api}</p>
+            </div>
+          )}
+
           <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-start gap-3">
             <HiOutlineShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
             <div>
@@ -866,7 +940,13 @@ export default function ProfileSettings() {
               </p>
             </div>
           </div>
-          <ModalActions onCancel={close} onConfirm={savePwd} confirmLabel="Update Password" />
+
+          <ModalActions 
+            onCancel={close} 
+            onConfirm={savePwd} 
+            confirmLabel="Update Password" 
+            loading={pwdSaving} 
+          />
         </div>
       </Modal>
     </>

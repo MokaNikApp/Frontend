@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 export default function AvailableServices() {
   return (
     <section className="relative bg-slate-100 overflow-hidden flex items-center justify-center px-4 sm:px-8 py-12 sm:py-20 sm:min-h-[350px]">
