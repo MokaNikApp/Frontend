@@ -7,7 +7,7 @@ export default function Topbar({ toggleSidebar, isOnline, setIsOnline }) {
   };
 
   return (
-    <div className="bg-white px-4 sm:px-6 py-4 flex items-center justify-between border-b">
+    <div className="bg-white px-4 sm:px-6 py-4 flex items-center justify-between border-b border-gray-200">
 
       {/* LEFT */}
       <div className="flex items-center gap-3 flex-1">

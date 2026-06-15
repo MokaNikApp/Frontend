@@ -35,7 +35,7 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
 
       <div
         className={`
-          fixed z-50 top-0 left-0 bg-white w-64 border-r flex flex-col
+          fixed z-50 top-0 left-0 bg-white w-64 border-r border-gray-200 flex flex-col
           transform transition-transform duration-300
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0 lg:static lg:shrink-0

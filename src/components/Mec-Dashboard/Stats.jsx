@@ -5,7 +5,7 @@ export default function Stats() {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-6 bg-[#FAFAFA]">
 
       {/* CARD 1 */}
-      <div className="bg-white p-4 sm:p-5 rounded-xl border">
+      <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200">
         <div className="flex justify-between items-start">
           <FiClipboard className="text-blue-600 bg-blue-100 p-0.5 rounded-md text-lg" />
           <span className="text-green-600 text-xs bg-green-100 px-2 py-0.5 rounded">
@@ -18,7 +18,7 @@ export default function Stats() {
       </div>
 
       {/* CARD 2 */}
-      <div className="bg-white p-4 sm:p-5 rounded-xl border">
+      <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200">
         <div className="flex justify-between items-start">
           <FiCheckCircle className="text-green-600 bg-green-100 p-0.5 rounded-md text-lg" />
           <span className="text-green-600 text-xs bg-green-100 px-2 py-0.5 rounded">
@@ -31,7 +31,7 @@ export default function Stats() {
       </div>
 
       {/* CARD 3 */}
-      <div className="bg-white p-4 sm:p-5 rounded-xl border">
+      <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200">
         <div className="flex justify-between items-start">
           <FiClock className="text-yellow-500 bg-yellow-100 p-0.5 rounded-md text-lg" />
           <span className="text-red-500 text-xs bg-red-100 px-2 py-0.5 rounded">
@@ -44,7 +44,7 @@ export default function Stats() {
       </div>
 
       {/* CARD 4 */}
-      <div className="bg-white p-4 sm:p-5 rounded-xl border">
+      <div className="bg-white p-4 sm:p-5 rounded-xl border border-gray-200">
         <div className="flex justify-between items-start">
           <FiDollarSign className="text-purple-600 p-0.5 bg-purple-100 rounded-md text-lg" />
           <span className="text-green-600 text-xs bg-green-100 px-2 py-0.5 rounded">

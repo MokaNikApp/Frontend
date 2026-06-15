@@ -8,7 +8,7 @@ export default function Activity() {
             Recent Activity
         </h3>
 
-        <div className="bg-white p-4 sm:p-5 w-full rounded-xl border">
+        <div className="bg-white p-4 sm:p-5 w-full rounded-xl border border-gray-200">
 
         <div className="space-y-4 text-sm">
 
