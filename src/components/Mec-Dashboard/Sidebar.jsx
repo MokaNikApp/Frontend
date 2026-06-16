@@ -1,4 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import {
   FiGrid,
   FiClipboard,
@@ -11,11 +13,29 @@ import {
   FiSettings,
   FiLogOut,
 } from "react-icons/fi";
-import { useJobs } from "../../context/JobsContext";
 
 export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }) {
   const location = useLocation();
-  const { incomingJobs } = useJobs();
+
+  // ---------------------------------------------------------------------------
+  // SYNC WITH TANSTACK QUERY CACHE (Matches JobRequests.jsx)
+  // ---------------------------------------------------------------------------
+  const { data: incomingData } = useQuery({
+    queryKey: ["jobsAvailable"],
+    queryFn: async () => {
+      const res = await axios.get("/jobs/provider/available");
+      return res.data;
+    },
+    // Optional: Auto-poll the server every 15 seconds to look for new incoming customer requests
+    refetchInterval: 15000, 
+  });
+
+  // Handle both flat array payloads and paginated envelope structures safely
+  const incomingJobsCount = Array.isArray(incomingData)
+    ? incomingData.length
+    : Array.isArray(incomingData?.data)
+      ? incomingData.data.length
+      : 0;
 
   const linkClass = (path) =>
     `flex items-center font-semibold gap-2 px-2 py-2 rounded-md transition-colors ${
@@ -73,9 +93,10 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
               <span className="flex items-center gap-2">
                 <FiClipboard /> Job Requests
               </span>
-              {incomingJobs.length > 0 && (
-                <span className="bg-blue-700 text-white text-xs px-2 py-0.5 rounded-full">
-                  {incomingJobs.length}
+              {/* DYNAMIC REAL-TIME BADGE COUNTER */}
+              {incomingJobsCount > 0 && (
+                <span className="bg-blue-700 text-white text-xs px-2 py-0.5 rounded-full font-bold animate-pulse">
+                  {incomingJobsCount}
                 </span>
               )}
             </Link>
