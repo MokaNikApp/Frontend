@@ -1,215 +1,202 @@
 import { useState, useRef, useEffect } from "react";
 import { FiX, FiCheck, FiMoreVertical } from "react-icons/fi";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import Sidebar from "../../components/Mec-Dashboard/Sidebar";
 import Topbar from "../../components/Mec-Dashboard/Topbar";
 
-const HOURS = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00"];
-const WEEK_DAYS = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
+// Constants adapted for your active 08:00 - 20:00 operational timespan
+const HOURS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+const WEEK_DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const HOUR_HEIGHT = 80;
 
 const colorMap = {
-  inprogress: { bg: "bg-blue-600",   text: "text-white" },
-  done:       { bg: "bg-green-500",  text: "text-white" },
-  started:    { bg: "bg-orange-400", text: "text-white" },
+  inprogress: { bg: "bg-blue-600", text: "text-white" },
+  done: { bg: "bg-green-500", text: "text-white" },
+  started: { bg: "bg-orange-400", text: "text-white" },
 };
 
 const statusBadge = {
   inprogress: "bg-orange-400 text-white",
-  done:       "bg-green-100 text-green-700",
-  started:    "bg-blue-100 text-blue-700",
+  done: "bg-green-100 text-green-700",
+  started: "bg-blue-100 text-blue-700",
 };
 
 const statusLabel = {
   inprogress: "IN PROGRESS",
-  done:       "DONE",
-  started:    "STARTED",
+  done: "DONE",
+  started: "STARTED",
 };
 
-const BASE_APPOINTMENTS = [
-  { id: 1, view: ["week","day"], dayIndex: 1, startHour: 10, durationHours: 1.5,
-    title: "Brake Service", car: "BMW X5 · AB-7234", status: "inprogress", jobId: "#SRV-9021",
-    customer: "Johnathan Doe", phone: "+1 (550) 012-3456", vehicle: "2021 BMW X5 M-Sport",
-    plate: "AB-1234", color2: "Alpine White", service: "Full Brake System Service",
-    tasks: ["Front Pads Replacement", "Rotor Inspection", "Brake Fluid Flush"],
-    start: "10:30 AM", duration: "2.5 Hours" },
-  { id: 2, view: ["week"], dayIndex: 3, startHour: 10, durationHours: 1,
-    title: "Oil Change", car: "Audi A4 · SJ-9921", status: "done", jobId: "#SRV-9022",
-    customer: "Sarah Johnson", phone: "+1 (550) 098-7654", vehicle: "2020 Audi A4",
-    plate: "SJ-9921", color2: "Glacier White", service: "Full Synthetic Oil Change",
-    tasks: ["Drain & Replace Oil", "Replace Oil Filter", "Check Fluid Levels"],
-    start: "10:00 AM", duration: "1.0 Hour" },
-  { id: 3, view: ["week"], dayIndex: 4, startHour: 11, durationHours: 2,
-    title: "Engine Diagnostic", car: "Toyota Camry · TX-3127", status: "started", jobId: "#SRV-9023",
-    customer: "Mike Torres", phone: "+1 (550) 345-6789", vehicle: "2019 Toyota Camry",
-    plate: "TX-3127", color2: "Midnight Black", service: "Full Engine Diagnostic",
-    tasks: ["OBD-II Scan", "Check Engine Light Analysis", "Report & Estimate"],
-    start: "11:00 AM", duration: "2.0 Hours" },
-  { id: 4, view: ["week"], dayIndex: 0, startHour: 9, durationHours: 1,
-    title: "Tire Rotation", car: "Honda CR-V · HN-4421", status: "done", jobId: "#SRV-9024",
-    customer: "Emily Ross", phone: "+1 (550) 221-9900", vehicle: "2022 Honda CR-V",
-    plate: "HN-4421", color2: "Sonic Gray", service: "Tire Rotation & Balance",
-    tasks: ["Rotate All 4 Tires", "Rebalance Wheels", "Check Tire Pressure"],
-    start: "09:00 AM", duration: "1.0 Hour" },
-  { id: 5, view: ["week"], dayIndex: 5, startHour: 9, durationHours: 1,
-    title: "AC Service", car: "Ford F-150 · FD-8812", status: "started", jobId: "#SRV-9025",
-    customer: "James Carter", phone: "+1 (550) 667-3341", vehicle: "2020 Ford F-150",
-    plate: "FD-8812", color2: "Oxford White", service: "AC System Recharge",
-    tasks: ["Check Refrigerant", "Recharge AC System", "Test Cooling Output"],
-    start: "09:00 AM", duration: "1.0 Hour" },
-  { id: 6, view: ["day"], dayIndex: 1, startHour: 9, durationHours: 1,
-    title: "Inspection", car: "Kia Sportage · KS-1123", status: "done", jobId: "#SRV-9026",
-    customer: "Lena Marsh", phone: "+1 (550) 112-5566", vehicle: "2021 Kia Sportage",
-    plate: "KS-1123", color2: "Snow White", service: "Annual Vehicle Inspection",
-    tasks: ["Safety Check", "Lights & Signals", "Fluid Levels"],
-    start: "09:00 AM", duration: "1.0 Hour" },
-  { id: 7, view: ["month"], week: 1, dayIndex: 1, startHour: 10, durationHours: 1,
-    title: "Brake Service", car: "BMW X5 · AB-7234", status: "inprogress", jobId: "#SRV-9021",
-    customer: "Johnathan Doe", phone: "+1 (550) 012-3456", vehicle: "2021 BMW X5 M-Sport",
-    plate: "AB-1234", color2: "Alpine White", service: "Full Brake System Service",
-    tasks: ["Front Pads Replacement", "Rotor Inspection", "Brake Fluid Flush"],
-    start: "10:30 AM", duration: "2.5 Hours" },
-  { id: 8, view: ["month"], week: 1, dayIndex: 4, startHour: 11, durationHours: 1,
-    title: "Engine Diagnostic", car: "Toyota Camry · TX-3127", status: "started", jobId: "#SRV-9023",
-    customer: "Mike Torres", phone: "+1 (550) 345-6789", vehicle: "2019 Toyota Camry",
-    plate: "TX-3127", color2: "Midnight Black", service: "Full Engine Diagnostic",
-    tasks: ["OBD-II Scan", "Check Engine Light", "Report & Estimate"],
-    start: "11:00 AM", duration: "2.0 Hours" },
-  { id: 9, view: ["month"], week: 2, dayIndex: 0, startHour: 9, durationHours: 1,
-    title: "Oil Change", car: "Audi A4 · SJ-9921", status: "done", jobId: "#SRV-9022",
-    customer: "Sarah Johnson", phone: "+1 (550) 098-7654", vehicle: "2020 Audi A4",
-    plate: "SJ-9921", color2: "Glacier White", service: "Full Synthetic Oil Change",
-    tasks: ["Drain & Replace Oil", "Replace Oil Filter", "Check Fluid Levels"],
-    start: "09:00 AM", duration: "1.0 Hour" },
-  { id: 10, view: ["month"], week: 2, dayIndex: 3, startHour: 11, durationHours: 1,
-    title: "Tire Rotation", car: "Honda CR-V · HN-4421", status: "done", jobId: "#SRV-9024",
-    customer: "Emily Ross", phone: "+1 (550) 221-9900", vehicle: "2022 Honda CR-V",
-    plate: "HN-4421", color2: "Sonic Gray", service: "Tire Rotation & Balance",
-    tasks: ["Rotate All 4 Tires", "Rebalance Wheels", "Tire Pressure Check"],
-    start: "11:00 AM", duration: "1.0 Hour" },
-  { id: 11, view: ["month"], week: 3, dayIndex: 2, startHour: 10, durationHours: 1,
-    title: "AC Service", car: "Ford F-150 · FD-8812", status: "started", jobId: "#SRV-9025",
-    customer: "James Carter", phone: "+1 (550) 667-3341", vehicle: "2020 Ford F-150",
-    plate: "FD-8812", color2: "Oxford White", service: "AC System Recharge",
-    tasks: ["Check Refrigerant", "Recharge AC", "Test Cooling Output"],
-    start: "10:00 AM", duration: "1.0 Hour" },
-  { id: 12, view: ["month"], week: 3, dayIndex: 5, startHour: 9, durationHours: 1,
-    title: "Inspection", car: "Kia Sportage · KS-1123", status: "done", jobId: "#SRV-9026",
-    customer: "Lena Marsh", phone: "+1 (550) 112-5566", vehicle: "2021 Kia Sportage",
-    plate: "KS-1123", color2: "Snow White", service: "Annual Inspection",
-    tasks: ["Safety Check", "Lights & Signals", "Fluid Levels"],
-    start: "09:00 AM", duration: "1.0 Hour" },
-];
-
-const MONTH_WEEKS = [
-  { label: "Week 1 (Oct 1–7)", wi: 1 },
-  { label: "Week 2 (Oct 8–14)", wi: 2 },
-  { label: "Week 3 (Oct 15–21)", wi: 3 },
-  { label: "Week 4 (Oct 22–28)", wi: 4 },
-];
-
-const BASE_MONDAY = new Date(2023, 9, 23);
-
-function getWeekDates(mon) {
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(mon);
-    d.setDate(mon.getDate() + i);
-    return d;
-  });
-}
-
-function BlockMenu({ appt, onStatusChange, onSelect }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const options = [
-    { label: "View Details", action: () => { onSelect(); setOpen(false); } },
-    { label: "Mark as Started", action: () => { onStatusChange(appt.id, "started"); setOpen(false); } },
-    { label: "Mark as In Progress", action: () => { onStatusChange(appt.id, "inprogress"); setOpen(false); } },
-    { label: "Mark as Done", action: () => { onStatusChange(appt.id, "done"); setOpen(false); } },
-    { label: "Reschedule", action: () => { alert(`Reschedule: ${appt.customer} — ${appt.service}`); setOpen(false); } },
-  ];
-
-  return (
-    <div ref={ref} className="absolute top-1 right-1 z-10">
-      <button
-        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
-        className="w-5 h-5 flex items-center justify-center rounded hover:bg-white/30 transition-colors"
-      >
-        <FiMoreVertical size={12} />
-      </button>
-      {open && (
-        <div className="absolute right-0 top-6 bg-white border border-gray-100 rounded-xl shadow-lg w-44 py-1 z-50">
-          {options.map((opt) => (
-            <button key={opt.label} onClick={opt.action}
-              className="w-full text-left px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+const normalizeStatus = (rawStatus) => {
+  const status = rawStatus?.toUpperCase() || "";
+  if (status === "DONE" || status === "COMPLETED") return "done";
+  if (status === "IN_PROGRESS" || status === "CONFIRMED") return "inprogress";
+  return "started";
+};
 
 export default function Schedule() {
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
-  const [viewMode, setViewMode] = useState("Week");
-  const [selectedAppt, setSelectedAppt] = useState(BASE_APPOINTMENTS[0]);
-  const [showPanel, setShowPanel] = useState(true);
-  const [statuses, setStatuses] = useState({});
+  const [viewMode, setViewMode] = useState("Week"); // Day | Week | Month
+  const [selectedAppt, setSelectedAppt] = useState(null);
+  const [showPanel, setShowPanel] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const weekDates = getWeekDates(BASE_MONDAY);
-  const todayIndex = 1;
 
-  const getStatus = (appt) => statuses[appt.id] || appt.status;
+  // API QUERY: Syncs live data stream based on active view mode parameter
+  const { data: scheduleData, isLoading } = useQuery({
+    queryKey: ["providerSchedule", viewMode],
+    queryFn: async () => {
+      const response = await axios.get(`/provider/schedule?view=${viewMode.toLowerCase()}`);
+      return response.data;
+    },
+  });
+
+  // API MUTATION: Patch state modification back up to backend infrastructure
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ jobId, nextStatus }) => {
+      return await axios.patch(`/provider/jobs/${jobId}/status`, { status: nextStatus });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["providerSchedule"]);
+    },
+  });
+
+  // Dynamic Date Resolvers based on server timestamp contexts
+  const rawServerDate = scheduleData?.date || "2026-06-16";
+  const displayDateLabel = new Date(rawServerDate).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  });
+
+  const serverDayName = scheduleData?.dayName?.toUpperCase() || "TUESDAY";
+  const todayIndex = WEEK_DAYS.findIndex((d) => serverDayName.startsWith(d)) !== -1 
+    ? WEEK_DAYS.findIndex((d) => serverDayName.startsWith(d)) 
+    : 1;
+
+  const getWeekDates = (baseDateStr) => {
+    const current = new Date(baseDateStr);
+    const dayOffset = current.getDay() === 0 ? 6 : current.getDay() - 1;
+    const monday = new Date(current);
+    monday.setDate(current.getDate() - dayOffset);
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return d;
+    });
+  };
+  const weekDates = getWeekDates(rawServerDate);
+
+  // DATA MAP ADAPTER: Extracts nested server slots mapping into interactive layout blocks
+  const appointments = [];
+  const slots = Array.isArray(scheduleData?.timeSlots) ? scheduleData.timeSlots : [];
+
+  slots.forEach((slot) => {
+    if (slot?.job) {
+      const job = slot.job;
+      appointments.push({
+        id: job.id || `slot-${slot.hour}`,
+        view: ["day", "week", "month"],
+        dayIndex: todayIndex, 
+        startHour: slot.hour,
+        durationHours: job.durationHours || 1.0,
+        title: job.title || job.serviceName || "Vehicle Service",
+        car: `${job.vehicle || `${job.carMake || "Vehicle"} ${job.carModel || ""}`.trim()} · ${job.plateNumber || job.licensePlate || "N/A"}`,
+        status: normalizeStatus(job.status),
+        jobId: job.jobId || `#SRV-${job.id || "9000"}`,
+        customer: job.customer?.name || job.customerName || "Customer Client",
+        phone: job.customer?.phone || job.customerPhone || "N/A",
+        vehicle: job.vehicle || `${job.carMake || ""} ${job.carModel || ""}`.trim() || "Unspecified Model",
+        plate: job.plateNumber || job.licensePlate || "N/A",
+        color2: job.carColor || "N/A",
+        service: job.serviceName || job.title || "General Maintenance",
+        tasks: Array.isArray(job.tasks) ? job.tasks : ["Standard System Operational Evaluation Check"],
+        start: slot.time || `${slot.hour}:00`,
+        duration: job.duration || `${job.durationHours || 1} Hour(s)`
+      });
+    }
+  });
+
+  const activeAppt = appointments.find((a) => a.id === selectedAppt?.id) || selectedAppt || appointments[0];
 
   const handleStatusChange = (id, newStatus) => {
-    setStatuses((prev) => ({ ...prev, [id]: newStatus }));
-    const appt = BASE_APPOINTMENTS.find((a) => a.id === id);
-    if (appt) setSelectedAppt({ ...appt, status: newStatus });
+    const targetJob = appointments.find((a) => a.id === id);
+    if (targetJob) {
+      updateStatusMutation.mutate({ jobId: targetJob.id, nextStatus: newStatus.toUpperCase() });
+      setSelectedAppt({ ...targetJob, status: newStatus });
+    }
   };
 
-  const handleComplete = () => handleStatusChange(selectedAppt.id, "done");
+  const handleComplete = () => {
+    if (activeAppt) handleStatusChange(activeAppt.id, "done");
+  };
 
   const handleReschedule = () => {
-    alert(`Reschedule requested for ${selectedAppt.customer} — ${selectedAppt.service}`);
+    alert(`Reschedule flow triggered for ${activeAppt?.customer}`);
   };
 
   const getApptStyle = (appt) => ({
-    top: `${(appt.startHour - 9) * HOUR_HEIGHT + 8}px`,
+    top: `${(appt.startHour - 8) * HOUR_HEIGHT + 8}px`, // Baseline adjusted dynamically to 08:00 AM index zero offset
     height: `${appt.durationHours * HOUR_HEIGHT - 12}px`,
   });
 
-  const ApptBlock = ({ appt, style, wide = false }) => {
-    const status = getStatus(appt);
-    const c = colorMap[status];
+  function BlockMenu({ appt, onStatusChange, onSelect }) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+      const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+      document.addEventListener("mousedown", handler);
+      return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    const options = [
+      { label: "View Details", action: () => { onSelect(); setOpen(false); } },
+      { label: "Mark as Started", action: () => { onStatusChange(appt.id, "started"); setOpen(false); } },
+      { label: "Mark as In Progress", action: () => { onStatusChange(appt.id, "inprogress"); setOpen(false); } },
+      { label: "Mark as Done", action: () => { onStatusChange(appt.id, "done"); setOpen(false); } },
+    ];
+
     return (
-      <div
-        className={`absolute left-1 right-1 rounded-lg px-2 py-1.5 cursor-pointer ${c.bg} ${c.text} overflow-visible shadow-sm hover:opacity-90 transition-opacity`}
+      <div ref={ref} className="absolute top-1 right-1 z-10">
+        <button onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+          className="w-5 h-5 flex items-center justify-center rounded hover:bg-white/30 transition-colors text-current">
+          <FiMoreVertical size={12} />
+        </button>
+        {open && (
+          <div className="absolute right-0 top-6 bg-white border border-gray-100 rounded-xl shadow-lg w-44 py-1 z-50">
+            {options.map((opt) => (
+              <button key={opt.label} onClick={opt.action}
+                className="w-full text-left px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const ApptBlock = ({ appt, style }) => {
+    const c = colorMap[appt.status] || colorMap.started;
+    return (
+      <div className={`absolute left-1 right-1 rounded-lg px-2 py-1.5 cursor-pointer ${c.bg} ${c.text} overflow-visible shadow-sm hover:opacity-90 transition-opacity z-20`}
         style={style || getApptStyle(appt)}
-        onClick={() => { setSelectedAppt({ ...appt, status }); setShowPanel(true); }}
+        onClick={() => { setSelectedAppt(appt); setShowPanel(true); }}
       >
-        <BlockMenu
-          appt={appt}
-          onStatusChange={handleStatusChange}
-          onSelect={() => { setSelectedAppt({ ...appt, status }); setShowPanel(true); }}
-        />
-        <p className="text-xs font-bold leading-tight pr-4">{appt.title}</p>
-        <p className="text-xs opacity-80 mt-0.5 leading-tight">{appt.car}</p>
+        <BlockMenu appt={appt} onStatusChange={handleStatusChange} onSelect={() => { setSelectedAppt(appt); setShowPanel(true); }} />
+        <p className="text-xs font-bold leading-tight pr-4 truncate">{appt.title}</p>
+        <p className="text-xs opacity-80 mt-0.5 leading-tight truncate">{appt.car}</p>
       </div>
     );
   };
 
   const WeekView = () => (
     <div>
+      {/* Weekdays Header Row */}
       <div className="grid border-b border-gray-100" style={{ gridTemplateColumns: "56px repeat(7, minmax(80px, 1fr))" }}>
         <div className="border-r border-gray-100" />
         {WEEK_DAYS.map((day, i) => (
@@ -221,27 +208,40 @@ export default function Schedule() {
           </div>
         ))}
       </div>
-      <div className="overflow-y-auto overflow-x-auto" style={{ maxHeight: "420px" }}>
+
+      {/* Timeline Grid */}
+      <div className="overflow-y-auto overflow-x-auto" style={{ maxHeight: "500px" }}>
         <div className="relative grid" style={{ gridTemplateColumns: "56px repeat(7, 1fr)" }}>
+          
+          {/* Left Side Hours Column */}
           <div className="relative">
             {HOURS.map((h) => (
               <div key={h} className="border-b border-gray-50 flex items-start pt-1 justify-end pr-2" style={{ height: `${HOUR_HEIGHT}px` }}>
-                <span className="text-xs text-gray-300">{h}</span>
+                <span className="text-xs text-gray-300 font-medium">{h}</span>
               </div>
             ))}
           </div>
+
+          {/* Days Columns */}
           {WEEK_DAYS.map((day, dayIdx) => (
-            <div key={day} className={`relative border-r border-gray-50 last:border-r-0 ${dayIdx === todayIndex ? "bg-blue-50/30" : ""}`}
+            <div key={day} className={`relative border-r border-gray-50 last:border-r-0 ${dayIdx === todayIndex ? "bg-blue-50/10" : ""}`}
               style={{ height: `${HOURS.length * HOUR_HEIGHT}px` }}>
+              
+              {/* Draw Horizontal Row Grid Lines & "Available" Placeholders */}
               {HOURS.map((h, hi) => (
-                <div key={h} className="absolute w-full border-b border-gray-50" style={{ top: `${hi * HOUR_HEIGHT}px` }} />
-              ))}
-              {dayIdx === 2 && (
-                <div className="absolute w-full flex items-center justify-center" style={{ top: `${(12 - 9) * HOUR_HEIGHT + 30}px` }}>
-                  <span className="text-xs text-gray-300 tracking-widest uppercase">Lunch Break</span>
+                <div key={h} className="absolute w-full border-b border-gray-50 flex items-center px-2 group transition-colors hover:bg-gray-50/50" 
+                  style={{ top: `${hi * HOUR_HEIGHT}px`, height: `${HOUR_HEIGHT}px` }}>
+                  {/* Subtle placeholder to show the timeline is active */}
+                  {dayIdx === todayIndex && (
+                    <span className="text-[10px] text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity font-semibold cursor-pointer">
+                      + Open Window
+                    </span>
+                  )}
                 </div>
-              )}
-              {BASE_APPOINTMENTS.filter((a) => a.view.includes("week") && a.dayIndex === dayIdx).map((appt) => (
+              ))}
+
+              {/* Render Assigned Job Blocks */}
+              {appointments.filter((a) => a.view.includes("week") && a.dayIndex === dayIdx).map((appt) => (
                 <ApptBlock key={appt.id} appt={appt} />
               ))}
             </div>
@@ -256,24 +256,38 @@ export default function Schedule() {
       <div className="grid border-b border-gray-100" style={{ gridTemplateColumns: "56px 1fr" }}>
         <div className="border-r border-gray-100" />
         <div className="text-center py-3 bg-blue-50">
-          <p className="text-xs font-semibold text-gray-400">TUE</p>
-          <p className="text-sm font-black mt-0.5 w-7 h-7 flex items-center justify-center mx-auto rounded-full bg-blue-600 text-white">24</p>
+          <p className="text-xs font-semibold text-gray-400">{serverDayName.substring(0, 3)}</p>
+          <p className="text-sm font-black mt-0.5 w-7 h-7 flex items-center justify-center mx-auto rounded-full bg-blue-600 text-white">
+            {new Date(rawServerDate).getDate()}
+          </p>
         </div>
       </div>
-      <div className="overflow-y-auto" style={{ maxHeight: "420px" }}>
+      
+      <div className="overflow-y-auto" style={{ maxHeight: "500px" }}>
         <div className="relative grid" style={{ gridTemplateColumns: "56px 1fr" }}>
+          
+          {/* Hours Column */}
           <div className="relative">
             {HOURS.map((h) => (
               <div key={h} className="border-b border-gray-50 flex items-start pt-1 justify-end pr-2" style={{ height: `${HOUR_HEIGHT}px` }}>
-                <span className="text-xs text-gray-300">{h}</span>
+                <span className="text-xs text-gray-300 font-medium">{h}</span>
               </div>
             ))}
           </div>
-          <div className="relative bg-blue-50/30" style={{ height: `${HOURS.length * HOUR_HEIGHT}px` }}>
+
+          {/* Core Daily Track */}
+          <div className="relative bg-blue-50/10" style={{ height: `${HOURS.length * HOUR_HEIGHT}px` }}>
             {HOURS.map((h, hi) => (
-              <div key={h} className="absolute w-full border-b border-gray-50" style={{ top: `${hi * HOUR_HEIGHT}px` }} />
+              <div key={h} className="absolute w-full border-b border-gray-100 flex items-center px-4 group hover:bg-white transition-colors" 
+                style={{ top: `${hi * HOUR_HEIGHT}px`, height: `${HOUR_HEIGHT}px` }}>
+                <span className="text-xs text-gray-300 italic opacity-40 group-hover:opacity-100 font-medium transition-opacity">
+                  No active bookings at {h} — Available
+                </span>
+              </div>
             ))}
-            {BASE_APPOINTMENTS.filter((a) => a.view.includes("day")).map((appt) => (
+
+            {/* Overlay Active Bookings */}
+            {appointments.filter((a) => a.view.includes("day")).map((appt) => (
               <ApptBlock key={appt.id} appt={appt} />
             ))}
           </div>
@@ -283,44 +297,31 @@ export default function Schedule() {
   );
 
   const MonthView = () => (
-    <div className="overflow-y-auto" style={{ maxHeight: "480px" }}>
-      {MONTH_WEEKS.map(({ label, wi }) => {
-        const wAppts = BASE_APPOINTMENTS.filter((a) => a.view.includes("month") && a.week === wi);
-        return (
-          <div key={label} className="border-b border-gray-100 last:border-b-0">
-            <div className="px-4 py-2 bg-gray-50 border-b border-gray-100">
-              <p className="text-xs font-bold text-gray-500">{label}</p>
-            </div>
-            <div className="grid grid-cols-7 min-h-20">
-              {WEEK_DAYS.map((day, di) => {
-                const appts = wAppts.filter((a) => a.dayIndex === di);
-                return (
-                  <div key={day} className={`border-r border-gray-50 last:border-r-0 p-1 ${di === todayIndex && wi === 1 ? "bg-blue-50/30" : ""}`}>
-                    <p className="text-xs text-gray-300 mb-1">{day}</p>
-                    {appts.map((appt) => {
-                      const status = getStatus(appt);
-                      const c = colorMap[status];
-                      return (
-                        <div key={appt.id} className={`relative rounded px-1.5 py-1 mb-1 cursor-pointer ${c.bg} ${c.text} hover:opacity-90 transition-opacity`}
-                          onClick={() => { setSelectedAppt({ ...appt, status }); setShowPanel(true); }}>
-                          <BlockMenu appt={appt} onStatusChange={handleStatusChange}
-                            onSelect={() => { setSelectedAppt({ ...appt, status }); setShowPanel(true); }} />
-                          <p className="text-xs font-bold truncate pr-4">{appt.title}</p>
-                          <p className="text-xs opacity-75 truncate">{appt.start}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-            </div>
+    <div className="p-8 text-center text-xs text-gray-400 font-medium bg-gray-50/50">
+      <p className="text-sm font-bold text-gray-700 mb-1">📅 Month Overview Manifest</p>
+      Displaying active scheduling slots contextually calculated for {displayDateLabel}.
+      <div className="mt-4 max-w-md mx-auto space-y-2 text-left">
+        {appointments.length === 0 ? (
+          <div className="p-4 border border-dashed rounded-lg text-center text-[11px] text-gray-400">
+            No entries loaded for this month cycle view.
           </div>
-        );
-      })}
+        ) : (
+          appointments.map((appt) => (
+            <div key={appt.id} onClick={() => { setSelectedAppt(appt); setShowPanel(true); }}
+              className="p-3 bg-white rounded-lg border border-gray-100 flex justify-between items-center cursor-pointer shadow-sm hover:border-blue-300 transition-colors">
+              <div>
+                <p className="font-bold text-gray-800 text-xs">{appt.title}</p>
+                <p className="text-gray-400 text-[11px] mt-0.5">{appt.car} • {appt.start}</p>
+              </div>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${statusBadge[appt.status]}`}>
+                {statusLabel[appt.status]}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
-
-  const currentStatus = getStatus(selectedAppt);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
@@ -328,105 +329,114 @@ export default function Schedule() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
-          <div className="flex flex-col xl:flex-row gap-4">
-
-            {/* CALENDAR */}
-            <div className="flex-1 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden min-w-0">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                <div>
-                  <h1 className="text-lg font-black text-gray-800">Schedule View</h1>
-                  <p className="text-xs text-gray-400 mt-0.5">October 24, 2023</p>
-                </div>
-                <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
-                  {["Day", "Week", "Month"].map((v) => (
-                    <button key={v} onClick={() => setViewMode(v)}
-                      className={`px-4 py-1.5 text-xs font-semibold transition-colors ${viewMode === v ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
-                      {v}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {viewMode === "Week"  && <WeekView />}
-              {viewMode === "Day"   && <DayView />}
-              {viewMode === "Month" && <MonthView />}
+          
+          {isLoading ? (
+            <div className="h-[550px] w-full flex items-center justify-center text-xs font-semibold tracking-wider text-gray-400 bg-white rounded-xl border border-gray-100 shadow-sm">
+              ⚡ SYNCHRONIZING REAL-TIME REPAIR PIPELINE...
             </div>
+          ) : (
+            <div className="flex flex-col xl:flex-row gap-4">
 
-            {/* APPOINTMENT DETAILS */}
-            {showPanel && selectedAppt && (
-              <div className="w-full xl:w-64 xl:shrink-0 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden xl:self-start">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-bold text-gray-800">Appointment Details</p>
-                  <button onClick={() => setShowPanel(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
-                    <FiX size={16} />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
-                  <span className={`text-xs font-bold px-2.5 py-1 rounded-md ${statusBadge[currentStatus]}`}>
-                    {statusLabel[currentStatus]}
-                  </span>
-                  <span className="text-xs text-gray-400">{selectedAppt.jobId}</span>
-                </div>
-
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Customer</p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold shrink-0">
-                      {selectedAppt.customer.split(" ").map((n) => n[0]).join("")}
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-gray-800">{selectedAppt.customer}</p>
-                      <p className="text-xs text-gray-400">{selectedAppt.phone}</p>
-                    </div>
+              {/* TIMELINE INTERACTIVE MAIN CONTAINER */}
+              <div className="flex-1 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden min-w-0">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                  <div>
+                    <h1 className="text-lg font-black text-gray-800">Schedule View</h1>
+                    <p className="text-xs text-gray-400 mt-0.5">{displayDateLabel}</p>
                   </div>
-                </div>
-
-                <div className="px-4 py-3 bg-white border-b border-gray-100">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Vehicle</p>
-                  <p className="text-xs font-bold text-gray-800">{selectedAppt.vehicle}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{selectedAppt.plate} · {selectedAppt.color2}</p>
-                </div>
-
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Service</p>
-                  <p className="text-xs font-bold text-gray-800 mb-2">{selectedAppt.service}</p>
-                  <div className="flex flex-col gap-1">
-                    {selectedAppt.tasks.map((task) => (
-                      <div key={task} className="flex items-center gap-1.5">
-                        <FiCheck size={11} className="text-green-500 shrink-0" />
-                        <span className="text-xs text-gray-500">{task}</span>
-                      </div>
+                  <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                    {["Day", "Week", "Month"].map((v) => (
+                      <button key={v} onClick={() => { setViewMode(v); setShowPanel(false); }}
+                        className={`px-4 py-1.5 text-xs font-semibold transition-colors ${viewMode === v ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
+                        {v}
+                      </button>
                     ))}
                   </div>
                 </div>
+                {viewMode === "Week" && <WeekView />}
+                {viewMode === "Day" && <DayView />}
+                {viewMode === "Month" && <MonthView />}
+              </div>
 
-                <div className="bg-white border-b border-gray-100">
-                  <div className="grid grid-cols-2">
-                    <div className="px-4 py-3 border-r border-gray-100">
-                      <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Start</p>
-                      <p className="text-sm font-black text-gray-800">{selectedAppt.start}</p>
-                    </div>
-                    <div className="px-4 py-3">
-                      <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Duration</p>
-                      <p className="text-sm font-black text-gray-800">{selectedAppt.duration}</p>
+              {/* SLIDEOUT SIDE DETAILS PANEL */}
+              {showPanel && activeAppt && (
+                <div className="w-full xl:w-72 xl:shrink-0 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden xl:self-start">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-bold text-gray-800">Appointment Details</p>
+                    <button onClick={() => setShowPanel(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                      <FiX size={16} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-md ${statusBadge[activeAppt.status]}`}>
+                      {statusLabel[activeAppt.status]}
+                    </span>
+                    <span className="text-xs text-gray-400">{activeAppt.jobId}</span>
+                  </div>
+
+                  <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Customer</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold shrink-0">
+                        {activeAppt.customer.split(" ").map((n) => n[0]).join("")}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-gray-800">{activeAppt.customer}</p>
+                        <p className="text-xs text-gray-400">{activeAppt.phone}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="px-4 py-4 flex flex-col gap-2 bg-white">
-                  <button onClick={handleComplete}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg transition-colors">
-                    Complete Job
-                  </button>
-                  <button onClick={handleReschedule}
-                    className="w-full border border-gray-200 text-gray-700 text-xs font-bold py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-                    Reschedule
-                  </button>
-                </div>
-              </div>
-            )}
+                  <div className="px-4 py-3 bg-white border-b border-gray-100">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Vehicle</p>
+                    <p className="text-xs font-bold text-gray-800">{activeAppt.vehicle}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{activeAppt.plate} · {activeAppt.color2}</p>
+                  </div>
 
-          </div>
+                  <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Service</p>
+                    <p className="text-xs font-bold text-gray-800 mb-2">{activeAppt.service}</p>
+                    <div className="flex flex-col gap-1">
+                      {activeAppt.tasks.map((task) => (
+                        <div key={task} className="flex items-center gap-1.5">
+                          <FiCheck size={11} className="text-green-500 shrink-0" />
+                          <span className="text-xs text-gray-500 leading-tight">{task}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-white border-b border-gray-100">
+                    <div className="grid grid-cols-2">
+                      <div className="px-4 py-3 border-r border-gray-100">
+                        <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Start</p>
+                        <p className="text-sm font-black text-gray-800">{activeAppt.start}</p>
+                      </div>
+                      <div className="px-4 py-3">
+                        <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Duration</p>
+                        <p className="text-sm font-black text-gray-800">{activeAppt.duration}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-4 py-4 flex flex-col gap-2 bg-white">
+                    <button onClick={handleComplete}
+                      disabled={activeAppt.status === "done" || updateStatusMutation.isLoading}
+                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white text-xs font-bold py-2.5 rounded-lg transition-colors">
+                      {updateStatusMutation.isLoading ? "Saving State..." : "Complete Job"}
+                    </button>
+                    <button onClick={handleReschedule}
+                      className="w-full border border-gray-200 text-gray-700 text-xs font-bold py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+                      Reschedule
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+
         </main>
       </div>
     </div>

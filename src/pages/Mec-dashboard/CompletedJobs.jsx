@@ -1,12 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 import { FiDownload, FiFilter, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FaStar, FaRegStar } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../api/axios"; 
 import Sidebar from "../../components/Mec-Dashboard/Sidebar";
 import Topbar from "../../components/Mec-Dashboard/Topbar";
-import { useJobs } from "../../context/JobsContext";
 
 const ROWS_PER_PAGE = 5;
 const filterOptions = ["All Services", "Oil Change", "Brake Service", "Diagnostics", "Inspection", "Transmission"];
+
+const INITIAL_COLOR_PALETTE = [
+  "bg-purple-100 text-purple-600",
+  "bg-blue-100 text-blue-600",
+  "bg-green-100 text-green-600",
+  "bg-amber-100 text-amber-600",
+  "bg-rose-100 text-rose-600"
+];
 
 function StarRating({ rating }) {
   return (
@@ -27,7 +36,6 @@ export default function CompletedJobs() {
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All Services");
   const filterRef = useRef(null);
-  const { completedJobs } = useJobs();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -39,6 +47,79 @@ export default function CompletedJobs() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // ---------------------------------------------------------------------------
+  // 1. DATA QUERY (Hits your precise completed tracking track)
+  // ---------------------------------------------------------------------------
+  const { data: rawData, isLoading } = useQuery({
+    queryKey: ["jobsCompleted"],
+    queryFn: async () => {
+      const res = await api.get("/jobs/status/COMPLETED");
+      return res.data;
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  // 2. DATA TRANSLATION LAYER (Normalizes payload fields safely for UI components)
+  // ---------------------------------------------------------------------------
+  const items = Array.isArray(rawData) 
+    ? rawData 
+    : Array.isArray(rawData?.data) 
+      ? rawData.data 
+      : [];
+
+  const completedJobs = items.map((j, idx) => {
+    // Formatting Completed ISO Date strings to short clean layouts
+    let displayDate = "Completed";
+    const targetDate = j.completedAt || j.updatedAt || j.scheduledAt;
+    if (targetDate) {
+      try {
+        displayDate = new Date(targetDate).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        });
+      } catch (err) {
+        // Fallback layout assignment
+      }
+    }
+
+    // Customer payload checking
+    const fallbackName = j.customerName || j.customer?.name || "Client Request";
+    const clientName = j.user ? `${j.user.firstName || ""} ${j.user.lastName || ""}`.trim() : fallbackName;
+
+    // Generate Initials
+    const initials = clientName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "CR";
+
+    // Deterministic selection of profile badge color variants
+    const colorIndex = Math.abs(j.id?.toString().charCodeAt(0) || idx) % INITIAL_COLOR_PALETTE.length;
+    const initialsColor = INITIAL_COLOR_PALETTE[colorIndex];
+
+    // Read amount fields (accepts numeric raw items or string variants safely)
+    const rawPrice = j.price || j.amount || 0;
+    const cleanAmount = typeof rawPrice === "number" ? `SAR ${rawPrice}` : rawPrice;
+
+    return {
+      id: j.id || j._id,
+      completedDate: displayDate,
+      name: clientName,
+      initials,
+      initialsColor,
+      service: j.title || j.serviceName || "Mechanical Service",
+      serviceColor: "text-green-600",
+      amount: cleanAmount,
+      rating: j.rating || j.review?.rating || 5, // default to clean presentation if review field exists
+      review: j.reviewText || j.review?.comment || "No review left by customer"
+    };
+  });
+
+  // ---------------------------------------------------------------------------
+  // 3. STATS & FILTER CALCULATIONS
+  // ---------------------------------------------------------------------------
   const filteredRecords = activeFilter === "All Services"
     ? completedJobs
     : completedJobs.filter((r) =>
@@ -53,11 +134,14 @@ export default function CompletedJobs() {
     : "—";
 
   const totalRevenue = completedJobs.reduce((s, j) => {
-    const num = parseFloat((j.amount || "0").replace(/[^0-9.]/g, ""));
+    const num = typeof j.amount === "number" 
+      ? j.amount 
+      : parseFloat((j.amount || "0").toString().replace(/[^0-9.]/g, ""));
     return s + (isNaN(num) ? 0 : num);
   }, 0).toLocaleString();
 
   const handleExport = () => {
+    if (completedJobs.length === 0) return;
     const headers = ["Date", "Customer", "Service", "Amount", "Rating", "Review"];
     const rows = completedJobs.map((r) => [r.completedDate, r.name, r.service, r.amount, r.rating, r.review]);
     const csvContent = [headers, ...rows].map((row) => row.join(",")).join("\n");
@@ -73,7 +157,6 @@ export default function CompletedJobs() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
-
       <Sidebar
         isOpen={isOpen}
         toggleSidebar={toggleSidebar}
@@ -96,11 +179,12 @@ export default function CompletedJobs() {
 
           {/* STATS CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
               <p className="text-xs text-gray-500 mb-1">Total Jobs Completed</p>
               <div className="flex items-center gap-2 justify-between">
-                <p className="text-3xl font-black text-gray-900">{completedJobs.length}</p>
+                <p className="text-3xl font-black text-gray-900">
+                  {isLoading ? "..." : completedJobs.length}
+                </p>
                 <p className="text-xs bg-green-100 text-green-500 font-semibold mt-1">+12% this month</p>
               </div>
             </div>
@@ -109,7 +193,7 @@ export default function CompletedJobs() {
               <p className="text-xs text-gray-500 mb-1">Average Satisfaction</p>
               <div className="flex items-center gap-2 justify-between">
                 <div className="flex items-center gap-2">
-                  <p className="text-3xl font-black text-gray-900">{avgRating}</p>
+                  <p className="text-3xl font-black text-gray-900">{isLoading ? "..." : avgRating}</p>
                   <FaStar className="text-yellow-400 text-xl" />
                 </div>
                 <p className="text-xs bg-gray-100 text-gray-400 mt-1">Last 90 days</p>
@@ -119,27 +203,28 @@ export default function CompletedJobs() {
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
               <p className="text-xs text-gray-500 mb-1">Revenue (Jobs Only)</p>
               <div className="flex items-center gap-2 justify-between">
-                <p className="text-3xl font-black text-gray-900">SAR {totalRevenue}</p>
+                <p className="text-3xl font-black text-gray-900">
+                  {isLoading ? "..." : `SAR ${totalRevenue}`}
+                </p>
                 <p className="text-xs bg-green-100 text-green-500 font-semibold mt-1">+8.2%</p>
               </div>
             </div>
-
           </div>
 
           {/* SERVICE HISTORY TABLE */}
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-
-            {/* TABLE HEADER */}
+            
+            {/* TABLE HEADER ACTIONS */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <p className="font-bold text-gray-800 text-sm">Service History</p>
                 <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-                  {completedJobs.length} Records
+                  {isLoading ? "..." : `${completedJobs.length} Records`}
                 </span>
               </div>
               <div className="flex items-center gap-2">
 
-                {/* FILTER */}
+                {/* FILTER DROPDOWN */}
                 <div className="relative" ref={filterRef}>
                   <button
                     onClick={() => setShowFilterMenu(!showFilterMenu)}
@@ -166,10 +251,11 @@ export default function CompletedJobs() {
                   )}
                 </div>
 
-                {/* EXPORT */}
+                {/* EXPORT ACTION */}
                 <button
                   onClick={handleExport}
-                  className="flex items-center gap-1.5 border border-gray-200 text-gray-600 text-xs font-semibold px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  disabled={completedJobs.length === 0}
+                  className="flex items-center gap-1.5 border border-gray-200 text-gray-600 text-xs font-semibold px-3 py-2 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <FiDownload size={13} /> Export
                 </button>
@@ -177,7 +263,7 @@ export default function CompletedJobs() {
               </div>
             </div>
 
-            {/* TABLE */}
+            {/* CORE TABLE */}
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -191,10 +277,16 @@ export default function CompletedJobs() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginated.length === 0 ? (
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={6} className="px-5 py-8 text-center text-xs font-semibold tracking-wider text-gray-400 animate-pulse">
+                        ⚡ FETCHING WORKSHOP HISTORY RECORDS...
+                      </td>
+                    </tr>
+                  ) : paginated.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-5 py-8 text-center text-xs text-gray-400">
-                        No completed jobs yet.
+                        No completed jobs found.
                       </td>
                     </tr>
                   ) : (
@@ -219,9 +311,11 @@ export default function CompletedJobs() {
                         </td>
                         <td className="px-5 py-4 text-xs font-semibold text-gray-800 whitespace-nowrap">{row.amount}</td>
                         <td className="px-5 py-4 whitespace-nowrap">
-                          <StarRating rating={row.rating || 0} />
+                          <StarRating rating={row.rating} />
                         </td>
-                        <td className="px-5 py-4 text-xs text-gray-500 max-w-35 truncate">{row.review || "—"}</td>
+                        <td className="px-5 py-4 text-xs text-gray-500 max-w-xs truncate" title={row.review}>
+                          {row.review}
+                        </td>
                       </tr>
                     ))
                   )}
@@ -229,7 +323,7 @@ export default function CompletedJobs() {
               </table>
             </div>
 
-            {/* PAGINATION */}
+            {/* PAGINATION PANEL */}
             <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100">
               <p className="text-xs text-gray-400">
                 Showing {filteredRecords.length === 0 ? 0 : ((currentPage - 1) * ROWS_PER_PAGE) + 1} to {Math.min(currentPage * ROWS_PER_PAGE, filteredRecords.length)} of {filteredRecords.length} results
