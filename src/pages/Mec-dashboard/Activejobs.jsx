@@ -1,13 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { FiMoreVertical, FiMapPin, FiChevronDown, FiTruck } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+// Correctly importing your custom configured api instance!
+import api from "../../api/axios"; 
 import Sidebar from "../../components/Mec-Dashboard/Sidebar";
 import Topbar from "../../components/Mec-Dashboard/Topbar";
-import { useJobs } from "../../context/JobsContext";
 
 const dotMenuOptions = ["View Details", "Reassign Job", "Contact Customer", "Cancel Job"];
+const FALLBACK_AVATAR = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80";
+const FALLBACK_CAR = "https://images.unsplash.com/photo-1617886326072-1bed7f8d2228?auto=format&fit=crop&w=600&q=80";
 
-function JobCard({ job, onComplete, onUpdateProgress }) {
+function JobCard({ job, onComplete, onUpdateProgress, isCompleting }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showDotMenu, setShowDotMenu] = useState(false);
   const [progressInput, setProgressInput] = useState(job.progress);
@@ -28,7 +32,10 @@ function JobCard({ job, onComplete, onUpdateProgress }) {
   const isEnRoute = job.type === "enroute";
 
   const statusOptions = [
-    { label: "Mark Complete", action: () => { onComplete(job.id); setShowStatusMenu(false); } },
+    { 
+      label: isCompleting ? "Completing..." : "Mark Complete", 
+      action: () => { onComplete(job.id); setShowStatusMenu(false); } 
+    },
     { label: "Update Progress", action: () => { setShowProgressEdit(true); setShowStatusMenu(false); } },
     { label: "Contact Customer", action: () => { setShowStatusMenu(false); } },
     { label: "Cancel Job", action: () => { setShowStatusMenu(false); } },
@@ -118,7 +125,7 @@ function JobCard({ job, onComplete, onUpdateProgress }) {
               <span className="text-xs font-bold text-blue-600 w-8">{progressInput}%</span>
               <button
                 onClick={() => { onUpdateProgress(job.id, progressInput); setShowProgressEdit(false); }}
-                className="text-xs bg-blue-600 text-white px-2 py-1 rounded-lg"
+                className="text-xs bg-blue-600 text-white px-2.5 py-1 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors"
               >
                 Save
               </button>
@@ -176,6 +183,7 @@ function JobCard({ job, onComplete, onUpdateProgress }) {
                 <button
                   key={opt.label}
                   onClick={opt.action}
+                  disabled={opt.label === "Completing..."}
                   className={`w-full text-left px-4 py-2 text-xs font-medium hover:bg-gray-50 transition-colors ${
                     opt.label === "Cancel Job" ? "text-red-500" : "text-gray-700"
                   }`}
@@ -196,9 +204,93 @@ export default function ActiveJobs() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
-  const { activeJobs, completeJob, updateProgress } = useJobs();
+  const queryClient = useQueryClient();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  // ---------------------------------------------------------------------------
+  // 1. FETCH ONGOING SERVICES FROM SERVER
+  // ---------------------------------------------------------------------------
+  const { data: rawData, isLoading } = useQuery({
+    queryKey: ["jobsActive"],
+    queryFn: async () => {
+      const res = await api.get("/jobs/status/ACCEPTED");
+      return res.data;
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  // 2. MUTATIONS FOR UPDATING STATUS & PROGRESS
+  // ---------------------------------------------------------------------------
+  const completeJobMutation = useMutation({
+    mutationFn: async (jobId) => {
+      // Endpoint syntax matches your job request actions
+      return await api.post(`/jobs/${jobId}/complete`); 
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["jobsActive"]);
+    }
+  });
+
+  const updateProgressMutation = useMutation({
+    mutationFn: async ({ jobId, progressPercentage }) => {
+      return await api.patch(`/jobs/${jobId}`, { progressPercentage });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["jobsActive"]);
+    }
+  });
+
+  const handleComplete = (id) => {
+    completeJobMutation.mutate(id);
+  };
+
+  const handleUpdateProgress = (id, percentage) => {
+    updateProgressMutation.mutate({ jobId: id, progressPercentage: percentage });
+  };
+
+  // ---------------------------------------------------------------------------
+  // 3. TRANSLATION LAYER (Adapting Backend Data to match original UI fields)
+  // ---------------------------------------------------------------------------
+  const items = Array.isArray(rawData) 
+    ? rawData 
+    : Array.isArray(rawData?.data) 
+      ? rawData.data 
+      : [];
+
+  const activeJobs = items.map((j) => {
+    let displayDate = j.scheduledAt || "Pending Date";
+    if (j.scheduledAt) {
+      try {
+        displayDate = new Date(j.scheduledAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } catch (e) {
+        // Fallback
+      }
+    }
+
+    const clientName = j.user ? `${j.user.firstName || ""} ${j.user.lastName || ""}`.trim() : "Client Request";
+    const currentProgress = j.progressPercentage || j.progress || 0;
+
+    return {
+      id: j.id,
+      name: clientName,
+      // If progress is greater than 0, mark as inprogress, otherwise show as enroute
+      type: currentProgress > 0 ? "inprogress" : "enroute", 
+      carModel: j.description || "Vehicle Request",
+      plateNumber: j.plateNumber || "KJA-123AA", 
+      scheduledDate: displayDate,
+      service: j.title || "Mechanical Service",
+      progress: currentProgress,
+      pickupAddress: j.pickupAddress || "Customer Location Base",
+      carImage: j.image || FALLBACK_CAR,
+      avatars: [j.user?.avatar || FALLBACK_AVATAR]
+    };
+  });
 
   const filters = [
     { label: "All Jobs", value: "all" },
@@ -252,7 +344,11 @@ export default function ActiveJobs() {
           </div>
 
           {/* JOBS GRID */}
-          {filteredJobs.length === 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center h-48 text-xs font-semibold tracking-wide text-gray-400 animate-pulse">
+              ⚡ LOADING ACTIVE REPAIR TRACKS...
+            </div>
+          ) : filteredJobs.length === 0 ? (
             <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
               No jobs found for this filter.
             </div>
@@ -262,8 +358,9 @@ export default function ActiveJobs() {
                 <JobCard
                   key={job.id}
                   job={job}
-                  onComplete={completeJob}
-                  onUpdateProgress={updateProgress}
+                  onComplete={handleComplete}
+                  onUpdateProgress={handleUpdateProgress}
+                  isCompleting={completeJobMutation.isLoading}
                 />
               ))}
             </div>

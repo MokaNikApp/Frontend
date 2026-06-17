@@ -24,7 +24,7 @@ import BookingE from "./BookingE";
 import api from "../api/axios";
 
 const BookingA = () => {
-  // ROUTER
+  // ROUTER FOR bOOKING A
   const { step } = useParams();
   const navigate = useNavigate();
 
