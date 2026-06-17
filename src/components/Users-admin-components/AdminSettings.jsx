@@ -10,6 +10,7 @@ import {
   MdCameraAlt,
   MdExitToApp
 } from "react-icons/md";
+import api from "../../api/axios";
 
 const tabs = [
   { key: "platform", label: "Platform", icon: <MdDashboard className="text-xl" /> },
