@@ -29,13 +29,13 @@ const Sidebar = () => {
       name: "users-dashboard",
       label: "Dashboard",
       icon: <MdDashboard />,
-      path: "/users-dashboard",
+      path: "/admin-dashboard",
     },
     {
       name: "users-mechanics",
       label: "Mechanics",
       icon: <MdBuild />,
-      path: "/users-mechanics",
+      path: "/admin-mechanics",
     },
     {
       name: "users-my-services",
@@ -47,7 +47,7 @@ const Sidebar = () => {
       name: "users-service-history",
       label: "Bookings",
       icon: <MdHistory />,
-      path: "/users-booking",
+      path: "/admin-booking",
     },
     {
       name: "users-payments",
