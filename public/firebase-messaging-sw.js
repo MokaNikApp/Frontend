@@ -12,12 +12,12 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// Background message handler — shows a native OS notification
 messaging.onBackgroundMessage((payload) => {
-  const title = payload.notification?.title ?? "New notification";
-  const body  = payload.notification?.body  ?? "";
+  const { title = "New notification", body = "" } = payload.notification ?? {};
   self.registration.showNotification(title, {
     body,
-    icon: "/logo192.png",
-    data: payload.data ?? {},
+    icon: "/logo192.png", // swap for your app icon
+    data: payload.data,
   });
 });

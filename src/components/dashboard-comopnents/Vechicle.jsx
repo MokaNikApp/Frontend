@@ -1,20 +1,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
 const COLOR_MAP = {
   Silver: "#C0C0C0",
   White: "#E5E5E5",
@@ -93,8 +84,6 @@ function Toast({ toast }) {
         gap: 8,
         boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
         animation: "fadeUp 0.2s ease",
-        maxWidth: "calc(100vw - 48px)",
-        wordBreak: "break-word",
       }}
     >
       {toast.message}
@@ -124,7 +113,7 @@ function Modal({ open, onClose, children, maxWidth = 560 }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "16px",
+        padding: 20,
       }}
     >
       <div
@@ -393,6 +382,9 @@ function VehicleFormModal({ open, onClose, vehicle, onSaved }) {
               Color
             </label>
             <div style={{ position: "relative" }}>
+              {form.color && (
+                <ColorDot color={form.color} />
+              )}
               <select
                 id="color"
                 value={form.color}
@@ -619,9 +611,9 @@ function DetailModal({ open, onClose, vehicle }) {
       >
         {icon}
       </div>
-      <div style={{ minWidth: 0 }}>
+      <div>
         <p style={{ fontSize: 11, color: "#9ca3af", margin: 0 }}>{label}</p>
-        <p style={{ fontSize: 13, fontWeight: 600, color: "#111827", margin: 0, wordBreak: "break-word" }}>{value || "—"}</p>
+        <p style={{ fontSize: 13, fontWeight: 600, color: "#111827", margin: 0 }}>{value || "—"}</p>
       </div>
     </div>
   );
@@ -641,7 +633,7 @@ function DetailModal({ open, onClose, vehicle }) {
       </div>
 
       {/* Hero card */}
-      <div style={{ margin: "16px 24px", background: "linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%)", borderRadius: 12, padding: 20, border: "1px solid #dbeafe", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+      <div style={{ margin: "16px 24px", background: "linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%)", borderRadius: 12, padding: 20, border: "1px solid #dbeafe", display: "flex", alignItems: "center", gap: 16 }}>
         <div style={{ width: 60, height: 60, borderRadius: 12, background: "#fff", border: "1px solid #dbeafe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1C52AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4v4a2 2 0 0 1-2 2h-1"/>
@@ -649,7 +641,7 @@ function DetailModal({ open, onClose, vehicle }) {
             <path d="M14 5h1l4 4"/>
           </svg>
         </div>
-        <div style={{ flex: 1, minWidth: 200 }}>
+        <div>
           <h3 style={{ fontSize: 17, fontWeight: 700, color: "#111827", margin: "0 0 4px" }}>
             {vehicle.brand} {vehicle.model}
           </h3>
@@ -767,7 +759,6 @@ function HistoryModal({ open, onClose, vehicle }) {
 }
 
 // ─── DELETE MODAL ─────────────────────────────────────────────────────────────
-// ─── DELETE MODAL (FIXED) ─────────────────────────────────────────────────────
 function DeleteModal({ open, onClose, vehicle, onDeleted }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -826,18 +817,11 @@ function DeleteModal({ open, onClose, vehicle, onDeleted }) {
           🗑️
         </div>
         <h2 style={{ fontSize: 16, fontWeight: 600, color: "#111827", margin: "0 0 8px" }}>Delete vehicle</h2>
-        <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 12px", lineHeight: 1.6 }}>
+        <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 24px", lineHeight: 1.6 }}>
           Are you sure you want to delete{" "}
           <strong style={{ color: "#374151" }}>{vehicle.brand} {vehicle.model}</strong>{" "}
-          ({vehicle.plateNumber})?
+          ({vehicle.plateNumber})? This cannot be undone.
         </p>
-        
-        {error && (
-          <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: "#dc2626" }}>
-            {error}
-          </div>
-        )}
-
         <div style={{ display: "flex", gap: 10 }}>
           <button
             onClick={onClose}
@@ -848,21 +832,7 @@ function DeleteModal({ open, onClose, vehicle, onDeleted }) {
           <button
             onClick={handleDelete}
             disabled={loading}
-            style={{
-              flex: 1,
-              height: 40,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#fff",
-              background: loading ? "#fca5a5" : "#dc2626",
-              border: "none",
-              borderRadius: 9,
-              cursor: loading ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-            }}
+            style={{ flex: 1, height: 40, fontSize: 13, fontWeight: 600, color: "#fff", background: loading ? "#fca5a5" : "#dc2626", border: "none", borderRadius: 9, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
           >
             {loading ? (
               <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />
@@ -1123,28 +1093,12 @@ export default function Vehicles() {
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         * { box-sizing: border-box; }
-        
-        /* Desktop: keep original structure */
-        @media (min-width: 768px) {
-          .vehicles-header { flex-direction: row !important; align-items: center !important; justify-content: space-between !important; }
-          .toolbar { flex-direction: row !important; align-items: center !important; }
-          .stats-grid { grid-template-columns: repeat(4, 1fr) !important; }
-          .vehicle-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important; }
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 767px) {
-          .vehicles-header { flex-direction: column !important; }
-          .toolbar { flex-direction: column !important; }
-          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .vehicle-grid { grid-template-columns: 1fr !important; }
-        }
       `}</style>
 
       <Toast toast={toast} />
 
       {/* Header */}
-      <div className="vehicles-header" style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: "0 0 3px" }}>My vehicles</h1>
           <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>Manage and track your registered vehicles</p>
@@ -1163,9 +1117,7 @@ export default function Vehicles() {
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
             gap: 6,
-            whiteSpace: "nowrap",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#1540a0")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#1C52AF")}
@@ -1175,7 +1127,7 @@ export default function Vehicles() {
       </div>
 
       {/* Stats */}
-      <div className="stats-grid" style={{ display: "grid", gap: 12, marginBottom: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 24 }}>
         {[
           { label: "Total vehicles", value: stats.total, bg: "#eff6ff", color: "#1C52AF" },
           { label: "Active", value: stats.active, bg: "#f0fdf4", color: "#15803d" },
@@ -1195,7 +1147,7 @@ export default function Vehicles() {
             }}
           >
             <div style={{ width: 38, height: 38, borderRadius: 9, background: bg, flexShrink: 0 }} />
-            <div style={{ minWidth: 0 }}>
+            <div>
               <p style={{ fontSize: 12, color: "#6b7280", margin: "0 0 2px" }}>{label}</p>
               <p style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0, lineHeight: 1 }}>{value}</p>
             </div>
@@ -1204,9 +1156,8 @@ export default function Vehicles() {
       </div>
 
       {/* Toolbar */}
-      <div className="toolbar" style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-        {/* Search - NO ICON */}
-        <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
+        <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
           <input
             type="text"
             placeholder="Search brand, model, plate number…"
@@ -1215,7 +1166,7 @@ export default function Vehicles() {
             style={{
               width: "100%",
               height: 38,
-              padding: "0 36px 0 12px",
+              padding: "0 36px",
               fontSize: 13,
               color: "#111827",
               background: "#fff",
@@ -1229,15 +1180,13 @@ export default function Vehicles() {
           {search && (
             <button
               onClick={() => setSearch("")}
-              style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16, lineHeight: 1, padding: 0, width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center" }}
+              style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 14 }}
             >
               ×
             </button>
           )}
         </div>
-
-        {/* Filter buttons */}
-        <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+        <div style={{ display: "flex", gap: 6 }}>
           {["all", "active", "inactive"].map((f) => (
             <button
               key={f}
@@ -1254,7 +1203,6 @@ export default function Vehicles() {
                 color: filter === f ? "#fff" : "#374151",
                 transition: "all 0.12s",
                 textTransform: "capitalize",
-                whiteSpace: "nowrap",
               }}
             >
               {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -1270,14 +1218,23 @@ export default function Vehicles() {
           <p style={{ fontSize: 14, margin: 0 }}>Loading vehicles…</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "60px 16px", color: "#9ca3af" }}>
-          <p style={{ fontSize: 15, fontWeight: 600, color: "#6b7280", margin: "0 0 4px", textAlign: "center" }}>No vehicles found</p>
-          <p style={{ fontSize: 13, margin: 0, textAlign: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "80px 0", color: "#9ca3af" }}>
+          <div style={{ fontSize: 48, marginBottom: 14, opacity: 0.3 }}>🚗</div>
+          <p style={{ fontSize: 15, fontWeight: 600, color: "#6b7280", margin: "0 0 4px" }}>No vehicles found</p>
+          <p style={{ fontSize: 13, margin: 0 }}>
             {search || filter !== "all" ? "Try adjusting your search or filter." : "Add your first vehicle to get started."}
           </p>
+          {!search && filter === "all" && (
+            <button
+              onClick={openAdd}
+              style={{ marginTop: 20, height: 38, padding: "0 20px", background: "#1C52AF", color: "#fff", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            >
+              + Add vehicle
+            </button>
+          )}
         </div>
       ) : (
-        <div className="vehicle-grid" style={{ display: "grid", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
           {filtered.map((v) => (
             <VehicleCard
               key={v.id}
