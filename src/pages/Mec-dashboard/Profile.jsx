@@ -1,25 +1,11 @@
 
 
-
-
-
-
-
-
-
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
-
-import { useNavigate } from "react-router-dom";
 import {
   HiPencil, HiUser, HiPhone, HiMail, HiLocationMarker,
-  HiShieldCheck, HiLockClosed, HiChevronRight, HiPlus,
-  HiHome, HiBriefcase, HiDotsVertical, HiCamera, HiCheck,
-  HiX, HiEye, HiEyeOff, HiExclamationCircle,
+  HiCheck, HiX, HiEye, HiEyeOff, HiExclamationCircle,
+  HiLockClosed, HiShieldCheck, HiChevronRight,
 } from "react-icons/hi";
-import { HiBuildingOffice2 } from "react-icons/hi2";
-import Sidebar from "../../components/Mec-Dashboard/Sidebar";
-import Topbar from "../../components/Mec-Dashboard/Topbar";
 import api from "../../api/axios";
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -62,9 +48,7 @@ function Modal({ open, onClose, title, children }) {
             </button>
           </div>
         )}
-        <div className="p-5">
-          {children}
-        </div>
+        <div className="p-5">{children}</div>
       </div>
       <style>{`
         @keyframes modalIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
@@ -206,10 +190,7 @@ function ChangePasswordModal({ open, onClose }) {
     }
     setLoading(true); setError(null);
     try {
-      await api.put("/auth/change-password", {
-        currentPassword: form.currentPassword,
-        newPassword: form.newPassword,
-      });
+      await api.put("/auth/profile", { password: form.newPassword });
       setSuccess(true);
       setTimeout(() => { setSuccess(false); onClose(); setForm({ currentPassword: "", newPassword: "", confirmPassword: "" }); }, 2000);
     } catch (err) {
@@ -283,7 +264,7 @@ function ProfileImageUploader({ user, onUpdate }) {
     try {
       const formData = new FormData();
       formData.append("profileImage", file);
-      const res = await api.put("/auth/profile/image", formData, {
+      const res = await api.put("/auth/profile", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       onUpdate?.(res.data);
@@ -313,111 +294,12 @@ function ProfileImageUploader({ user, onUpdate }) {
         {uploading ? (
           <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
         ) : (
-          <HiCamera size={14} />
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+          </svg>
         )}
       </button>
       <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════════
-   SAVED VEHICLES
-══════════════════════════════════════════════════════════════════════ */
-function SavedVehicles() {
-  const vehicles = [
-    { id: 1, year: 2023, brand: "Tesla", model: "Model 3", image: null, lastServiced: "Oct 12" },
-    { id: 2, brand: "BMW", model: "X5", year: 2021, image: null, serviceDue: "500mi" },
-  ];
-
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <HiBuildingOffice2 size={18} className="text-[#1C52AF]" />
-          <h3 className="font-semibold text-gray-800 text-sm">Saved Vehicles</h3>
-        </div>
-        <button className="text-xs font-medium text-[#1C52AF] hover:underline">View All</button>
-      </div>
-      <div className="flex flex-col gap-3">
-        {vehicles.map(v => (
-          <div key={v.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group">
-            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
-              {v.image ? (
-                <img src={v.image} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <HiBuildingOffice2 size={20} className="text-gray-400" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-800">{v.year} {v.brand} {v.model}</p>
-              <p className="text-xs text-gray-400">
-                {v.lastServiced ? `Last serviced ${v.lastServiced}` : `Service due in ${v.serviceDue}`}
-              </p>
-            </div>
-            <HiChevronRight size={16} className="text-gray-300 group-hover:text-gray-500 transition-colors" />
-          </div>
-        ))}
-        <button className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 border-dashed border-gray-200 text-gray-400 hover:border-[#1C52AF] hover:text-[#1C52AF] transition-all text-sm">
-          <HiPlus size={16} /> Add New Vehicle
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════════
-   SAVED ADDRESSES
-══════════════════════════════════════════════════════════════════════ */
-function SavedAddresses({ user }) {
-  const addresses = [
-    { id: 1, label: "Home Address", isDefault: true, address: user?.address || "123, New Haven", city: user?.city || "Ibadan", state: user?.state || "Oyo" },
-    { id: 2, label: "Office", isDefault: false, address: "456 Corporate Plaza", city: "Ibadan", state: "Oyo" },
-  ];
-
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <HiHome size={18} className="text-[#1C52AF]" />
-          <h3 className="font-semibold text-gray-800 text-sm">Saved Addresses</h3>
-        </div>
-        <button className="text-xs font-medium text-[#1C52AF] hover:underline">Add New</button>
-      </div>
-      <div className="flex flex-col gap-3">
-        {addresses.map(addr => (
-          <div key={addr.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-              {addr.label.includes("Home") ? <HiHome size={18} className="text-[#1C52AF]" /> : <HiBriefcase size={18} className="text-[#1C52AF]" />}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="text-sm font-semibold text-gray-800">{addr.label}</p>
-                {addr.isDefault && (
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#1C52AF] bg-blue-50 px-2 py-0.5 rounded-md">
-                    Default
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 mt-0.5">{addr.address}, {addr.city}, {addr.state}</p>
-            </div>
-            <button className="text-gray-300 hover:text-gray-500 p-1">
-              <HiDotsVertical size={16} />
-            </button>
-          </div>
-        ))}
-      </div>
-      {/* Map placeholder */}
-      <div className="mt-4 rounded-xl overflow-hidden h-40 bg-gradient-to-br from-teal-600 to-teal-800 relative">
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
-            <HiLocationMarker size={20} className="text-[#1C52AF]" />
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -481,20 +363,14 @@ function SecuritySection({ onChangePassword }) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   MAIN PROFILE PAGE — WRAPPED IN DASHBOARD LAYOUT
+   MAIN PROFILE PAGE
 ══════════════════════════════════════════════════════════════════════ */
-export default function Profile() {
+const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
-
-  const navigate = useNavigate();
-
-  const toggleSidebar = () => setIsOpen(!isOpen);
 
   const fetchProfile = useCallback(async () => {
     setLoading(true); setError(null);
@@ -518,140 +394,122 @@ export default function Profile() {
     setUser(prev => ({ ...prev, ...updatedUser }));
   };
 
+  if (loading) {
+    return (
+      <div className="p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="animate-pulse flex flex-col gap-4">
+          <div className="h-32 bg-gray-100 rounded-2xl" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 h-96 bg-gray-100 rounded-2xl" />
+            <div className="h-96 bg-gray-100 rounded-2xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 md:p-6 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+        <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-8 flex flex-col items-center gap-3 text-center max-w-sm">
+          <HiExclamationCircle size={32} className="text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Couldn't load profile</p>
+          <p className="text-xs text-red-400">{error}</p>
+          <button onClick={fetchProfile}
+            className="px-4 py-2 text-xs text-white bg-red-500 rounded-xl hover:bg-red-600 transition-all">
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const fullName = `${user?.firstName || ""} ${user?.lastName || ""}`.trim() || "User";
   const isProvider = user?.role === "provider";
 
-  // ─── Loading State ───────────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className="flex h-screen overflow-hidden bg-[#f8fafc]">
-        <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
-          <main className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-10">
-            <div className="animate-pulse flex flex-col gap-4 max-w-7xl mx-auto">
-              <div className="h-32 bg-gray-100 rounded-2xl" />
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2 h-96 bg-gray-100 rounded-2xl" />
-                <div className="h-96 bg-gray-100 rounded-2xl" />
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
-    );
-  }
-
-  // ─── Error State ─────────────────────────────────────────────────
-  if (error) {
-    return (
-      <div className="flex h-screen overflow-hidden bg-[#f8fafc]">
-        <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
-          <main className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-10 flex items-center justify-center">
-            <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-8 flex flex-col items-center gap-3 text-center max-w-sm">
-              <HiExclamationCircle size={32} className="text-red-400" />
-              <p className="text-sm font-semibold text-red-700">Couldn't load profile</p>
-              <p className="text-xs text-red-400">{error}</p>
-              <button onClick={fetchProfile}
-                className="px-4 py-2 text-xs text-white bg-red-500 rounded-xl hover:bg-red-600 transition-all">
-                Try Again
-              </button>
-            </div>
-          </main>
-        </div>
-      </div>
-    );
-  }
-
-  // ─── Main Render ─────────────────────────────────────────────────
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f8fafc]">
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
-      
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar toggleSidebar={toggleSidebar} isOnline={isOnline} setIsOnline={setIsOnline} />
-        
-        <main className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-10">
-          <div className="max-w-7xl mx-auto">
-            
-            {/* Header Card */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-6 mb-6">
-              <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-                <ProfileImageUploader user={user} onUpdate={handleUpdate} />
-                <div className="flex-1 min-w-0">
-                  <h1 className="text-2xl font-bold text-gray-800">{fullName}</h1>
-                  <p className="text-sm text-gray-400 mt-1">Manage your account information and preferences</p>
-                  <div className="flex items-center gap-2 mt-3">
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${isProvider ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}>
-                      {isProvider ? "PROVIDER" : "CUSTOMER"}
-                    </span>
-                    {user?.isVerified && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-green-100 text-green-700 flex items-center gap-1">
-                        <HiCheck size={10} /> VERIFIED
-                      </span>
-                    )}
-                    {!user?.isEmailVerified && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-orange-100 text-orange-700">
-                        EMAIL UNVERIFIED
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <button onClick={() => setEditOpen(true)}
-                  className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 bg-[#1C52AF] text-white text-sm font-medium rounded-xl hover:bg-blue-800 transition-all active:scale-95 shadow-sm">
-                  <HiPencil size={14} /> Edit Profile
-                </button>
-              </div>
+    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      {/* Header Card */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-6 mb-4">
+        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+          <ProfileImageUploader user={user} onUpdate={handleUpdate} />
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-bold text-gray-800">{fullName}</h1>
+            <p className="text-sm text-gray-400 mt-0.5">Manage your account information and preferences</p>
+            <div className="flex items-center gap-2 mt-2.5">
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${isProvider ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}>
+                {isProvider ? "PROVIDER" : "CUSTOMER"}
+              </span>
+              {user?.isVerified && (
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-green-100 text-green-700 flex items-center gap-1">
+                  <HiCheck size={10} /> VERIFIED
+                </span>
+              )}
             </div>
+          </div>
+          <button onClick={() => setEditOpen(true)}
+            className="self-start md:self-auto flex items-center gap-2 px-4 py-2.5 bg-[#1C52AF] text-white text-sm font-medium rounded-xl hover:bg-blue-800 transition-all active:scale-95 shadow-sm">
+            <HiPencil size={14} /> Edit Profile
+          </button>
+        </div>
+      </div>
 
-            {/* Main Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column (2/3) */}
-              <div className="lg:col-span-2 flex flex-col gap-6">
-                {/* Personal Information */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-                  <div className="flex items-center gap-2 mb-5">
-                    <HiUser size={18} className="text-[#1C52AF]" />
-                    <h3 className="font-semibold text-gray-800 text-sm">Personal Information</h3>
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Left Column (2/3) */}
+        <div className="lg:col-span-2 flex flex-col gap-4">
+          {/* Personal Information */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-5">
+              <HiUser size={18} className="text-[#1C52AF]" />
+              <h3 className="font-semibold text-gray-800 text-sm">Personal Information</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+              {[
+                { icon: HiUser, label: "FULL NAME", value: fullName },
+                { icon: HiMail, label: "EMAIL ADDRESS", value: user?.email || "—" },
+                { icon: HiPhone, label: "PHONE NUMBER", value: fmtPhone(user?.phoneNumber) },
+                { icon: HiLocationMarker, label: "ADDRESS", value: `${user?.address || ""}, ${user?.city || ""}, ${user?.state || ""}`.replace(/^,\s*|,\s*$/g, "") || "—" },
+              ].map(({ icon: Icon, label, value }) => (
+                <div key={label}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Icon size={12} className="text-gray-400" />
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{label}</p>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                    {[
-                      { icon: HiUser, label: "FULL NAME", value: fullName },
-                      { icon: HiMail, label: "EMAIL ADDRESS", value: user?.email || "—" },
-                      { icon: HiPhone, label: "PHONE NUMBER", value: fmtPhone(user?.phoneNumber) },
-                      { icon: HiLocationMarker, label: "ADDRESS", value: `${user?.address || ""}, ${user?.city || ""}, ${user?.state || ""}`.replace(/^,\s*|,\s*$/g, "") || "—" },
-                    ].map(({ icon: Icon, label, value }) => (
-                      <div key={label}>
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <Icon size={12} className="text-gray-400" />
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{label}</p>
-                        </div>
-                        <p className="text-sm font-medium text-gray-800">{value}</p>
-                      </div>
-                    ))}
-                  </div>
+                  <p className="text-sm font-medium text-gray-800">{value}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-                {/* Saved Addresses */}
-                <SavedAddresses user={user} />
+        {/* Right Column (1/3) */}
+        <div className="flex flex-col gap-4">
+          {/* Profile Completeness */}
+          <ProfileCompleteness user={user} />
+
+          {/* Security */}
+          <SecuritySection onChangePassword={() => setPasswordOpen(true)} />
+
+          {/* Account Status Info */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <h3 className="font-semibold text-gray-800 text-sm mb-4">Account Status</h3>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">Email Verified</span>
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${user?.isEmailVerified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                  {user?.isEmailVerified ? "YES" : "NO"}
+                </span>
               </div>
-
-              {/* Right Column (1/3) */}
-              <div className="flex flex-col gap-6">
-                {/* Saved Vehicles */}
-                <SavedVehicles />
-
-                {/* Profile Completeness */}
-                <ProfileCompleteness user={user} />
-
-                {/* Security */}
-                <SecuritySection onChangePassword={() => setPasswordOpen(true)} />
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">Profile Verified</span>
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${user?.isVerified ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
+                  {user?.isVerified ? "YES" : "PENDING"}
+                </span>
               </div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
 
       {/* Modals */}
@@ -667,4 +525,6 @@ export default function Profile() {
       />
     </div>
   );
-}
+};
+
+export default Profile;
