@@ -26,7 +26,7 @@ const Sidebar = () => {
     { name: "Book Service", icon: <MdSchool />, path: "/book-service" },
     { name: "My Services", icon: <MdSchool />, path: "/my-service" },
     { name: "Service History", icon: <MdPayment />, path: "/service-history" },
-    { name: "Payments", icon: <MdCardMembership />, path: "/payment-management" },
+    { name: "Payments", icon: <MdCardMembership />, path: "/payment/success" },
   ];
 
   const accountMenu = [

@@ -50,6 +50,7 @@ import Earnings from "./pages/Mec-dashboard/Earnings";
 import Schedule from "./pages/Mec-dashboard/Schedule";
 import Messages from "./pages/Mec-dashboard/Messages";
 import { JobsProvider } from "./context/JobsContext";
+import Profile from "./pages/Mec-dashboard/Profile";
 
 // ADMIN
 import UserDashboardPage from "./pages/Users-admin-pages/UserDashboardPage";
@@ -103,7 +104,7 @@ const App = () => {
           <Route path="/book-service" element={<BookServicePage />} />
           <Route path="/my-service" element={<MyServicePage />} />
           <Route path="/service-history" element={<ServiceHistoryPage />} />
-          <Route path="/payment-management" element={<PaymentPage />} />
+          <Route path="/payment/success" element={<PaymentPage />} />
           <Route path="/notify" element={<NotificationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/vehicles" element={<VechiclePage />} />
@@ -167,6 +168,14 @@ const App = () => {
             element={
               <JobsProvider>
                 <Schedule />
+              </JobsProvider>
+            }
+          />
+           <Route
+            path="/mec-dashboard/profile"
+            element={
+              <JobsProvider>
+                <Profile />
               </JobsProvider>
             }
           />
