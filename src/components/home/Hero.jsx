@@ -1,14 +1,36 @@
+
+
+
+
+
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function Hero() {
   const words = [
+    "reliable car service",
     "trusted mechanics at your doorstep",
     "emergency car repair anytime you need",
     "verified experts you can rely on",
     "same-day car service near you",
-    "affordable repairs without workshop stress",
+    "affordable repairs zero workshop stress",
     "quick roadside assistance 24/7",
+    "engine diagnostics at home",
+  "brake repair without the wait",
+  "oil change at your office",
+  "battery replacement on the spot",
+  "tire service wherever you park",
+  "AC repair before your trip",
+  "certified auto technicians on demand",
+  "mobile mechanic at your location",
+  "transparent pricing no hidden fees",
+  "quality repairs done right",
+  "book online in under 60 seconds",
+  "pre-purchase inspection made easy",
+  "fleet maintenance for your business",
+  "scheduled servicing on your time",
+  "exhaust repair while you work",
+  "transmission fix at your door",
   ];
 
   const [wordIndex, setWordIndex] = useState(0);
@@ -43,8 +65,7 @@ export default function Hero() {
 
   return (
     <>
-      
-<style>{`
+      <style>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(22px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -238,43 +259,24 @@ export default function Hero() {
 
             {/* DESCRIPTION */}
             <p className="max-w-lg mx-auto mt-6 text-base text-gray-600 fu d3 md:text-lg md:mx-0">
-              Skip the stress of searching for workshops. Verified professionals
-              come to you — making car servicing faster, smarter, and more convenient.
+              Skip the stress of searching for workshops — our verified professionals come to you, making car servicing faster, safer, and more convenient every time.
             </p>
 
-            {/* BUTTONS */}
-            <div className="flex flex-col justify-center gap-4 mt-10 fu d4 sm:flex-row md:justify-start">
-              <Link
-                to="/services"
-                className="btn-shine px-7 py-3 text-sm font-semibold text-white bg-[#1C52AF] rounded-lg transition-all duration-200 shadow-md"
-              >
-                Book a Service
-              </Link>
-              <Link
-                to="/providers"
-                className="btn-out px-7 py-3 text-sm font-semibold text-[#1C52AF] border border-gray-300 rounded-lg hover:bg-[#1C52AF] hover:text-white transition-all duration-200"
-              >
-                Become a Provider
-              </Link>
-            </div>
-
-            {/* SOCIAL PROOF */}
-            <div className="flex items-center justify-center gap-3 fu d5 mt-7 md:justify-start">
-              <div className="flex -space-x-2">
-                {[1,2,3].map(i => (
-                  <img key={i} src={`/images/test${i}.png`} alt="user"
-                    className="object-cover border-2 border-white rounded-full w-7 h-7" />
-                ))}
-                <div className="w-7 h-7 rounded-full bg-[#1C52AF] text-white flex items-center justify-center text-[9px] font-bold border-2 border-white">+2k</div>
-              </div>
-              <p className="text-xs text-gray-500">
-                <span className="font-semibold text-gray-800">2,000+</span> car owners trust MokaNik
-              </p>
-              <div className="hidden sm:flex gap-0.5">
-                {[...Array(5)].map((_, i) => <span key={i} className="text-xs text-yellow-400">★</span>)}
-              </div>
-            </div>
-
+            
+            <div className="flex flex-col items-center justify-center gap-4 mt-10 fu d4 sm:flex-row md:justify-start">
+  <Link
+    to="/services"
+    className="btn-shine w-fit px-7 py-3 text-sm font-semibold text-white bg-[#1C52AF] rounded-lg transition-all duration-200 shadow-md"
+  >
+    Book a Service
+  </Link>
+  <Link
+    to="/providers"
+    className="btn-out w-fit px-7 py-3 text-sm font-semibold text-[#1C52AF] border border-gray-300 rounded-lg hover:bg-[#1C52AF] hover:text-white transition-all duration-200"
+  >
+    Become a Provider
+  </Link>
+</div>
           </div>
 
           {/* ── RIGHT IMAGE ── */}
@@ -287,30 +289,16 @@ export default function Hero() {
                 style={{ borderRadius: "55% 45% 40% 60% / 50% 45% 55% 50%" }}
               />
 
-              <img
-                src="/images/hero-mechanic.png"
+              {/* <img
+                src="/images/HeroImage.png"
                 alt="mechanic"
                 className="relative z-10 object-contain w-full h-full float-img drop-shadow-xl"
-              />
-
-              {/* FLOAT CARD — top left */}
-              <div className="card-pop card-a" style={{ top: "8%", left: "-10px" }}>
-                <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-sm font-bold text-green-600 bg-green-100 rounded-full">✓</div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-800">Mechanic Arrived</p>
-                  <p className="text-[10px] text-gray-400">Emmanuel O. · 4.9 ★</p>
-                </div>
-              </div>
-
-              {/* FLOAT CARD — bottom right */}
-              <div className="card-pop card-b" style={{ bottom: "8%", right: "-10px" }}>
-                <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-base bg-blue-100 rounded-full">🔧</div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-800">Booking Confirmed</p>
-                  <p className="text-[10px] text-green-500 font-semibold">Today, 2:30 PM</p>
-                </div>
-              </div>
-
+              /> */}
+              <img
+  src="/images/HeroImage.png"
+  alt="mechanic"
+  className="relative z-10 object-contain w-[110%] h-[110%] float-img drop-shadow-xl"
+/>
             </div>
           </div>
 
@@ -319,3 +307,13 @@ export default function Hero() {
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
