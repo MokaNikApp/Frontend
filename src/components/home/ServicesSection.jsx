@@ -243,7 +243,7 @@ export default function ServicesSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-[#F7F5F8] py-6 sm:py-8 relative overflow-hidden"
+      className="w-full bg-[#F7F5F8] py-6 sm:py-8 relative overflow-hidden px-1 sm:px-0"
     >
       <ParticlesCanvas />
 
