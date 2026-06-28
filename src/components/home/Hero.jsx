@@ -289,16 +289,12 @@ export default function Hero() {
                 style={{ borderRadius: "55% 45% 40% 60% / 50% 45% 55% 50%" }}
               />
 
-              {/* <img
-                src="/images/HeroImage.png"
-                alt="mechanic"
-                className="relative z-10 object-contain w-full h-full float-img drop-shadow-xl"
-              /> */}
-              <img
-  src="/images/HeroImage.png"
-  alt="mechanic"
-  className="relative z-10 object-contain w-[110%] h-[110%] float-img drop-shadow-xl"
-/>
+              
+                          <img
+              src="/images/HeroImage.png"
+              alt="mechanic"
+              className="relative z-10 object-contain w-[110%] h-[110%] float-img drop-shadow-xl"
+            />
             </div>
           </div>
 

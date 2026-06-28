@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,29 +39,53 @@ export default function FAQ() {
   };
 
   return (
-    <section className="relative px-6 py-12 overflow-hidden bg-white sm:py-20 lg:py-24 sm:px-24">
+    <section className="relative px-5 py-12 overflow-hidden bg-white sm:py-20 lg:py-24 sm:px-24">
 
       {/* subtle background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.08),transparent_60%)]" />
 
-      <div className="relative grid max-w-6xl grid-cols-1 gap-10 mx-auto lg:grid-cols-2 lg:gap-16">
+      <div className="relative grid max-w-6xl grid-cols-1 gap-8 mx-auto lg:grid-cols-2 lg:gap-16">
 
         {/* LEFT */}
         <div className="text-center lg:text-left">
-          <h2 className="text-xl font-bold text-gray-900 sm:text-4xl">
+          <h2 className="text-2xl font-bold text-gray-900 sm:text-4xl">
             Frequently Asked Questions
           </h2>
 
           <p className="max-w-md mx-auto mt-4 text-sm text-gray-600 sm:text-base lg:mx-0">
-            Got questions? We’ve answered the most common ones to help you understand MokaNik better.
+            Got questions? We've answered the most common ones to help you understand MokaNik better.
           </p>
 
-          <div className="flex flex-col gap-3 mt-6 sm:flex-row">
-            <Link className="px-6 py-3 text-sm text-black border border-gray-400 *transition bg-gray-100 rounded-xl hover:bg-gray-200">
+          {/* MOBILE: Compact pill buttons with better visibility */}
+          <div className="flex items-center justify-center gap-3 mt-6 lg:hidden">
+            <Link
+              to="/faqs"
+              className="px-5 py-2.5 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full hover:bg-gray-200 hover:border-gray-300 transition-all duration-200"
+            >
+              See All FAQs →
+            </Link>
+
+            <Link
+              to="/contact"
+              className="px-5 py-2.5 text-sm font-semibold text-white bg-[#1C52AF] rounded-full hover:bg-blue-800 shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              Contact Support
+            </Link>
+          </div>
+
+          {/* Desktop buttons */}
+          <div className="hidden lg:flex items-center gap-3 mt-6">
+            <Link
+              to=""
+              className="px-6 py-3 text-sm font-medium text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
+            >
               See All FAQs
             </Link>
 
-            <Link className="px-6 py-3 text-sm text-white transition bg-blue-800 rounded-xl hover:bg-blue-700">
+            <Link
+              to="/contact"
+              className="px-6 py-3 text-sm font-medium text-white bg-[#1C52AF] rounded-xl hover:bg-blue-800 shadow-sm hover:shadow-md transition-all duration-200"
+            >
               Contact Support
             </Link>
           </div>
@@ -103,7 +128,7 @@ export default function FAQ() {
                   <motion.div
                     animate={{ rotate: isOpen ? 45 : 0, scale: isOpen ? 1.2 : 1 }}
                     transition={{ type: "spring", stiffness: 300 }}
-                    className={`w-7 h-7 flex items-center justify-center rounded-full ${
+                    className={`w-7 h-7 flex items-center justify-center rounded-full shrink-0 ${
                       isOpen ? "bg-blue-800 text-white" : "bg-gray-100 text-gray-700"
                     }`}
                   >
@@ -137,8 +162,3 @@ export default function FAQ() {
     </section>
   );
 }
-
-
-
-
-
