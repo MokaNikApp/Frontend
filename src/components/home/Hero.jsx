@@ -225,7 +225,7 @@ export default function Hero() {
           .card-pop { display: none; }
         }
       `}</style>
-      <section className="relative w-full overflow-hidden bg-white">
+      <section className="relative w-full overflow-hidden bg-white px-6">
 
         {/* DOT GRID BG */}
         <div className="absolute inset-0 dot-grid opacity-[0.045] pointer-events-none -z-10" />
@@ -239,7 +239,7 @@ export default function Hero() {
           style={{ animationDelay: "4s" }}
         />
 
-        <div className="grid items-center max-w-6xl grid-cols-1 gap-10 px-6 mx-auto py-7 md:grid-cols-2 sm:px-0 sm:py-12">
+        <div className="grid items-center max-w-7xl grid-cols-1 gap-10  mx-auto py-7 md:grid-cols-2  sm:py-12">
 
           {/* ── LEFT TEXT ── */}
           <div className={`flex flex-col justify-center text-center md:text-left transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}>

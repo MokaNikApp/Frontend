@@ -247,7 +247,7 @@ export default function ServicesSection() {
     >
       <ParticlesCanvas />
 
-      <div className="max-w-6xl px-4 mx-auto relative z-10">
+      <div className="max-w-7xl px-4 mx-auto relative z-10">
 
         {/* ── Header ── */}
         <div className="flex flex-col sm:gap-8 sm:mb-8 gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">

@@ -46,11 +46,11 @@ import Overview from "./pages/Mec-dashboard/Overview";
 import JobRequests from "./pages/Mec-dashboard/JobRequests";
 import ActiveJobs from "./pages/Mec-dashboard/Activejobs";
 import CompletedJobs from "./pages/Mec-dashboard/CompletedJobs";
-import Earnings from "./pages/Mec-dashboard/Earnings";
+import Payments from "./pages/Mec-dashboard/Payments";
 import Schedule from "./pages/Mec-dashboard/Schedule";
-import Messages from "./pages/Mec-dashboard/Messages";
 import { JobsProvider } from "./context/JobsContext";
 import Profile from "./pages/Mec-dashboard/Profile";
+import MecSettings from "./pages/Mec-dashboard/MecSettings"
 
 // ADMIN
 import UserDashboardPage from "./pages/Users-admin-pages/UserDashboardPage";
@@ -147,6 +147,15 @@ const App = () => {
               </JobsProvider>
             }
           />
+
+          <Route
+            path="/mec-dashboard/mec-settings"
+            element={
+              <JobsProvider>
+                <MecSettings/>
+              </JobsProvider>
+            }
+          />
           <Route
             path="/mec-dashboard/completed-jobs"
             element={
@@ -156,10 +165,10 @@ const App = () => {
             }
           />
           <Route
-            path="/mec-dashboard/earnings"
+            path="/mec-dashboard/mec-payments"
             element={
               <JobsProvider>
-                <Earnings />
+                <Payments />
               </JobsProvider>
             }
           />
@@ -176,14 +185,6 @@ const App = () => {
             element={
               <JobsProvider>
                 <Profile />
-              </JobsProvider>
-            }
-          />
-          <Route
-            path="/mec-dashboard/messages"
-            element={
-              <JobsProvider>
-                <Messages />
               </JobsProvider>
             }
           />

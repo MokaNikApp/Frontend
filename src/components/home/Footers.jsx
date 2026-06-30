@@ -228,7 +228,7 @@ export default function Footer() {
 
       <footer
         ref={footerRef}
-        className="text-gray-300 pt-14 sm:pt-20 pb-10 px-6 sm:px-8 lg:px-24"
+        className="text-gray-300 pt-14 sm:pt-20 pb-10 px-6"
         style={{ background: "#15256E", position: "relative", overflow: "hidden" }}
       >
         <Particles />
