@@ -104,7 +104,7 @@ const App = () => {
           <Route path="/book-service" element={<BookServicePage />} />
           <Route path="/my-service" element={<MyServicePage />} />
           <Route path="/service-history" element={<ServiceHistoryPage />} />
-          <Route path="/payment/success" element={<PaymentPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/notify" element={<NotificationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/vehicles" element={<VechiclePage />} />
