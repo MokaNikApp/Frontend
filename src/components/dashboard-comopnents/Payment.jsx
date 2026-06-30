@@ -9,7 +9,7 @@ import {
   HiCurrencyDollar,
   HiCalendar,
 } from "react-icons/hi";
-import api from "../api/axios";
+import api from "../../api/axios";
 
 const PaymentCallback = () => {
   const [searchParams] = useSearchParams();
