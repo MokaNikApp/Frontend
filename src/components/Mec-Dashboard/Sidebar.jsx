@@ -109,17 +109,14 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
               <FiCheckCircle /> Completed Jobs
             </Link>
 
-            <Link to="/mec-dashboard/earnings" className={linkClass("/mec-dashboard/earnings")}>
-              <FiDollarSign /> Earnings
+            <Link to="/mec-dashboard/mec-payments" className={linkClass("/mec-dashboard/mec-payments")}>
+              <FiDollarSign /> Payments
             </Link>
 
             <Link to="/mec-dashboard/schedule" className={linkClass("/mec-dashboard/schedule")}>
               <FiCalendar /> Schedule
             </Link>
 
-            <Link to="/mec-dashboard/messages" className={linkClass("/mec-dashboard/messages")}>
-              <FiMessageSquare /> Messages
-            </Link>
 
             <p className="text-xs text-gray-400 font-bold mt-6 px-2">ACCOUNT</p>
 
@@ -127,7 +124,7 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
               <FiUser /> Profile
             </Link>
 
-            <Link to="/mec-dashboard/settings" className={linkClass("/mec-dashboard/settings")}>
+            <Link to="/mec-dashboard/mec-settings" className={linkClass("/mec-dashboard/settings")}>
               <FiSettings /> Settings
             </Link>
 

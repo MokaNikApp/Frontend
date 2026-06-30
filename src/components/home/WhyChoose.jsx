@@ -70,7 +70,7 @@ export default function WhyChoose() {
   return (
     <section
       ref={ref}
-      className="relative w-full py-8 sm:py-12 px-4 sm:px-6 lg:px-24 bg-[#FAFAFA] overflow-hidden"
+      className="relative w-full py-8 sm:py-12 bg-[#FAFAFA] overflow-hidden"
     >
       {/* background glow */}
       <div
@@ -108,7 +108,7 @@ export default function WhyChoose() {
         variants={container}
         initial="hidden"
         animate={isInView ? "show" : "hidden"}
-        className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto"
+        className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto"
       >
         {features.map((item, i) => (
           <motion.div

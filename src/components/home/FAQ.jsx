@@ -39,12 +39,12 @@ export default function FAQ() {
   };
 
   return (
-    <section className="relative px-5 py-12 overflow-hidden bg-white sm:py-20 lg:py-24 sm:px-24">
+    <section className="relative py-12 overflow-hidden bg-white sm:py-20 lg:py-24 ">
 
       {/* subtle background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.08),transparent_60%)]" />
 
-      <div className="relative grid max-w-6xl grid-cols-1 gap-8 mx-auto lg:grid-cols-2 lg:gap-16">
+      <div className="relative grid max-w-7xl grid-cols-1 gap-8 mx-auto lg:grid-cols-2 lg:gap-16 px-4">
 
         {/* LEFT */}
         <div className="text-center lg:text-left">
@@ -74,7 +74,7 @@ export default function FAQ() {
           </div>
 
           {/* Desktop buttons */}
-          <div className="hidden lg:flex items-center gap-3 mt-6">
+          <div className="hidden lg:flex items-center gap-3 sm:gap-12 mt-6">
             <Link
               to=""
               className="px-6 py-3 text-sm font-medium text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"

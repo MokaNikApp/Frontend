@@ -216,18 +216,7 @@ export default function CompletedJobs() {
     document.body.removeChild(link);
   };
 
-  // ─── Loading State ─────────────────────────────────────────────
-  if (isLoading) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#f8fafc]">
-        <div className="text-[#2563eb] font-semibold animate-pulse flex items-center gap-2">
-          <span className="w-4 h-4 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></span>
-          Loading completed jobs...
-        </div>
-      </div>
-    );
-  }
-
+  
   // ─── Render ────────────────────────────────────────────────────
   return (
     <div className="flex h-screen overflow-hidden bg-[#f8fafc]">

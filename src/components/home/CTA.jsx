@@ -24,7 +24,7 @@ export default function CTA() {
         className="absolute bg-indigo-100 rounded-full -bottom-24 -right-24 w-72 h-72 blur-3xl"
       />
 
-      <div className="relative grid items-center max-w-6xl grid-cols-1 gap-12 mx-auto lg:grid-cols-2">
+      <div className="relative grid items-center max-w-7xl grid-cols-1 gap-12 mx-auto lg:grid-cols-2">
 
         {/* LEFT CONTENT */}
         <motion.div
