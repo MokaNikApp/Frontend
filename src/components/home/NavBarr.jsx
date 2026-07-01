@@ -12,7 +12,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 sm:h-[72px] px-6 sm:px-0">
+      <div className="max-w-6xl mx-auto flex items-center justify-between h-16 sm:h-[72px] px-6 sm:px-0">
         
         {/* ─── LOGO ─────────────────────────────────────────── */}
         <Link to="/" className="flex items-center shrink-0 h-full" onClick={handleNav}>

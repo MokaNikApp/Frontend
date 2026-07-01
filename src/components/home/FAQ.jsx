@@ -44,7 +44,7 @@ export default function FAQ() {
       {/* subtle background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.08),transparent_60%)]" />
 
-      <div className="relative grid max-w-7xl grid-cols-1 gap-8 mx-auto lg:grid-cols-2 lg:gap-16 px-4">
+      <div className="relative grid max-w-6xl grid-cols-1 gap-8 mx-auto lg:grid-cols-2 lg:gap-16 px-4">
 
         {/* LEFT */}
         <div className="text-center lg:text-left">

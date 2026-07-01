@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
     <ErrorBoundary>
       <App />
-      </ErrorBoundary>
+      </ErrorBoundary> 
     </BrowserRouter>
   </React.StrictMode>
 );
