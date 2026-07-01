@@ -239,7 +239,7 @@ export default function Hero() {
           style={{ animationDelay: "4s" }}
         />
 
-        <div className="grid items-center max-w-7xl grid-cols-1 gap-10  mx-auto py-7 md:grid-cols-2  sm:py-12">
+        <div className="grid items-center max-w-6xl grid-cols-1 gap-10  mx-auto py-7 md:grid-cols-2  sm:py-12">
 
           {/* ── LEFT TEXT ── */}
           <div className={`flex flex-col justify-center text-center md:text-left transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}>
