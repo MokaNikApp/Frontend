@@ -70,7 +70,7 @@ export default function WhyChoose() {
   return (
     <section
       ref={ref}
-      className="relative w-full py-8 sm:py-12 bg-[#FAFAFA] overflow-hidden"
+      className="relative w-full py-8 sm:py-12 bg-white overflow-hidden"
     >
       {/* background glow */}
       <div

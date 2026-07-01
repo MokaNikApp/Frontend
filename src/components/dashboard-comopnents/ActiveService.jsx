@@ -49,23 +49,6 @@ const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
                 </p>
               </div>
             </div>
-
-            {/* Progress */}
-            {active.progress !== undefined && (
-              <div>
-                <div className="flex justify-between mb-1 text-sm">
-                  <p className="text-gray-600">Progress</p>
-                  <p className="text-gray-600 font-medium">{active.progress}%</p>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3 sm:h-4">
-                  <div
-                    className="bg-[#1C52AF] h-3 sm:h-4 rounded-full transition-all duration-500"
-                    style={{ width: `${active.progress}%` }}
-                  />
-                </div>
-              </div>
-            )}
-
             {active.estimatedCompletion && (
               <p className="text-gray-500 text-xs sm:text-sm">
                 Estimated completion: {active.estimatedCompletion}

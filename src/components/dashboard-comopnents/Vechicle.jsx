@@ -1,1274 +1,814 @@
-
-
-
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  FiPlus,
+  FiSearch,
+  FiX,
+  FiEdit2,
+  FiTrash2,
+  FiClock,
+  FiChevronRight,
+  FiHash,
+  FiDroplet,
+  FiActivity,
+  FiCalendar,
+  FiAlertTriangle,
+  FiCheck,
+  FiTruck,
+  FiTool,
+  FiInbox,
+} from "react-icons/fi";
 import api from "../../api/axios";
 
-// ─── CONSTANTS ────────────────────────────────────────────────────────────────
-const COLOR_MAP = {
-  Silver: "#C0C0C0",
-  White: "#E5E5E5",
-  Black: "#1a1a1a",
-  Red: "#DC2626",
-  Blue: "#2563EB",
-  Gray: "#6B7280",
-  Gold: "#D97706",
-  Green: "#059669",
-  Brown: "#92400E",
+// ─── STATUS CONFIG ────────────────────────────────────────────────────────────
+const statusConfig = {
+  active: {
+    label: "Active",
+    dot: "bg-emerald-500",
+    badge: "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
+  },
+  inactive: {
+    label: "Inactive",
+    dot: "bg-amber-500",
+    badge: "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400",
+  },
 };
 
-const COLORS = Object.keys(COLOR_MAP);
-
-const EMPTY_FORM = {
-  brand: "",
-  model: "",
-  year: "",
-  plateNumber: "",
-  color: "",
-  vin: "",
-  mileage: "",
-  engine: "",
-  status: "active",
-};
-
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-function ColorDot({ color }) {
-  const hex = COLOR_MAP[color];
-  if (!hex) return null;
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        width: 10,
-        height: 10,
-        borderRadius: "50%",
-        background: hex,
-        border: "1px solid rgba(0,0,0,0.15)",
-        flexShrink: 0,
-      }}
-    />
-  );
-}
+const getStatus = (status) => statusConfig[status?.toLowerCase()] ?? statusConfig.inactive;
 
 // ─── TOAST ────────────────────────────────────────────────────────────────────
-function useToast() {
-  const [toast, setToast] = useState(null);
-  const timerRef = useRef(null);
-  const show = (message, type = "success") => {
-    clearTimeout(timerRef.current);
-    setToast({ message, type });
-    timerRef.current = setTimeout(() => setToast(null), 3500);
-  };
-  return { toast, show };
-}
+const Toast = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const t = setTimeout(onClose, 3000);
+    return () => clearTimeout(t);
+  }, [onClose]);
 
-function Toast({ toast }) {
-  if (!toast) return null;
-  const bg = toast.type === "success" ? "#166534" : toast.type === "error" ? "#991b1b" : "#1e3a5f";
+  const styles =
+    type === "success"
+      ? "bg-emerald-600"
+      : type === "error"
+      ? "bg-red-600"
+      : "bg-[#1C52AF]";
+
   return (
     <div
-      style={{
-        position: "fixed",
-        bottom: 24,
-        right: 24,
-        zIndex: 9999,
-        background: bg,
-        color: "#fff",
-        padding: "10px 18px",
-        borderRadius: 10,
-        fontSize: 13,
-        fontWeight: 500,
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-        animation: "fadeUp 0.2s ease",
-      }}
+      className={`fixed top-4 right-4 z-[70] ${styles} text-white pl-3 pr-4 py-2.5 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-top-2 fade-in duration-200`}
     >
-      {toast.message}
+      {type === "success" ? <FiCheck className="w-4 h-4 flex-shrink-0" /> : <FiAlertTriangle className="w-4 h-4 flex-shrink-0" />}
+      <span className="text-[13px] font-medium">{message}</span>
     </div>
   );
-}
+};
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
-function Modal({ open, onClose, children, maxWidth = 560 }) {
-  const overlayRef = useRef();
-  useEffect(() => {
-    if (!open) return;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
-
-  if (!open) return null;
+const Modal = ({ isOpen, onClose, title, subtitle, children, maxWidth = "max-w-lg" }) => {
+  if (!isOpen) return null;
   return (
     <div
-      ref={overlayRef}
-      onMouseDown={(e) => e.target === overlayRef.current && onClose()}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.45)",
-        zIndex: 1000,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-      }}
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-[2px] animate-in fade-in duration-150"
+      onClick={onClose}
     >
       <div
-        style={{
-          background: "#fff",
-          borderRadius: 14,
-          width: "100%",
-          maxWidth,
-          maxHeight: "92vh",
-          overflowY: "auto",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
-        }}
+        className={`bg-white border border-gray-200/80 rounded-xl shadow-xl w-full ${maxWidth} max-h-[88vh] overflow-y-auto animate-in zoom-in-95 duration-150 dark:bg-gray-900 dark:border-gray-800`}
+        onClick={(e) => e.stopPropagation()}
       >
-        {children}
+        <div className="flex items-start justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+          <div>
+            <h3 className="text-[14px] font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+            {subtitle && <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</p>}
+          </div>
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors flex-shrink-0"
+            aria-label="Close"
+          >
+            <FiX className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="p-5">{children}</div>
       </div>
     </div>
   );
-}
+};
 
-// ─── FIELD ────────────────────────────────────────────────────────────────────
-function Field({ label, id, type = "text", placeholder, value, onChange, error, optional }) {
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        style={{
-          display: "block",
-          fontSize: 11,
-          fontWeight: 600,
-          color: "#6b7280",
-          letterSpacing: "0.05em",
-          textTransform: "uppercase",
-          marginBottom: 6,
-        }}
-      >
-        {label}
-        {optional && (
-          <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0, marginLeft: 4, color: "#9ca3af" }}>
-            (optional)
-          </span>
-        )}
-      </label>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        autoComplete="off"
-        style={{
-          width: "100%",
-          height: 40,
-          padding: "0 12px",
-          fontSize: 13,
-          color: "#111827",
-          background: error ? "#fff8f8" : "#f9fafb",
-          border: `1px solid ${error ? "#fca5a5" : "#e5e7eb"}`,
-          borderRadius: 8,
-          outline: "none",
-          transition: "border-color 0.15s, box-shadow 0.15s, background 0.15s",
-          boxSizing: "border-box",
-          fontFamily: id === "vin" ? "ui-monospace, monospace" : "inherit",
-          letterSpacing: id === "vin" ? "0.04em" : "normal",
-        }}
-        onFocus={(e) => {
-          e.target.style.borderColor = "#1C52AF";
-          e.target.style.boxShadow = "0 0 0 3px rgba(28,82,175,0.1)";
-          e.target.style.background = "#fff";
-        }}
-        onBlur={(e) => {
-          e.target.style.borderColor = error ? "#fca5a5" : "#e5e7eb";
-          e.target.style.boxShadow = "none";
-          e.target.style.background = error ? "#fff8f8" : "#f9fafb";
-        }}
-      />
-      {error && (
-        <p style={{ fontSize: 11, color: "#dc2626", marginTop: 4, marginBottom: 0 }}>{error}</p>
-      )}
-    </div>
-  );
-}
+// ─── FORM FIELD ───────────────────────────────────────────────────────────────
+const Field = ({ label, error, children }) => (
+  <div>
+    <label className="block text-[11px] font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+      {label}
+    </label>
+    {children}
+    {error && <p className="text-[11px] text-red-500 mt-1">{error}</p>}
+  </div>
+);
 
-// ─── VEHICLE FORM MODAL ───────────────────────────────────────────────────────
-function VehicleFormModal({ open, onClose, vehicle, onSaved }) {
-  const isEdit = !!vehicle;
-  const [form, setForm] = useState(EMPTY_FORM);
+const inputBase =
+  "w-full h-9 px-3 text-[13px] rounded-lg border bg-gray-50 text-gray-900 placeholder:text-gray-400 outline-none transition-all focus:bg-white focus:ring-2 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:bg-gray-900";
+
+const inputClass = (hasError) =>
+  `${inputBase} ${
+    hasError
+      ? "border-red-300 focus:border-red-400 focus:ring-red-100 dark:border-red-900"
+      : "border-gray-200 focus:border-[#1C52AF]/50 focus:ring-[#1C52AF]/10 dark:border-gray-700 dark:focus:border-[#1C52AF]/50"
+  }`;
+
+// ─── VEHICLE FORM ─────────────────────────────────────────────────────────────
+const VehicleForm = ({ vehicle, onSubmit, onCancel, isSubmitting }) => {
+  const [formData, setFormData] = useState({
+    brand: "",
+    model: "",
+    year: new Date().getFullYear(),
+    plateNumber: "",
+    color: "",
+    vin: "",
+    mileage: 0,
+    ...vehicle,
+  });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      setErrors({});
-      setForm(
-        vehicle
-          ? {
-              brand: vehicle.brand || "",
-              model: vehicle.model || "",
-              year: String(vehicle.year || ""),
-              plateNumber: vehicle.plateNumber || "",
-              color: vehicle.color || "",
-              vin: vehicle.vin || "",
-              mileage: String(vehicle.mileage || ""),
-              engine: vehicle.engine || "",
-              status: vehicle.status || "active",
-            }
-          : { ...EMPTY_FORM }
-      );
-    }
-  }, [open, vehicle]);
-
-  const set = (key) => (e) => {
-    setForm((f) => ({ ...f, [key]: e.target.value }));
-    if (errors[key]) setErrors((er) => ({ ...er, [key]: null }));
-  };
 
   const validate = () => {
     const e = {};
-    if (!form.brand.trim()) e.brand = "Brand is required";
-    if (!form.model.trim()) e.model = "Model is required";
-    if (!form.year) e.year = "Year is required";
-    if (!form.plateNumber.trim()) e.plateNumber = "Plate number is required";
-    if (!form.vin.trim()) e.vin = "VIN is required";
-    if (form.mileage === "" || form.mileage === null) e.mileage = "Mileage is required";
+    if (!formData.brand.trim()) e.brand = "Brand is required";
+    if (!formData.model.trim()) e.model = "Model is required";
+    if (!formData.year || formData.year < 1900 || formData.year > new Date().getFullYear() + 1) e.year = "Invalid year";
+    if (!formData.plateNumber.trim()) e.plateNumber = "Plate number is required";
+    if (!formData.color.trim()) e.color = "Color is required";
+    if (!formData.vin.trim()) e.vin = "VIN is required";
+    else if (formData.vin.length !== 17) e.vin = "VIN must be 17 characters";
+    if (formData.mileage < 0) e.mileage = "Mileage cannot be negative";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validate()) return;
-    setLoading(true);
-    try {
-      const payload = {
-        ...form,
-        year: parseInt(form.year, 10),
-        mileage: parseInt(form.mileage, 10),
-        engine: form.engine.trim() || null,
-        lastServiceMileage: vehicle?.lastServiceMileage ?? null,
-        imageUrl: null,
-        documents: null,
-      };
-      if (isEdit) {
-        await api.put(`/vehicles/${vehicle.id}`, payload);
-      } else {
-        await api.post("/vehicles", payload);
-      }
-      onSaved(isEdit ? "updated" : "created");
-      onClose();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = (ev) => {
+    ev.preventDefault();
+    if (validate()) onSubmit(formData);
   };
 
-  const inputStyle = (key) => ({
-    width: "100%",
-    height: 40,
-    padding: "0 12px",
-    fontSize: 13,
-    color: "#111827",
-    background: errors[key] ? "#fff8f8" : "#f9fafb",
-    border: `1px solid ${errors[key] ? "#fca5a5" : "#e5e7eb"}`,
-    borderRadius: 8,
-    outline: "none",
-    boxSizing: "border-box",
-    fontFamily: "inherit",
-  });
-
   return (
-    <Modal open={open} onClose={onClose} maxWidth={580}>
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "18px 24px",
-          borderBottom: "1px solid #f3f4f6",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 8,
-              background: "#eff6ff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1C52AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4v4a2 2 0 0 1-2 2h-1"/>
-              <circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
-              <path d="M14 5h1l4 4"/>
-            </svg>
-          </div>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: "#111827", margin: 0 }}>
-            {isEdit ? "Edit vehicle" : "Add new vehicle"}
-          </h2>
-        </div>
-        <button
-          onClick={onClose}
-          style={{
-            width: 30,
-            height: 30,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "1px solid #e5e7eb",
-            borderRadius: 7,
-            background: "transparent",
-            cursor: "pointer",
-            color: "#6b7280",
-            fontSize: 16,
-          }}
-        >
-          ×
-        </button>
-      </div>
-
-      {/* Body */}
-      <div style={{ padding: "20px 24px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <Field
-            label="Brand"
-            id="brand"
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="Brand" error={errors.brand}>
+          <input
+            type="text"
+            value={formData.brand}
+            onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+            className={inputClass(errors.brand)}
             placeholder="e.g. Toyota"
-            value={form.brand}
-            onChange={set("brand")}
-            error={errors.brand}
           />
-          <Field
-            label="Model"
-            id="model"
+        </Field>
+        <Field label="Model" error={errors.model}>
+          <input
+            type="text"
+            value={formData.model}
+            onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+            className={inputClass(errors.model)}
             placeholder="e.g. Camry"
-            value={form.model}
-            onChange={set("model")}
-            error={errors.model}
           />
-          <Field
-            label="Year"
-            id="year"
-            type="number"
-            placeholder="e.g. 2021"
-            value={form.year}
-            onChange={set("year")}
-            error={errors.year}
-          />
-
-          {/* Color */}
-          <div>
-            <label
-              htmlFor="color"
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#6b7280",
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
-                marginBottom: 6,
-              }}
-            >
-              Color
-            </label>
-            <div style={{ position: "relative" }}>
-              {form.color && (
-                <ColorDot color={form.color} />
-              )}
-              <select
-                id="color"
-                value={form.color}
-                onChange={set("color")}
-                style={{
-                  ...inputStyle("color"),
-                  paddingLeft: form.color ? 26 : 12,
-                  cursor: "pointer",
-                  appearance: "auto",
-                }}
-              >
-                <option value="">Select color</option>
-                {COLORS.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-              {form.color && (
-                <span
-                  style={{
-                    position: "absolute",
-                    left: 10,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    pointerEvents: "none",
-                  }}
-                >
-                  <ColorDot color={form.color} />
-                </span>
-              )}
-            </div>
-          </div>
-
-          <Field
-            label="Plate number"
-            id="plateNumber"
-            placeholder="e.g. ABC-1234"
-            value={form.plateNumber}
-            onChange={set("plateNumber")}
-            error={errors.plateNumber}
-          />
-          <Field
-            label="Mileage (km)"
-            id="mileage"
-            type="number"
-            placeholder="e.g. 15000"
-            value={form.mileage}
-            onChange={set("mileage")}
-            error={errors.mileage}
-          />
-
-          {/* VIN full width */}
-          <div style={{ gridColumn: "span 2" }}>
-            <label
-              htmlFor="vin"
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#6b7280",
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
-                marginBottom: 6,
-              }}
-            >
-              VIN
-            </label>
-            <input
-              id="vin"
-              type="text"
-              value={form.vin}
-              onChange={set("vin")}
-              placeholder="e.g. 1HGBH41JXMN109186"
-              autoComplete="off"
-              style={{
-                ...inputStyle("vin"),
-                fontFamily: "ui-monospace, 'Courier New', monospace",
-                letterSpacing: "0.05em",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#1C52AF";
-                e.target.style.boxShadow = "0 0 0 3px rgba(28,82,175,0.1)";
-                e.target.style.background = "#fff";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = errors.vin ? "#fca5a5" : "#e5e7eb";
-                e.target.style.boxShadow = "none";
-                e.target.style.background = errors.vin ? "#fff8f8" : "#f9fafb";
-              }}
-            />
-            {errors.vin && (
-              <p style={{ fontSize: 11, color: "#dc2626", marginTop: 4, marginBottom: 0 }}>{errors.vin}</p>
-            )}
-          </div>
-
-          <Field
-            label="Engine"
-            id="engine"
-            placeholder="e.g. 2.5L V6"
-            value={form.engine}
-            onChange={set("engine")}
-            optional
-          />
-
-          {/* Status */}
-          <div>
-            <label
-              htmlFor="status"
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#6b7280",
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
-                marginBottom: 6,
-              }}
-            >
-              Status
-            </label>
-            <select
-              id="status"
-              value={form.status}
-              onChange={set("status")}
-              style={{ ...inputStyle("status"), cursor: "pointer", appearance: "auto" }}
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-
-        </div>
+        </Field>
       </div>
 
-      {/* Footer */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          gap: 10,
-          padding: "14px 24px",
-          borderTop: "1px solid #f3f4f6",
-          background: "#fafafa",
-          borderRadius: "0 0 14px 14px",
-        }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Field label="Year" error={errors.year}>
+          <input
+            type="number"
+            value={formData.year}
+            onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) || "" })}
+            className={inputClass(errors.year)}
+          />
+        </Field>
+        <Field label="Plate number" error={errors.plateNumber}>
+          <input
+            type="text"
+            value={formData.plateNumber}
+            onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value.toUpperCase() })}
+            className={`${inputClass(errors.plateNumber)} font-mono`}
+            placeholder="ABC-1234"
+          />
+        </Field>
+        <Field label="Color" error={errors.color}>
+          <input
+            type="text"
+            value={formData.color}
+            onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+            className={inputClass(errors.color)}
+            placeholder="e.g. Silver"
+          />
+        </Field>
+      </div>
+
+      <Field label="VIN · 17 characters" error={errors.vin}>
+        <input
+          type="text"
+          value={formData.vin}
+          onChange={(e) => setFormData({ ...formData, vin: e.target.value.toUpperCase().slice(0, 17) })}
+          className={`${inputClass(errors.vin)} font-mono`}
+          placeholder="1HGBH41JXMN109186"
+          maxLength={17}
+        />
+      </Field>
+
+      <Field label="Mileage (km)" error={errors.mileage}>
+        <input
+          type="number"
+          value={formData.mileage}
+          onChange={(e) => setFormData({ ...formData, mileage: parseInt(e.target.value) || 0 })}
+          className={inputClass(errors.mileage)}
+          placeholder="15000"
+        />
+      </Field>
+
+      <div className="flex gap-2 pt-2">
         <button
-          onClick={onClose}
-          style={{
-            height: 38,
-            padding: "0 18px",
-            fontSize: 13,
-            fontWeight: 500,
-            color: "#374151",
-            background: "#fff",
-            border: "1px solid #e5e7eb",
-            borderRadius: 8,
-            cursor: "pointer",
-          }}
+          type="button"
+          onClick={onCancel}
+          className="flex-1 h-9 rounded-lg border border-gray-200 text-[13px] font-medium text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
         >
           Cancel
         </button>
         <button
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{
-            height: 38,
-            padding: "0 18px",
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#fff",
-            background: loading ? "#93b4e8" : "#1C52AF",
-            border: "none",
-            borderRadius: 8,
-            cursor: loading ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            transition: "background 0.15s",
-          }}
+          type="submit"
+          disabled={isSubmitting}
+          className="flex-1 h-9 rounded-lg bg-[#1C52AF] text-[13px] font-medium text-white hover:bg-[#173f8a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
         >
-          {loading ? (
+          {isSubmitting ? (
             <>
-              <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />
+              <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
               Saving…
             </>
-          ) : isEdit ? (
-            "Save changes"
+          ) : vehicle ? (
+            "Update vehicle"
           ) : (
             "Add vehicle"
           )}
         </button>
       </div>
-    </Modal>
+    </form>
   );
-}
+};
 
-// ─── DETAIL MODAL ─────────────────────────────────────────────────────────────
-function DetailModal({ open, onClose, vehicle }) {
-  if (!vehicle) return null;
-
-  const InfoRow = ({ icon, label, value }) => (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        padding: "10px 0",
-        borderBottom: "1px solid #f3f4f6",
-      }}
-    >
-      <div
-        style={{
-          width: 32,
-          height: 32,
-          borderRadius: 7,
-          background: "#eff6ff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          fontSize: 14,
-        }}
-      >
-        {icon}
-      </div>
-      <div>
-        <p style={{ fontSize: 11, color: "#9ca3af", margin: 0 }}>{label}</p>
-        <p style={{ fontSize: 13, fontWeight: 600, color: "#111827", margin: 0 }}>{value || "—"}</p>
-      </div>
-    </div>
-  );
-
-  const isActive = vehicle.status === "active";
-
-  return (
-    <Modal open={open} onClose={onClose} maxWidth={520}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 24px", borderBottom: "1px solid #f3f4f6" }}>
-        <h2 style={{ fontSize: 15, fontWeight: 600, color: "#111827", margin: 0 }}>Vehicle details</h2>
-        <button
-          onClick={onClose}
-          style={{ width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #e5e7eb", borderRadius: 7, background: "transparent", cursor: "pointer", color: "#6b7280", fontSize: 16 }}
-        >
-          ×
-        </button>
-      </div>
-
-      {/* Hero card */}
-      <div style={{ margin: "16px 24px", background: "linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%)", borderRadius: 12, padding: 20, border: "1px solid #dbeafe", display: "flex", alignItems: "center", gap: 16 }}>
-        <div style={{ width: 60, height: 60, borderRadius: 12, background: "#fff", border: "1px solid #dbeafe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1C52AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4v4a2 2 0 0 1-2 2h-1"/>
-            <circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
-            <path d="M14 5h1l4 4"/>
-          </svg>
-        </div>
-        <div>
-          <h3 style={{ fontSize: 17, fontWeight: 700, color: "#111827", margin: "0 0 4px" }}>
-            {vehicle.brand} {vehicle.model}
-          </h3>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 13, color: "#6b7280" }}>{vehicle.year}</span>
-            {vehicle.color && (
-              <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: "#6b7280" }}>
-                · <ColorDot color={vehicle.color} /> {vehicle.color}
-              </span>
-            )}
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                padding: "2px 10px",
-                borderRadius: 20,
-                background: isActive ? "#dcfce7" : "#f3f4f6",
-                color: isActive ? "#15803d" : "#6b7280",
-              }}
-            >
-              {isActive ? "Active" : "Inactive"}
-            </span>
-          </div>
-          <p style={{ fontSize: 13, fontWeight: 700, fontFamily: "ui-monospace, monospace", color: "#374151", margin: "6px 0 0", letterSpacing: "0.1em" }}>
-            {vehicle.plateNumber}
-          </p>
-        </div>
-      </div>
-
-      <div style={{ padding: "0 24px 20px" }}>
-        <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9ca3af", marginBottom: 4 }}>Technical</p>
-        <InfoRow icon="🔖" label="VIN" value={vehicle.vin} />
-        <InfoRow icon="⛽" label="Engine" value={vehicle.engine} />
-        <InfoRow icon="📏" label="Current mileage" value={vehicle.mileage != null ? `${vehicle.mileage.toLocaleString()} km` : null} />
-        <InfoRow icon="🔧" label="Last service mileage" value={vehicle.lastServiceMileage ? `${vehicle.lastServiceMileage.toLocaleString()} km` : null} />
-
-        <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9ca3af", margin: "16px 0 4px" }}>Record</p>
-        <InfoRow icon="📅" label="Added on" value={new Date(vehicle.createdAt).toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" })} />
-        <InfoRow icon="🕒" label="Last updated" value={new Date(vehicle.updatedAt).toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" })} />
-      </div>
-    </Modal>
-  );
-}
-
-// ─── HISTORY MODAL ────────────────────────────────────────────────────────────
-function HistoryModal({ open, onClose, vehicle }) {
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (open && vehicle) {
-      setLoading(true);
-      api
-        .get(`/vehicles/${vehicle.id}/history`)
-        .then(({ data }) => setHistory(Array.isArray(data) ? data : []))
-        .catch(() => setHistory([]))
-        .finally(() => setLoading(false));
-    }
-  }, [open, vehicle]);
-
-  if (!vehicle) return null;
-
-  return (
-    <Modal open={open} onClose={onClose} maxWidth={520}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 24px", borderBottom: "1px solid #f3f4f6" }}>
-        <div>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: "#111827", margin: 0 }}>Service history</h2>
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>{vehicle.brand} {vehicle.model} · {vehicle.plateNumber}</p>
-        </div>
-        <button onClick={onClose} style={{ width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #e5e7eb", borderRadius: 7, background: "transparent", cursor: "pointer", color: "#6b7280", fontSize: 16 }}>×</button>
-      </div>
-
-      <div style={{ padding: "20px 24px", minHeight: 200 }}>
-        {loading ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 0", color: "#9ca3af" }}>
-            <span style={{ width: 28, height: 28, border: "2px solid #bfdbfe", borderTopColor: "#1C52AF", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite", marginBottom: 12 }} />
-            <p style={{ fontSize: 13, margin: 0 }}>Loading history…</p>
-          </div>
-        ) : history.length === 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 0", color: "#9ca3af" }}>
-            <p style={{ fontSize: 13, fontWeight: 500, margin: 0 }}>No service history found</p>
-            <p style={{ fontSize: 12, margin: "4px 0 0" }}>Service records will appear here</p>
-          </div>
-        ) : (
-          <div style={{ position: "relative", paddingLeft: 20 }}>
-            <div style={{ position: "absolute", left: 6, top: 6, bottom: 6, width: 1, background: "#e5e7eb" }} />
-            {history.map((entry, i) => (
-              <div key={entry.id || i} style={{ position: "relative", marginBottom: 16 }}>
-                <span style={{ position: "absolute", left: -20, top: 6, width: 12, height: 12, borderRadius: "50%", background: "#1C52AF", border: "2px solid #fff", boxShadow: "0 0 0 1px #dbeafe" }} />
-                <div style={{ background: "#f9fafb", borderRadius: 10, padding: "12px 14px", border: "1px solid #f3f4f6" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "#111827", margin: 0 }}>
-                      {entry.serviceType || entry.type || "Service"}
-                    </p>
-                    <span style={{ fontSize: 11, color: "#9ca3af", whiteSpace: "nowrap" }}>
-                      {new Date(entry.date || entry.createdAt).toLocaleDateString("en-NG")}
-                    </span>
-                  </div>
-                  {entry.description && (
-                    <p style={{ fontSize: 12, color: "#6b7280", margin: "4px 0 0" }}>{entry.description}</p>
-                  )}
-                  {entry.mileage && (
-                    <p style={{ fontSize: 12, color: "#1C52AF", fontWeight: 500, margin: "6px 0 0" }}>
-                      {entry.mileage.toLocaleString()} km
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </Modal>
-  );
-}
-
-// ─── DELETE MODAL ─────────────────────────────────────────────────────────────
-function DeleteModal({ open, onClose, vehicle, onDeleted }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleDelete = async () => {
-    // DEBUG: Log what we're trying to delete
-    console.log("Attempting to delete vehicle:", vehicle);
-    console.log("Vehicle ID:", vehicle?.id);
-    console.log("Vehicle ID type:", typeof vehicle?.id);
-
-    if (!vehicle?.id) {
-      console.error("Cannot delete: vehicle.id is missing or undefined");
-      setError("Vehicle ID is missing. Please refresh and try again.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const deleteUrl = `/vehicles/${vehicle.id}`;
-      console.log("DELETE request to:", deleteUrl);
-
-      const response = await api.delete(deleteUrl);
-
-      console.log("Delete successful:", response.status, response.statusText);
-      onDeleted();
-      onClose();
-    } catch (err) {
-      console.error("Delete failed:", err);
-
-      // Log detailed error info
-      if (err.response) {
-        console.error("Response status:", err.response.status);
-        console.error("Response data:", err.response.data);
-        console.error("Response headers:", err.response.headers);
-        setError(`Server error: ${err.response.status} - ${err.response.data?.message || err.response.statusText}`);
-      } else if (err.request) {
-        console.error("No response received:", err.request);
-        setError("No response from server. Check your network connection.");
-      } else {
-        console.error("Error setting up request:", err.message);
-        setError(`Request error: ${err.message}`);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (!vehicle) return null;
-
-  return (
-    <Modal open={open} onClose={onClose} maxWidth={400}>
-      <div style={{ padding: "28px 24px", textAlign: "center" }}>
-        <div style={{ width: 52, height: 52, borderRadius: 14, background: "#fef2f2", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 22 }}>
-          🗑️
-        </div>
-        <h2 style={{ fontSize: 16, fontWeight: 600, color: "#111827", margin: "0 0 8px" }}>Delete vehicle</h2>
-        <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 24px", lineHeight: 1.6 }}>
-          Are you sure you want to delete{" "}
-          <strong style={{ color: "#374151" }}>{vehicle.brand} {vehicle.model}</strong>{" "}
-          ({vehicle.plateNumber})? This cannot be undone.
-        </p>
-        <div style={{ display: "flex", gap: 10 }}>
-          <button
-            onClick={onClose}
-            style={{ flex: 1, height: 40, fontSize: 13, fontWeight: 500, color: "#374151", background: "#fff", border: "1px solid #e5e7eb", borderRadius: 9, cursor: "pointer" }}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleDelete}
-            disabled={loading}
-            style={{ flex: 1, height: 40, fontSize: 13, fontWeight: 600, color: "#fff", background: loading ? "#fca5a5" : "#dc2626", border: "none", borderRadius: 9, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
-          >
-            {loading ? (
-              <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />
-            ) : null}
-            {loading ? "Deleting…" : "Delete"}
-          </button>
-        </div>
-      </div>
-    </Modal>
-  );
-}
+// ─── PLATE CHIP ───────────────────────────────────────────────────────────────
+const PlateChip = ({ plate }) => (
+  <span className="inline-flex items-center px-2 py-0.5 rounded-md border border-gray-300 bg-gray-50 text-gray-700 text-[11px] font-mono font-semibold tracking-wide dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+    {plate}
+  </span>
+);
 
 // ─── VEHICLE CARD ─────────────────────────────────────────────────────────────
-function VehicleCard({ vehicle, onView, onEdit, onDelete, onHistory }) {
-  const isActive = vehicle.status === "active";
+const VehicleCard = ({ vehicle, onEdit, onDelete, onViewHistory, onViewDetails }) => {
+  const status = getStatus(vehicle.status);
 
   return (
-    <div
-      style={{
-        background: "#fff",
-        borderRadius: 14,
-        border: "1px solid #e5e7eb",
-        overflow: "hidden",
-        transition: "box-shadow 0.18s, border-color 0.18s",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.08)";
-        e.currentTarget.style.borderColor = "#bfdbfe";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = "none";
-        e.currentTarget.style.borderColor = "#e5e7eb";
-      }}
-    >
-      {/* Image area */}
-      <div
-        style={{
-          height: 110,
-          background: "#f8fafc",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          borderBottom: "1px solid #f3f4f6",
-        }}
-      >
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4v4a2 2 0 0 1-2 2h-1"/>
-          <circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
-          <path d="M14 5h1l4 4"/>
-        </svg>
-
-        {/* Status badge */}
-        <span
-          style={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-            fontSize: 11,
-            fontWeight: 600,
-            padding: "3px 9px",
-            borderRadius: 20,
-            background: isActive ? "#dcfce7" : "#f3f4f6",
-            color: isActive ? "#15803d" : "#6b7280",
-          }}
-        >
-          {isActive ? "Active" : "Inactive"}
-        </span>
-
-        {/* Plate badge */}
-        <span
-          style={{
-            position: "absolute",
-            bottom: 10,
-            left: 12,
-            fontSize: 11,
-            fontWeight: 700,
-            fontFamily: "ui-monospace, 'Courier New', monospace",
-            background: "#fff",
-            border: "1px solid #e5e7eb",
-            borderRadius: 5,
-            padding: "3px 8px",
-            color: "#374151",
-            letterSpacing: "0.07em",
-          }}
-        >
-          {vehicle.plateNumber}
-        </span>
-      </div>
-
-      {/* Body */}
-      <div style={{ padding: "14px 16px" }}>
-        <h3 style={{ fontSize: 14, fontWeight: 600, color: "#111827", margin: "0 0 3px" }}>
-          {vehicle.brand} {vehicle.model}
-        </h3>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6b7280" }}>
-          <span>{vehicle.year}</span>
-          {vehicle.color && (
-            <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              · <ColorDot color={vehicle.color} /> {vehicle.color}
-            </span>
-          )}
-        </div>
-
-        {/* Stats */}
-        <div
-          style={{
-            display: "flex",
-            gap: 14,
-            margin: "10px 0",
-            padding: "10px 0",
-            borderTop: "1px solid #f3f4f6",
-            fontSize: 12,
-            color: "#6b7280",
-          }}
-        >
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ color: "#1C52AF" }}>⊙</span>
-            {vehicle.mileage != null ? vehicle.mileage.toLocaleString() : 0} km
+    <div className="group bg-white border border-gray-200/80 rounded-xl shadow-sm hover:shadow-md hover:border-gray-300/80 transition-all duration-200 overflow-hidden dark:bg-gray-900 dark:border-gray-800 dark:hover:border-gray-700">
+      <div className="p-4">
+        <div className="flex items-start justify-between mb-3.5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#1C52AF]/10 text-[#1C52AF] dark:bg-[#1C52AF]/20 flex-shrink-0">
+              <FiTruck className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-[13px] font-semibold text-gray-900 dark:text-gray-100 truncate">
+                {vehicle.brand} {vehicle.model}
+              </h3>
+              <span className="text-[11px] text-gray-500 dark:text-gray-400">{vehicle.year}</span>
+            </div>
+          </div>
+          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold flex-shrink-0 ${status.badge}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+            {status.label}
           </span>
-          {vehicle.engine && (
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <span style={{ color: "#1C52AF" }}>⛽</span>
-              {vehicle.engine}
-            </span>
-          )}
         </div>
 
-        {/* Actions */}
-        <div style={{ display: "flex", gap: 6 }}>
-          <ActionBtn label="View" onClick={() => onView(vehicle)} flex />
-          <ActionBtn label="History" onClick={() => onHistory(vehicle)} flex />
-          <ActionIconBtn label="Edit" onClick={() => onEdit(vehicle)} />
-          <ActionIconBtn label="Delete" onClick={() => onDelete(vehicle)} danger />
+        <div className="flex flex-wrap items-center gap-1.5 mb-3">
+          <PlateChip plate={vehicle.plateNumber} />
+          <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 dark:text-gray-400">
+            <FiDroplet className="w-3 h-3" />
+            {vehicle.color}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="rounded-lg bg-gray-50 dark:bg-gray-800/60 px-2.5 py-2">
+            <div className="flex items-center gap-1 text-gray-400 dark:text-gray-500 mb-0.5">
+              <FiActivity className="w-3 h-3" />
+              <span className="text-[9px] font-semibold uppercase tracking-wide">Mileage</span>
+            </div>
+            <p className="text-[12px] font-semibold text-gray-800 dark:text-gray-200">
+              {vehicle.mileage?.toLocaleString()} km
+            </p>
+          </div>
+          <div className="rounded-lg bg-gray-50 dark:bg-gray-800/60 px-2.5 py-2">
+            <div className="flex items-center gap-1 text-gray-400 dark:text-gray-500 mb-0.5">
+              <FiCalendar className="w-3 h-3" />
+              <span className="text-[9px] font-semibold uppercase tracking-wide">Added</span>
+            </div>
+            <p className="text-[12px] font-semibold text-gray-800 dark:text-gray-200">
+              {new Date(vehicle.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1 pt-3 border-t border-gray-100 dark:border-gray-800">
+          <button
+            onClick={() => onViewDetails(vehicle)}
+            className="flex-1 h-8 rounded-lg text-[12px] font-medium text-[#1C52AF] hover:bg-[#1C52AF]/5 dark:hover:bg-[#1C52AF]/10 transition-colors flex items-center justify-center gap-1"
+          >
+            Details <FiChevronRight className="w-3 h-3" />
+          </button>
+          <button
+            onClick={() => onViewHistory(vehicle)}
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors"
+            title="Service history"
+          >
+            <FiClock className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => onEdit(vehicle)}
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors"
+            title="Edit"
+          >
+            <FiEdit2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => onDelete(vehicle)}
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
+            title="Delete"
+          >
+            <FiTrash2 className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
-function ActionBtn({ label, onClick, flex }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        ...(flex ? { flex: 1 } : {}),
-        height: 30,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 5,
-        fontSize: 12,
-        fontWeight: 500,
-        color: "#374151",
-        background: hovered ? "#f3f4f6" : "transparent",
-        border: "1px solid #e5e7eb",
-        borderRadius: 7,
-        cursor: "pointer",
-        transition: "background 0.12s",
-        padding: "0 8px",
-      }}
-    >
-      {label}
-    </button>
-  );
-}
+// ─── VEHICLE DETAIL ───────────────────────────────────────────────────────────
+const VehicleDetail = ({ vehicle, onEdit, onDelete, onViewHistory }) => {
+  if (!vehicle) return null;
+  const status = getStatus(vehicle.status);
 
-function ActionIconBtn({ onClick, label, danger }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      aria-label={label}
-      style={{
-        width: 30,
-        height: 30,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: hovered ? (danger ? "#fef2f2" : "#eff6ff") : "transparent",
-        border: `1px solid ${hovered ? (danger ? "#fecaca" : "#bfdbfe") : "#e5e7eb"}`,
-        borderRadius: 7,
-        cursor: "pointer",
-        color: hovered ? (danger ? "#dc2626" : "#1C52AF") : "#6b7280",
-        fontSize: 13,
-        transition: "all 0.12s",
-      }}
-    >
-      {danger ? "🗑" : "✏️"}
-    </button>
-  );
-}
-
-// ─── MAIN PAGE ────────────────────────────────────────────────────────────────
-export default function Vehicles() {
-  const { toast, show: showToast } = useToast();
-
-  const [vehicles, setVehicles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
-
-  const [showForm, setShowForm] = useState(false);
-  const [editVehicle, setEditVehicle] = useState(null);
-  const [detailVehicle, setDetailVehicle] = useState(null);
-  const [historyVehicle, setHistoryVehicle] = useState(null);
-  const [deleteVehicle, setDeleteVehicle] = useState(null);
-
-  const fetchVehicles = async () => {
-    setLoading(true);
-    try {
-      const { data } = await api.get("/vehicles");
-      setVehicles(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Failed to fetch vehicles:", err);
-      showToast("Failed to load vehicles", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchVehicles();
-  }, []);
-
-  const filtered = vehicles.filter((v) => {
-    const q = search.toLowerCase();
-    const matchSearch =
-      !q ||
-      v.brand?.toLowerCase().includes(q) ||
-      v.model?.toLowerCase().includes(q) ||
-      v.plateNumber?.toLowerCase().includes(q) ||
-      v.color?.toLowerCase().includes(q);
-    const matchFilter = filter === "all" || v.status === filter;
-    return matchSearch && matchFilter;
-  });
-
-  const stats = {
-    total: vehicles.length,
-    active: vehicles.filter((v) => v.status === "active").length,
-    avgMileage: vehicles.length
-      ? Math.round(vehicles.reduce((s, v) => s + (v.mileage || 0), 0) / vehicles.length)
-      : 0,
-    needsService: vehicles.filter((v) => v.mileage - (v.lastServiceMileage || 0) > 10000).length,
-  };
-
-  const openEdit = (vehicle) => { setEditVehicle(vehicle); setShowForm(true); };
-  const openAdd = () => { setEditVehicle(null); setShowForm(true); };
+  const rows = [
+    { label: "Plate number", value: vehicle.plateNumber, icon: <FiHash className="w-3.5 h-3.5" />, mono: true },
+    { label: "Color", value: vehicle.color, icon: <FiDroplet className="w-3.5 h-3.5" /> },
+    { label: "VIN", value: vehicle.vin, icon: <FiHash className="w-3.5 h-3.5" />, mono: true },
+    { label: "Mileage", value: `${vehicle.mileage?.toLocaleString()} km`, icon: <FiActivity className="w-3.5 h-3.5" /> },
+    { label: "Engine", value: vehicle.engine || "Not specified", icon: <FiTruck className="w-3.5 h-3.5" /> },
+    {
+      label: "Last service mileage",
+      value: vehicle.lastServiceMileage ? `${vehicle.lastServiceMileage.toLocaleString()} km` : "Not serviced yet",
+      icon: <FiClock className="w-3.5 h-3.5" />,
+    },
+  ];
 
   return (
-    <div style={{ minHeight: "100vh", padding: "24px", background: "#f9fafb" }}>
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        * { box-sizing: border-box; }
-      `}</style>
-
-      <Toast toast={toast} />
-
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: "0 0 3px" }}>My vehicles</h1>
-          <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>Manage and track your registered vehicles</p>
+    <div className="space-y-5">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#1C52AF]/10 text-[#1C52AF] dark:bg-[#1C52AF]/20 flex-shrink-0">
+          <FiTruck className="w-5 h-5" />
         </div>
-        <button
-          onClick={openAdd}
-          style={{
-            height: 38,
-            padding: "0 18px",
-            background: "#1C52AF",
-            color: "#fff",
-            border: "none",
-            borderRadius: 9,
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#1540a0")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "#1C52AF")}
-        >
-          + Add vehicle
-        </button>
+        <div>
+          <h2 className="text-[16px] font-bold text-gray-900 dark:text-gray-100">
+            {vehicle.brand} {vehicle.model}
+          </h2>
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+              {vehicle.year}
+            </span>
+            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold ${status.badge}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+              {status.label}
+            </span>
+          </div>
+        </div>
       </div>
 
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 24 }}>
-        {[
-          { label: "Total vehicles", value: stats.total, bg: "#eff6ff", color: "#1C52AF" },
-          { label: "Active", value: stats.active, bg: "#f0fdf4", color: "#15803d" },
-          { label: "Avg mileage", value: `${stats.avgMileage.toLocaleString()} km`, bg: "#eef2ff", color: "#4338ca" },
-          { label: "Need service", value: stats.needsService, bg: "#fffbeb", color: "#b45309" },
-        ].map(({ label, value, bg, color }) => (
-          <div
-            key={label}
-            style={{
-              background: "#fff",
-              border: "1px solid #e5e7eb",
-              borderRadius: 12,
-              padding: "16px",
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-            }}
-          >
-            <div style={{ width: 38, height: 38, borderRadius: 9, background: bg, flexShrink: 0 }} />
-            <div>
-              <p style={{ fontSize: 12, color: "#6b7280", margin: "0 0 2px" }}>{label}</p>
-              <p style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0, lineHeight: 1 }}>{value}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {rows.map((item, i) => (
+          <div key={i} className="rounded-lg bg-gray-50 dark:bg-gray-800/60 px-3 py-2.5">
+            <div className="flex items-center gap-1.5 text-gray-400 dark:text-gray-500 mb-1">
+              {item.icon}
+              <span className="text-[9px] font-semibold uppercase tracking-wide">{item.label}</span>
             </div>
+            <p className={`text-[13px] font-semibold text-gray-800 dark:text-gray-200 ${item.mono ? "font-mono" : ""}`}>
+              {item.value}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Toolbar */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
-        <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
-          <input
-            type="text"
-            placeholder="Search brand, model, plate number…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%",
-              height: 38,
-              padding: "0 36px",
-              fontSize: 13,
-              color: "#111827",
-              background: "#fff",
-              border: "1px solid #e5e7eb",
-              borderRadius: 9,
-              outline: "none",
-            }}
-            onFocus={(e) => { e.target.style.borderColor = "#1C52AF"; e.target.style.boxShadow = "0 0 0 3px rgba(28,82,175,0.1)"; }}
-            onBlur={(e) => { e.target.style.borderColor = "#e5e7eb"; e.target.style.boxShadow = "none"; }}
-          />
-          {search && (
-            <button
-              onClick={() => setSearch("")}
-              style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 14 }}
-            >
-              ×
-            </button>
-          )}
+      <div className="flex gap-2 pt-1">
+        <button
+          onClick={() => onViewHistory(vehicle)}
+          className="flex-1 h-9 rounded-lg bg-[#1C52AF] text-[13px] font-medium text-white hover:bg-[#173f8a] transition-colors flex items-center justify-center gap-2"
+        >
+          <FiClock className="w-3.5 h-3.5" /> Service history
+        </button>
+        <button
+          onClick={() => onEdit(vehicle)}
+          className="w-9 h-9 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+          title="Edit"
+        >
+          <FiEdit2 className="w-3.5 h-3.5" />
+        </button>
+        <button
+          onClick={() => onDelete(vehicle)}
+          className="w-9 h-9 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/20"
+          title="Delete"
+        >
+          <FiTrash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ─── SERVICE HISTORY ──────────────────────────────────────────────────────────
+const ServiceHistory = ({ vehicle, history }) => {
+  const historyList = Array.isArray(history) ? history : [];
+
+  return (
+    <div>
+      <div className="flex items-center gap-2.5 mb-5">
+        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#1C52AF]/10 text-[#1C52AF] dark:bg-[#1C52AF]/20">
+          <FiClock className="w-4 h-4" />
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          {["all", "active", "inactive"].map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              style={{
-                height: 38,
-                padding: "0 16px",
-                fontSize: 13,
-                fontWeight: 500,
-                borderRadius: 9,
-                cursor: "pointer",
-                border: filter === f ? "none" : "1px solid #e5e7eb",
-                background: filter === f ? "#1C52AF" : "#fff",
-                color: filter === f ? "#fff" : "#374151",
-                transition: "all 0.12s",
-                textTransform: "capitalize",
-              }}
-            >
-              {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
-            </button>
-          ))}
+        <div>
+          <h3 className="text-[13px] font-semibold text-gray-900 dark:text-gray-100">Service history</h3>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+            {vehicle.brand} {vehicle.model} · {vehicle.plateNumber}
+          </p>
         </div>
       </div>
 
-      {/* Grid */}
-      {loading ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "80px 0", color: "#9ca3af" }}>
-          <span style={{ width: 36, height: 36, border: "3px solid #bfdbfe", borderTopColor: "#1C52AF", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite", marginBottom: 14 }} />
-          <p style={{ fontSize: 14, margin: 0 }}>Loading vehicles…</p>
-        </div>
-      ) : filtered.length === 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "80px 0", color: "#9ca3af" }}>
-          <div style={{ fontSize: 48, marginBottom: 14, opacity: 0.3 }}>🚗</div>
-          <p style={{ fontSize: 15, fontWeight: 600, color: "#6b7280", margin: "0 0 4px" }}>No vehicles found</p>
-          <p style={{ fontSize: 13, margin: 0 }}>
-            {search || filter !== "all" ? "Try adjusting your search or filter." : "Add your first vehicle to get started."}
-          </p>
-          {!search && filter === "all" && (
-            <button
-              onClick={openAdd}
-              style={{ marginTop: 20, height: 38, padding: "0 20px", background: "#1C52AF", color: "#fff", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-            >
-              + Add vehicle
-            </button>
-          )}
+      {historyList.length === 0 ? (
+        <div className="flex flex-col items-center py-10 text-center">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 mb-3">
+            <FiClock className="w-5 h-5" />
+          </div>
+          <h4 className="text-[13px] font-semibold text-gray-800 dark:text-gray-200 mb-0.5">No service history yet</h4>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400">This vehicle hasn't been serviced yet.</p>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
-          {filtered.map((v) => (
-            <VehicleCard
-              key={v.id}
-              vehicle={v}
-              onView={setDetailVehicle}
-              onEdit={openEdit}
-              onDelete={setDeleteVehicle}
-              onHistory={setHistoryVehicle}
-            />
+        <div className="space-y-0">
+          {historyList.map((record, i) => (
+            <div key={i} className="flex gap-3">
+              <div className="flex flex-col items-center flex-shrink-0">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#1C52AF]/10 text-[#1C52AF] dark:bg-[#1C52AF]/20">
+                  <FiTool className="w-3 h-3" />
+                </span>
+                {i !== historyList.length - 1 && <div className="w-px flex-1 bg-gray-200 dark:bg-gray-800 my-1" />}
+              </div>
+              <div className="flex-1 pb-4 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className="text-[13px] font-medium text-gray-900 dark:text-gray-100">
+                    {record.serviceType || "General service"}
+                  </h4>
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 flex-shrink-0 mt-0.5">
+                    {new Date(record.date).toLocaleDateString()}
+                  </span>
+                </div>
+                <p className="text-[12px] text-gray-500 dark:text-gray-400 mt-0.5">
+                  {record.description || "No description provided"}
+                </p>
+                {record.mileage && (
+                  <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">At {record.mileage.toLocaleString()} km</p>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       )}
-
-      {/* Modals */}
-      <VehicleFormModal
-        open={showForm}
-        onClose={() => setShowForm(false)}
-        vehicle={editVehicle}
-        onSaved={(action) => {
-          showToast(action === "updated" ? "Vehicle updated successfully" : "Vehicle added successfully");
-          fetchVehicles();
-        }}
-      />
-      <DetailModal open={!!detailVehicle} onClose={() => setDetailVehicle(null)} vehicle={detailVehicle} />
-      <HistoryModal open={!!historyVehicle} onClose={() => setHistoryVehicle(null)} vehicle={historyVehicle} />
-      <DeleteModal
-        open={!!deleteVehicle}
-        onClose={() => setDeleteVehicle(null)}
-        vehicle={deleteVehicle}
-        onDeleted={() => {
-          showToast("Vehicle deleted", "error");
-          fetchVehicles();
-        }}
-      />
     </div>
   );
-}
+};
+
+// ─── DELETE CONFIRM ───────────────────────────────────────────────────────────
+const DeleteConfirm = ({ vehicle, onConfirm, onCancel, isDeleting }) => (
+  <div className="text-center">
+    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 mx-auto mb-3">
+      <FiAlertTriangle className="w-5 h-5" />
+    </div>
+    <h3 className="text-[14px] font-semibold text-gray-900 dark:text-gray-100 mb-1.5">Delete vehicle?</h3>
+    <p className="text-[12px] text-gray-500 dark:text-gray-400 mb-5">
+      This will permanently remove <span className="font-medium text-gray-800 dark:text-gray-200">{vehicle.brand} {vehicle.model}</span>{" "}
+      and its records. This can't be undone.
+    </p>
+    <div className="flex gap-2">
+      <button
+        onClick={onCancel}
+        className="flex-1 h-9 rounded-lg border border-gray-200 text-[13px] font-medium text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={onConfirm}
+        disabled={isDeleting}
+        className="flex-1 h-9 rounded-lg bg-red-600 text-[13px] font-medium text-white hover:bg-red-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+      >
+        {isDeleting ? (
+          <>
+            <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+            Deleting…
+          </>
+        ) : (
+          "Delete vehicle"
+        )}
+      </button>
+    </div>
+  </div>
+);
+
+// ─── EMPTY STATE ──────────────────────────────────────────────────────────────
+const EmptyState = ({ onAdd, isFiltered }) => (
+  <div className="flex flex-col items-center text-center py-16 px-4">
+    <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-300 dark:text-gray-600 mb-4">
+      {isFiltered ? <FiInbox className="w-6 h-6" /> : <FiTruck className="w-6 h-6" />}
+    </div>
+    {isFiltered ? (
+      <>
+        <h3 className="text-[14px] font-semibold text-gray-900 dark:text-gray-100 mb-1">No matches</h3>
+        <p className="text-[12px] text-gray-500 dark:text-gray-400">Try a different brand, model, plate, or VIN.</p>
+      </>
+    ) : (
+      <>
+        <h3 className="text-[15px] font-semibold text-gray-900 dark:text-gray-100 mb-1.5">No vehicles yet</h3>
+        <p className="text-[12px] text-gray-500 dark:text-gray-400 mb-6 max-w-xs">
+          Add your first vehicle to start booking services and tracking maintenance history.
+        </p>
+        <button
+          onClick={onAdd}
+          className="inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-[#1C52AF] text-[13px] font-medium text-white hover:bg-[#173f8a] transition-colors shadow-sm"
+        >
+          <FiPlus className="w-3.5 h-3.5" /> Add your first vehicle
+        </button>
+      </>
+    )}
+  </div>
+);
+
+// ─── SKELETON ─────────────────────────────────────────────────────────────────
+const SkeletonCard = () => (
+  <div className="bg-white border border-gray-200/80 rounded-xl p-4 animate-pulse dark:bg-gray-900 dark:border-gray-800">
+    <div className="flex items-center gap-2.5 mb-3.5">
+      <div className="w-9 h-9 rounded-lg bg-gray-200 dark:bg-gray-800" />
+      <div className="flex-1 space-y-1.5">
+        <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-2/3" />
+        <div className="h-2.5 bg-gray-200 dark:bg-gray-800 rounded w-1/4" />
+      </div>
+    </div>
+    <div className="h-5 bg-gray-200 dark:bg-gray-800 rounded w-1/2 mb-3" />
+    <div className="grid grid-cols-2 gap-2 mb-4">
+      <div className="h-12 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+      <div className="h-12 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+    </div>
+    <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded-lg" />
+  </div>
+);
+
+// ==================== MAIN COMPONENT ====================
+
+const VehiclesPage = () => {
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [modal, setModal] = useState({ type: null, vehicle: null });
+  const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  const fetchVehicles = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/vehicles");
+      const data = Array.isArray(res.data) ? res.data : res.data?.data || res.data?.vehicles || [];
+      setVehicles(data);
+    } catch (err) {
+      showToast("Failed to load vehicles", "error");
+      console.error("Fetch vehicles error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchVehicles();
+  }, [fetchVehicles]);
+
+  const showToast = (message, type = "success") => setToast({ message, type });
+
+  const filteredVehicles = vehicles.filter((v) =>
+    `${v.brand} ${v.model} ${v.plateNumber} ${v.vin}`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleCreate = async (data) => {
+    try {
+      setSubmitting(true);
+      await api.post("/vehicles", data);
+      showToast("Vehicle added successfully");
+      setModal({ type: null, vehicle: null });
+      fetchVehicles();
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to add vehicle", "error");
+      console.error("Create vehicle error:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleUpdate = async (data) => {
+    try {
+      setSubmitting(true);
+      const id = modal.vehicle.id;
+      try {
+        await api.patch(`/vehicles/${id}`, data);
+      } catch (patchErr) {
+        if (patchErr.response?.status === 404 || patchErr.response?.status === 405) {
+          await api.put(`/vehicles/${id}`, data);
+        } else {
+          throw patchErr;
+        }
+      }
+      showToast("Vehicle updated successfully");
+      setModal({ type: null, vehicle: null });
+      fetchVehicles();
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to update vehicle", "error");
+      console.error("Update vehicle error:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      setDeletingId(modal.vehicle.id);
+      await api.delete(`/vehicles/${modal.vehicle.id}`);
+      showToast("Vehicle deleted successfully");
+      setModal({ type: null, vehicle: null });
+      fetchVehicles();
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to delete vehicle", "error");
+      console.error("Delete vehicle error:", err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleViewHistory = async (vehicle) => {
+    setModal({ type: "history", vehicle });
+    setHistory([]);
+    try {
+      setHistoryLoading(true);
+      const res = await api.get(`/vehicles/${vehicle.id}/history`);
+
+      let historyData = [];
+      if (Array.isArray(res.data)) {
+        historyData = res.data;
+      } else if (res.data?.data && Array.isArray(res.data.data)) {
+        historyData = res.data.data;
+      } else if (res.data?.history && Array.isArray(res.data.history)) {
+        historyData = res.data.history;
+      } else if (res.data?.records && Array.isArray(res.data.records)) {
+        historyData = res.data.records;
+      } else if (typeof res.data === "object" && res.data !== null) {
+        historyData = [res.data];
+      }
+
+      setHistory(historyData);
+    } catch (err) {
+      showToast("Failed to load service history", "error");
+      console.error("History fetch error:", err);
+      setHistory([]);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const openAdd = () => setModal({ type: "add", vehicle: null });
+  const openEdit = (vehicle) => setModal({ type: "edit", vehicle });
+  const openDelete = (vehicle) => setModal({ type: "delete", vehicle });
+  const openDetails = (vehicle) => setModal({ type: "details", vehicle });
+  const closeModal = () => setModal({ type: null, vehicle: null });
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+
+      {/* Header */}
+      <div className=" border-gray-200/80 dark:bg-gray-900 dark:border-gray-800">
+        <div className="px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 className="text-[18px] sm:text-2xl font-bold text-gray-900 dark:text-gray-100">My Vehicles</h1>
+              <p className="text-[12px] sm:text-[15px] text-gray-500 dark:text-gray-400 mt-0.5">
+                Manage your vehicles and track service history
+              </p>
+            </div>
+            <button
+              onClick={openAdd}
+              className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-lg bg-[#1C52AF] text-[13px] font-medium text-white hover:bg-[#173f8a] active:scale-[0.98] transition-all shadow-sm flex-shrink-0"
+            >
+              <FiPlus className="w-3.5 h-3.5" /> Add vehicle
+            </button>
+          </div>
+
+          <div className="relative max-w-xs mt-4 group">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 group-focus-within:text-[#1C52AF] transition-colors pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search brand, model, plate, VIN…"
+              className="w-full h-8 pl-8 pr-8 text-[13px] rounded-lg border border-transparent bg-gray-100 text-gray-900 placeholder:text-gray-400
+                focus:bg-white focus:border-[#1C52AF]/40 focus:ring-2 focus:ring-[#1C52AF]/10 outline-none transition-all
+                dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:bg-gray-900 dark:focus:border-[#1C52AF]/40"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded p-0.5"
+                aria-label="Clear search"
+              >
+                <FiX className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="px-4 sm:px-6 lg:px-8 py-6">
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : filteredVehicles.length === 0 ? (
+          <EmptyState onAdd={openAdd} isFiltered={vehicles.length > 0} />
+        ) : (
+          <>
+            <p className="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+              {filteredVehicles.length} vehicle{filteredVehicles.length !== 1 ? "s" : ""}
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredVehicles.map((vehicle) => (
+                <VehicleCard
+                  key={vehicle.id}
+                  vehicle={vehicle}
+                  onEdit={openEdit}
+                  onDelete={openDelete}
+                  onViewHistory={handleViewHistory}
+                  onViewDetails={openDetails}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Add / Edit Modal */}
+      <Modal
+        isOpen={modal.type === "add" || modal.type === "edit"}
+        onClose={closeModal}
+        title={modal.type === "edit" ? "Edit vehicle" : "Add new vehicle"}
+        subtitle={modal.type === "edit" ? "Update this vehicle's details" : "Enter the vehicle's details below"}
+      >
+        <VehicleForm
+          vehicle={modal.vehicle}
+          onSubmit={modal.type === "edit" ? handleUpdate : handleCreate}
+          onCancel={closeModal}
+          isSubmitting={submitting}
+        />
+      </Modal>
+
+      {/* Details Modal */}
+      <Modal isOpen={modal.type === "details"} onClose={closeModal} title="Vehicle details" maxWidth="max-w-xl">
+        <VehicleDetail vehicle={modal.vehicle} onEdit={openEdit} onDelete={openDelete} onViewHistory={handleViewHistory} />
+      </Modal>
+
+      {/* History Modal */}
+      <Modal isOpen={modal.type === "history"} onClose={closeModal} title="Service history" maxWidth="max-w-md">
+        {historyLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <span className="w-6 h-6 border-2 border-gray-200 border-t-[#1C52AF] rounded-full animate-spin" />
+          </div>
+        ) : (
+          <ServiceHistory vehicle={modal.vehicle} history={history} />
+        )}
+      </Modal>
+
+      {/* Delete Modal */}
+      <Modal isOpen={modal.type === "delete"} onClose={closeModal} title="Confirm deletion" maxWidth="max-w-sm">
+        <DeleteConfirm vehicle={modal.vehicle} onConfirm={handleDelete} onCancel={closeModal} isDeleting={!!deletingId} />
+      </Modal>
+    </div>
+  );
+};
+
+export default VehiclesPage;
+
+
+
+

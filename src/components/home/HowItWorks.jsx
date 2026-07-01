@@ -22,7 +22,7 @@ const steps = [
 
 export default function HowMokaNikWorks() {
   return (
-    <section id="how-it-works" className="relative px-6 pb-0 overflow-hidden font-sans bg-white sm:px-32 py-14 pb-14">
+    <section id="how-it-works" className="relative px-6 pb-0 overflow-hidden font-sans bg-gray-100 sm:px-32 py-14 pb-14">
       {/* Decorative circle */}
       <div className="absolute top-0 -right-16 w-[420px] h-[420px] bg-gray-300 rounded-full opacity-20 pointer-events-none" />
 

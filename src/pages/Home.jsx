@@ -24,9 +24,9 @@ export default function Home() {
 
           
 
-        <div>
+        {/* <div>
           <ServicesSection />
-        </div>
+        </div> */}
 
         <div>
           <HowItWorks />
