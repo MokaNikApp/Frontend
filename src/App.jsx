@@ -39,6 +39,8 @@ import ProfilePage from "./pages/dashboard-pages/ProfilePage";
 import VechiclePage from "./pages/dashboard-pages/VechiclePage";
 import PaymentHistoryPage from "./pages/dashboard-pages/PaymentHistoryPage";
 import UserSettingsPage from "./pages/dashboard-pages/UserSettingPage";
+import CustomerWalletPage from "./pages/dashboard-pages/CustomerWalletPage";
+import WalletTopUpVerifyPage from "./pages/dashboard-pages/WalletTopUpVerifyPage";
 
 // ONBOARDING
 import Onboarding from "./pages/Onboarding";
@@ -53,6 +55,7 @@ import Schedule from "./pages/Mec-dashboard/Schedule";
 import { JobsProvider } from "./context/JobsContext";
 import Profile from "./pages/Mec-dashboard/Profile";
 import MecSettings from "./pages/Mec-dashboard/MecSettings"
+import MecWallet from "./pages/Mec-dashboard/MecWallet";
 
 // ADMIN
 import UserDashboardPage from "./pages/Users-admin-pages/UserDashboardPage";
@@ -107,6 +110,11 @@ const App = () => {
           <Route path="/my-service" element={<MyServicePage />} />
           <Route path="/service-history" element={<ServiceHistoryPage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          {/* Paystack returns here after a job card payment: /payment/verify?reference=... */}
+          <Route path="/payment/verify" element={<PaymentPage />} />
+          <Route path="/wallet" element={<CustomerWalletPage />} />
+          {/* Paystack returns here after a wallet top-up: /wallet/top-up/verify?reference=... */}
+          <Route path="/wallet/top-up/verify" element={<WalletTopUpVerifyPage />} />
           <Route path="/notify" element={<NotificationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/vehicles" element={<VechiclePage />} />         
@@ -181,6 +189,14 @@ const App = () => {
             element={
               <JobsProvider>
                 <Schedule />
+              </JobsProvider>
+            }
+          />
+          <Route
+            path="/mec-dashboard/wallet"
+            element={
+              <JobsProvider>
+                <MecWallet />
               </JobsProvider>
             }
           />

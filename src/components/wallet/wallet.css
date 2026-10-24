@@ -1,0 +1,18 @@
+/* Wallet-only animations (Tailwind v4 ships none for sheets). */
+@keyframes wallet-fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes wallet-sheet-up { from { opacity: 0; transform: translateY(32px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes wallet-pop { from { opacity: 0; transform: scale(.96) translateY(8px) } to { opacity: 1; transform: none } }
+@keyframes wallet-toast { from { opacity: 0; transform: translate(-50%, 12px) } to { opacity: 1; transform: translate(-50%, 0) } }
+@keyframes wallet-draw { to { stroke-dashoffset: 0 } }
+
+.wallet-fade { animation: wallet-fade-in .18s ease-out both }
+.wallet-sheet { animation: wallet-sheet-up .26s cubic-bezier(.2,.8,.2,1) both }
+@media (min-width: 640px) { .wallet-sheet { animation-name: wallet-pop } }
+.wallet-toast { animation: wallet-toast .22s ease-out both }
+.wallet-check { stroke-dasharray: 30; stroke-dashoffset: 30; animation: wallet-draw .45s .15s ease-out forwards }
+.wallet-safe-b { padding-bottom: max(1rem, env(safe-area-inset-bottom)) }
+
+@media (prefers-reduced-motion: reduce) {
+  .wallet-fade, .wallet-sheet, .wallet-toast { animation: none }
+  .wallet-check { animation: none; stroke-dashoffset: 0 }
+}

@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import {
   FiTruck,
@@ -38,15 +36,35 @@ const humanize = (str) => {
 };
 
 const monthShort = (iso) =>
-  iso ? new Date(iso).toLocaleDateString(undefined, { month: "short" }).toUpperCase() : "—";
+  iso
+    ? new Date(iso)
+        .toLocaleDateString(undefined, { month: "short" })
+        .toUpperCase()
+    : "—";
 
 const dayNum = (iso) => (iso ? new Date(iso).getDate() : "—");
 
 const activityConfig = {
-  service_completed: { icon: FiCheckCircle, text: "text-emerald-600", bg: "bg-emerald-50" },
-  payment_received: { icon: FiCreditCard, text: "text-[#1C52AF]", bg: "bg-blue-50" },
-  invoice_paid: { icon: FiCreditCard, text: "text-[#1C52AF]", bg: "bg-blue-50" },
-  appointment_rescheduled: { icon: FiCalendar, text: "text-amber-600", bg: "bg-amber-50" },
+  service_completed: {
+    icon: FiCheckCircle,
+    text: "text-emerald-600",
+    bg: "bg-emerald-50",
+  },
+  payment_received: {
+    icon: FiCreditCard,
+    text: "text-[#1C52AF]",
+    bg: "bg-blue-50",
+  },
+  invoice_paid: {
+    icon: FiCreditCard,
+    text: "text-[#1C52AF]",
+    bg: "bg-blue-50",
+  },
+  appointment_rescheduled: {
+    icon: FiCalendar,
+    text: "text-amber-600",
+    bg: "bg-amber-50",
+  },
   default: { icon: FiInfo, text: "text-gray-500", bg: "bg-gray-100" },
 };
 
@@ -63,10 +81,19 @@ const Skel = ({ className = "" }) => (
 );
 
 // ─── STAT CARD ─────────────────────────────────────────────────────────────────
-const StatCard = ({ icon: Icon, label, value, iconBg, iconColor, children }) => (
+const StatCard = ({
+  icon: Icon,
+  label,
+  value,
+  iconBg,
+  iconColor,
+  children,
+}) => (
   <div className="bg-white rounded-2xl shadow-sm p-5">
     <div className="flex items-center gap-2.5">
-      <div className={`flex items-center justify-center w-9 h-9 rounded-xl ${iconBg}`}>
+      <div
+        className={`flex items-center justify-center w-9 h-9 rounded-xl ${iconBg}`}
+      >
         <Icon className={`w-4 h-4 ${iconColor}`} />
       </div>
       <span className="text-sm text-gray-500">{label}</span>
@@ -78,9 +105,14 @@ const StatCard = ({ icon: Icon, label, value, iconBg, iconColor, children }) => 
 
 // ─── ACTIVE SERVICE ROW ─────────────────────────────────────────────────────────
 const ActiveServiceRow = ({ service, onView }) => {
-  const title = service.vehicle && service.vehicle !== "Unknown Vehicle" ? service.vehicle : service.title;
+  const title =
+    service.vehicle && service.vehicle !== "Unknown Vehicle"
+      ? service.vehicle
+      : service.title;
   const subtitle =
-    service.vehicle && service.vehicle !== "Unknown Vehicle" ? service.title : "Vehicle not linked";
+    service.vehicle && service.vehicle !== "Unknown Vehicle"
+      ? service.title
+      : "Vehicle not linked";
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 py-5 first:pt-0 border-b border-gray-100 last:border-none last:pb-0">
@@ -104,7 +136,9 @@ const ActiveServiceRow = ({ service, onView }) => {
         <div className="mt-3">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-gray-500">Progress</span>
-            <span className="text-xs font-semibold text-gray-700">{service.progress}%</span>
+            <span className="text-xs font-semibold text-gray-700">
+              {service.progress}%
+            </span>
           </div>
           <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
             <div
@@ -141,12 +175,16 @@ const ActivityRow = ({ item, onClick }) => {
       onClick={onClick}
       className="w-full flex items-start gap-3 py-4 border-b border-gray-100 last:border-none text-left hover:bg-gray-50/60 -mx-1 px-1 rounded-lg transition-colors"
     >
-      <div className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-full ${cfg.bg}`}>
+      <div
+        className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-full ${cfg.bg}`}
+      >
         <Icon className={`w-4 h-4 ${cfg.text}`} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-900">{item.title}</p>
-        <p className="mt-0.5 text-sm text-gray-500">{humanize(item.description)}</p>
+        <p className="mt-0.5 text-sm text-gray-500">
+          {humanize(item.description)}
+        </p>
         <span className="mt-1.5 inline-block text-[11px] font-medium uppercase tracking-wide text-gray-400">
           {item.timeAgo}
         </span>
@@ -160,7 +198,9 @@ const ActivityRow = ({ item, onClick }) => {
 const UpcomingItem = ({ item, onAction, actionLabel = "Details" }) => (
   <div className="flex items-start gap-3 bg-gray-50 rounded-xl p-3.5">
     <div className="flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded-lg bg-white shadow-sm">
-      <span className="text-[9px] font-semibold uppercase text-gray-400">{monthShort(item.scheduledDate)}</span>
+      <span className="text-[9px] font-semibold uppercase text-gray-400">
+        {monthShort(item.scheduledDate)}
+      </span>
       <span className="text-lg font-bold leading-none" style={{ color: BLUE }}>
         {dayNum(item.scheduledDate)}
       </span>
@@ -168,7 +208,9 @@ const UpcomingItem = ({ item, onAction, actionLabel = "Details" }) => (
     <div className="flex-1 min-w-0">
       <p className="text-sm font-semibold text-gray-900">{item.title}</p>
       <p className="mt-0.5 text-xs text-gray-500 truncate">
-        {item.vehicle && item.vehicle !== "Unknown Vehicle" ? item.vehicle : "Vehicle not linked"}
+        {item.vehicle && item.vehicle !== "Unknown Vehicle"
+          ? item.vehicle
+          : "Vehicle not linked"}
         {item.estimatedCompletion ? ` • ${item.estimatedCompletion}` : ""}
       </p>
       <button
@@ -242,10 +284,18 @@ const CustomerDashboard = () => {
     );
   }
 
-  const { user, stats, activeServices = [], upcomingServices = [], recentActivity = [], maintenanceTips = [] } = data;
+  const {
+    user,
+    stats,
+    activeServices = [],
+    upcomingServices = [],
+    recentActivity = [],
+    maintenanceTips = [],
+  } = data;
 
   const monthlyChangeNum = Number(stats?.monthlyChange);
-  const isPositiveChange = !Number.isNaN(monthlyChangeNum) && monthlyChangeNum >= 0;
+  const isPositiveChange =
+    !Number.isNaN(monthlyChangeNum) && monthlyChangeNum >= 0;
 
   const primaryTip = maintenanceTips?.[0];
   const otherTips = maintenanceTips?.slice(1) || [];
@@ -259,7 +309,8 @@ const CustomerDashboard = () => {
             {getGreeting()}, {user?.firstName}
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Here's what's happening with your {stats?.vehiclesCount ?? 0} vehicle
+            Here's what's happening with your {stats?.vehiclesCount ?? 0}{" "}
+            vehicle
             {stats?.vehiclesCount === 1 ? "" : "s"} today.
           </p>
         </div>
@@ -267,7 +318,9 @@ const CustomerDashboard = () => {
           onClick={() => navigate("/book-service")}
           className="flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white rounded-xl shadow-sm transition-colors flex-shrink-0"
           style={{ backgroundColor: BLUE }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = BLUE_DARK)}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor = BLUE_DARK)
+          }
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = BLUE)}
         >
           <FiPlus className="w-4 h-4" />
@@ -285,8 +338,14 @@ const CustomerDashboard = () => {
           iconColor="text-[#1C52AF]"
         >
           {!Number.isNaN(monthlyChangeNum) && (
-            <span className={`flex items-center gap-1 font-semibold ${isPositiveChange ? "text-emerald-600" : "text-red-500"}`}>
-              {isPositiveChange ? <FiTrendingUp className="w-3 h-3" /> : <FiTrendingDown className="w-3 h-3" />}
+            <span
+              className={`flex items-center gap-1 font-semibold ${isPositiveChange ? "text-emerald-600" : "text-red-500"}`}
+            >
+              {isPositiveChange ? (
+                <FiTrendingUp className="w-3 h-3" />
+              ) : (
+                <FiTrendingDown className="w-3 h-3" />
+              )}
               {isPositiveChange ? "+" : ""}
               {stats.monthlyChange}% from last month
             </span>
@@ -300,7 +359,9 @@ const CustomerDashboard = () => {
           iconBg="bg-emerald-50"
           iconColor="text-emerald-600"
         >
-          <span className="text-gray-400">Efficiency rate: {stats?.efficiencyRate ?? 0}%</span>
+          <span className="text-gray-400">
+            Efficiency rate: {stats?.efficiencyRate ?? 0}%
+          </span>
         </StatCard>
 
         <StatCard
@@ -323,10 +384,13 @@ const CustomerDashboard = () => {
           {/* Active Service Status */}
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900">Active Service Status</h2>
+              <h2 className="text-lg font-bold text-gray-900">
+                Active Service Status
+              </h2>
               {activeServices.length > 0 && (
                 <span className="text-[10px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full bg-blue-50 text-[#1C52AF]">
-                  {activeServices.length} {activeServices.length === 1 ? "Active" : "Active"}
+                  {activeServices.length}{" "}
+                  {activeServices.length === 1 ? "Active" : "Active"}
                 </span>
               )}
             </div>
@@ -334,14 +398,22 @@ const CustomerDashboard = () => {
             {activeServices.length > 0 ? (
               <div>
                 {activeServices.map((s) => (
-                  <ActiveServiceRow key={s.id} service={s} onView={() => navigate("/my-service")} />
+                  <ActiveServiceRow
+                    key={s.id}
+                    service={s}
+                    onView={() => navigate("/my-service")}
+                  />
                 ))}
               </div>
             ) : (
               <div className="flex flex-col items-center py-12 text-center">
                 <FiTool className="w-6 h-6 text-gray-300 mb-2" />
-                <p className="text-sm font-medium text-gray-600">No active services right now</p>
-                <p className="mt-0.5 text-xs text-gray-400">Book a service to track its progress here</p>
+                <p className="text-sm font-medium text-gray-600">
+                  No active services right now
+                </p>
+                <p className="mt-0.5 text-xs text-gray-400">
+                  Book a service to track its progress here
+                </p>
               </div>
             )}
           </div>
@@ -349,7 +421,9 @@ const CustomerDashboard = () => {
           {/* Recent Activity */}
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-center justify-between pb-2">
-              <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
+              <h2 className="text-lg font-bold text-gray-900">
+                Recent Activity
+              </h2>
               <button
                 onClick={() => navigate("/service-history")}
                 className="text-sm font-semibold hover:underline"
@@ -361,12 +435,18 @@ const CustomerDashboard = () => {
             <div>
               {recentActivity.length > 0 ? (
                 recentActivity
-                .slice(0, showAllActivity ? recentActivity.length : 2)
+                  .slice(0, showAllActivity ? recentActivity.length : 2)
                   .map((item) => (
-                    <ActivityRow key={item.id} item={item} onClick={() => navigate("/service-history")} />
+                    <ActivityRow
+                      key={item.id}
+                      item={item}
+                      onClick={() => navigate("/service-history")}
+                    />
                   ))
               ) : (
-                <p className="text-sm text-gray-400 text-center py-8">No activity yet</p>
+                <p className="text-sm text-gray-400 text-center py-8">
+                  No activity yet
+                </p>
               )}
             </div>
             {recentActivity.length > 2 && (
@@ -413,7 +493,9 @@ const CustomerDashboard = () => {
                   <FiCalendar className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600">Nothing scheduled yet.</p>
+                  <p className="text-sm text-gray-600">
+                    Nothing scheduled yet.
+                  </p>
                   <button
                     onClick={() => navigate("/book-service")}
                     className="mt-2 text-[11px] font-medium text-gray-600 bg-white border border-gray-200 rounded-full px-2.5 py-1 hover:bg-gray-100 transition-colors"
@@ -427,15 +509,23 @@ const CustomerDashboard = () => {
 
           {/* Maintenance Tip */}
           {primaryTip && (
-            <div className="rounded-2xl p-6 text-white shadow-sm" style={{ backgroundColor: BLUE }}>
+            <div
+              className="rounded-2xl p-6 text-white shadow-sm"
+              style={{ backgroundColor: BLUE }}
+            >
               <div className="flex items-center gap-2.5">
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/15">
                   <FiInfo className="w-4 h-4" />
                 </div>
                 <h2 className="text-base font-bold">Maintenance Tip</h2>
               </div>
-              <p className="mt-3.5 text-sm leading-relaxed text-blue-50">{primaryTip.description}</p>
-              <button className="mt-5 w-full bg-white font-semibold rounded-xl px-4 py-2.5 text-sm hover:bg-blue-50 transition-colors" style={{ color: BLUE }}>
+              <p className="mt-3.5 text-sm leading-relaxed text-blue-50">
+                {primaryTip.description}
+              </p>
+              <button
+                className="mt-5 w-full bg-white font-semibold rounded-xl px-4 py-2.5 text-sm hover:bg-blue-50 transition-colors"
+                style={{ color: BLUE }}
+              >
                 Learn More
               </button>
             </div>
@@ -448,8 +538,12 @@ const CustomerDashboard = () => {
                 <div key={tip.id} className="flex items-start gap-2.5">
                   <FiInfo className="w-3.5 h-3.5 text-gray-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-gray-800">{tip.title}</p>
-                    <p className="mt-0.5 text-xs text-gray-500 leading-relaxed">{tip.description}</p>
+                    <p className="text-xs font-semibold text-gray-800">
+                      {tip.title}
+                    </p>
+                    <p className="mt-0.5 text-xs text-gray-500 leading-relaxed">
+                      {tip.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -467,12 +561,17 @@ const CustomerDashboard = () => {
                   backgroundColor: "#f7f8fa",
                 }}
               >
-                <div className="flex items-center justify-center w-9 h-9 rounded-full shadow-md ring-4 ring-white" style={{ backgroundColor: BLUE }}>
+                <div
+                  className="flex items-center justify-center w-9 h-9 rounded-full shadow-md ring-4 ring-white"
+                  style={{ backgroundColor: BLUE }}
+                >
                   <FiMapPin className="w-4 h-4 text-white" />
                 </div>
               </div>
               <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-                <span className="text-xs text-gray-500">Technician location</span>
+                <span className="text-xs text-gray-500">
+                  Technician location
+                </span>
                 <button
                   onClick={() => navigate("/my-service")}
                   className="text-xs font-semibold hover:underline"

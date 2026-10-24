@@ -7,6 +7,7 @@ import {
   MdBuild,
   MdHistory,
   MdPayment,
+  MdAccountBalanceWallet,
   MdReceiptLong,
   MdNotifications,
   MdPerson,
@@ -24,6 +25,7 @@ const Sidebar = () => {
     { name: "Book Service", icon: <MdCalendarMonth />, path: "/book-service" },
     { name: "My Services", icon: <MdBuild />, path: "/my-service" },
     { name: "Service History", icon: <MdHistory />, path: "/service-history" },
+    { name: "Wallet", icon: <MdAccountBalanceWallet />, path: "/wallet" },
     { name: "Payments", icon: <MdPayment />, path: "/payment" },
     { name: "Payment History", icon: <MdReceiptLong />, path: "/payment-history" },
   ];

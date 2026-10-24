@@ -150,8 +150,7 @@ export default function ProviderSettings() {
     try {
       setSaving(true);
       await api.put("/users/profile", {
-        firstName: personalForm.firstName,
-        lastName: personalForm.lastName,
+        // Name and email are locked – only phone and address can be changed
         phoneNumber: personalForm.phoneNumber,
         address: personalForm.address,
       });
@@ -395,8 +394,8 @@ export default function ProviderSettings() {
                     setUnsaved={setUnsavedChanges}
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <FormField label="First Name" value={personalForm.firstName} onChange={v => { setPersonalForm(f => ({...f, firstName: v})); setUnsavedChanges(true); }} />
-                      <FormField label="Last Name" value={personalForm.lastName} onChange={v => { setPersonalForm(f => ({...f, lastName: v})); setUnsavedChanges(true); }} />
+                      <FormField label="First Name" value={personalForm.firstName} onChange={() => {}} disabled />
+                      <FormField label="Last Name" value={personalForm.lastName} onChange={() => {}} disabled />
                     </div>
                     <FormField label="Email" type="email" value={personalForm.email} onChange={v => { setPersonalForm(f => ({...f, email: v})); setUnsavedChanges(true); }} disabled />
                     <FormField label="Phone Number" type="tel" value={personalForm.phoneNumber} onChange={v => { setPersonalForm(f => ({...f, phoneNumber: v})); setUnsavedChanges(true); }} />

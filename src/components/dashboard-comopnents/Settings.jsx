@@ -138,8 +138,6 @@ const Settings = () => {
 
   const validateProfile = () => {
     const errors = {};
-    if (!profile.firstName.trim()) errors.firstName = "First name is required";
-    if (!profile.lastName.trim()) errors.lastName = "Last name is required";
     if (!profile.phoneNumber.trim()) errors.phoneNumber = "Phone number is required";
     if (!profile.address.trim()) errors.address = "Address is required";
     setProfileErrors(errors);
@@ -152,9 +150,8 @@ const Settings = () => {
 
     setProfileSaving(true);
     try {
+      // Name and email are locked – only phone and address can be changed
       await api.put("/users/profile", {
-        firstName: profile.firstName,
-        lastName: profile.lastName,
         phoneNumber: profile.phoneNumber,
         address: profile.address,
       });
@@ -420,6 +417,7 @@ const Settings = () => {
                           error={profileErrors.firstName}
                           placeholder="Enter first name"
                           icon={FiUser}
+                          disabled
                         />
                         <InputField
                           label="Last Name"
@@ -429,6 +427,7 @@ const Settings = () => {
                           error={profileErrors.lastName}
                           placeholder="Enter last name"
                           icon={FiUser}
+                          disabled
                         />
                       </div>
 

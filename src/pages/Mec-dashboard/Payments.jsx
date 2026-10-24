@@ -281,13 +281,10 @@ const ManageBankAccount = () => {
 };
 
 // ─── TAB 2: Payments (Live API) ──────────────────────────────────────────────
-const STATUSES = ["success", "pending", "failed"];
-
 const PaymentsTab = () => {
   const [payments, setPayments] = useState([]);
   const [paymentsLoading, setPaymentsLoading] = useState(true);
   const [paymentsError, setPaymentsError] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
   const [detail, setDetail] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
@@ -300,10 +297,10 @@ const PaymentsTab = () => {
       try {
         setPaymentsLoading(true);
         setPaymentsError(null);
-        const params = { page, limit: LIMIT };
-        if (statusFilter) params.status = statusFilter;
+        // Mechanics only see successful payments (customer pays, so no pending / failed)
+        const params = { page, limit: LIMIT, status: "success" };
         const res = await api.get("/payments", { params });
-        const data = Array.isArray(res.data) ? res.data : (res.data?.data || []);
+        const data = (Array.isArray(res.data) ? res.data : (res.data?.data || [])).filter(p => p.status === "success");
         const total = res.data?.total || res.data?.meta?.total || data.length;
         if (!cancelled) {
           setPayments(data);
@@ -320,39 +317,25 @@ const PaymentsTab = () => {
     };
     fetchPayments();
     return () => { cancelled = true; };
-  }, [page, statusFilter]);
+  }, [page]);
 
-  const filteredPayments = statusFilter
-    ? payments.filter(p => p.status === statusFilter)
-    : payments;
+  const filteredPayments = payments;
 
   const earned = payments.filter(p => p.status === "success").reduce((a, p) => a + (p.amount || 0), 0);
   const successCount = payments.filter(p => p.status === "success").length;
-  const pendingCount = payments.filter(p => p.status === "pending").length;
 
   return (
     <div>
       {/* Stats row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
         {[
           { label: "Earned", value: toNaira(earned), color: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
           { label: "Successful", value: successCount, color: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
-          { label: "Pending", value: pendingCount, color: "text-amber-700", bg: "bg-amber-50", border: "border-amber-200" },
         ].map(s => (
           <div key={s.label} className={`${s.bg} ${s.border} border rounded-xl p-4`}>
             <p className="m-0 mb-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">{s.label}</p>
             <p className={`m-0 text-[22px] font-extrabold ${s.color} tracking-tight`}>{s.value}</p>
           </div>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="flex items-center gap-2 mb-4 flex-wrap">
-        {["", ...STATUSES].map(s => (
-          <button key={s} onClick={() => { setStatusFilter(s); setPage(1); }}
-            className={`px-3.5 py-1.5 rounded-lg border text-xs font-semibold cursor-pointer transition-all ${statusFilter === s ? "border-blue-600 bg-blue-50 text-blue-600" : "border-slate-200 bg-white text-slate-500"}`}>
-            {s === "" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
-          </button>
         ))}
       </div>
 
@@ -380,7 +363,7 @@ const PaymentsTab = () => {
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" className="mx-auto mb-3.5 block"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
               <p className="text-[15px] font-bold text-slate-600 m-0 mb-1.5">No payments found</p>
               <p className="text-[13px] text-slate-400 m-0">
-                {statusFilter ? `No ${statusFilter} payments yet.` : "Payments will appear here once customers pay for your jobs."}
+                Payments will appear here once customers pay for your jobs.
               </p>
             </div>
           ) : (

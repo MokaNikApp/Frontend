@@ -4,7 +4,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HiArrowRight, HiCalendar } from "react-icons/hi";
-import Background from '../../assets/images/Background.png';
+import { DEFAULT_CAR_IMAGE } from '../../lib/utils/config';
 
 const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
             {/* Vehicle Info */}
             <div className="flex flex-col sm:flex-row gap-4">
               <img
-                src={active.vehicleImage || Background}
+                src={active.vehicleImage || DEFAULT_CAR_IMAGE}
                 alt="Car"
                 className="w-full sm:w-28 h-40 sm:h-28 object-cover rounded-lg"
               />

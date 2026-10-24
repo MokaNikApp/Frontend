@@ -7,6 +7,7 @@ import {
   FiTool,
   FiCheckCircle,
   FiDollarSign,
+  FiCreditCard,
   FiCalendar,
   FiMessageSquare,
   FiUser,
@@ -111,6 +112,10 @@ export default function Sidebar({ isOpen, toggleSidebar, isOnline, setIsOnline }
 
             <Link to="/mec-dashboard/mec-payments" className={linkClass("/mec-dashboard/mec-payments")}>
               <FiDollarSign /> Payments
+            </Link>
+
+            <Link to="/mec-dashboard/wallet" className={linkClass("/mec-dashboard/wallet")}>
+              <FiCreditCard /> Wallet
             </Link>
 
             <Link to="/mec-dashboard/schedule" className={linkClass("/mec-dashboard/schedule")}>
