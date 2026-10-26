@@ -678,6 +678,7 @@ export default function JobRequests() {
         }
         console.log("[fetchTabJobs] Incoming response:", JSON.stringify(data));
         const jobs = data?.data || [];
+        console.log("[Mechanic Incoming] Job IDs:", jobs.map((j) => j.id));
         console.log(
           "[fetchTabJobs] Incoming jobs count:",
           jobs.length,

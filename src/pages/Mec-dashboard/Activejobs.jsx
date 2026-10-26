@@ -288,6 +288,8 @@ const OngoingServices = () => {
       setLoading(true);
       setError(null);
       const response = await api.get('/jobs');
+      console.log("[Mechanic Active] GET /jobs raw response:", response.data);
+      console.log("[Mechanic Active] Job IDs:", (response.data.data || []).map((j) => j.id));
       setJobs(response.data.data || []);
     } catch (err) {
       console.error('Failed to fetch jobs:', err);

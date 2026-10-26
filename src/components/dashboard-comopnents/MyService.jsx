@@ -1454,6 +1454,8 @@ const ActiveServices = () => {
       const res = await api.get("/jobs");
       const data = res.data?.data || res.data || [];
       const list = Array.isArray(data) ? data : [];
+      console.log("[Customer] GET /jobs raw response:", res.data);
+      console.log("[Customer] Job IDs:", list.map((j) => j.id));
 
       // Which jobs already have a successful payment? (Payments API: GET /payments)
       let paidIds = new Set();

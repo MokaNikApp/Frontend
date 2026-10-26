@@ -1,10 +1,7 @@
-
-
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HiArrowRight, HiCalendar } from "react-icons/hi";
-import { DEFAULT_CAR_IMAGE } from '../../lib/utils/config';
+import { DEFAULT_CAR_IMAGE } from "../../lib/utils/config";
 
 const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
   const navigate = useNavigate();
@@ -13,21 +10,21 @@ const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-
       {/* ── Active Service Status Card ── */}
       <div className="lg:col-span-2 p-4 sm:p-6 bg-white shadow-md rounded-xl space-y-5">
-
         {/* Header — always shown */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <p className="font-semibold text-gray-700 text-sm sm:text-base">
             Active Service Status
           </p>
-          <p className={`px-3 py-1 text-xs sm:text-sm rounded-full w-fit ${
-            active
-              ? "text-[#1C52AF] bg-[#E2E8F0]"
-              : "text-gray-400 bg-gray-100"
-          }`}>
-            {active ? (active.status || "In Progress") : "No Active Service"}
+          <p
+            className={`px-3 py-1 text-xs sm:text-sm rounded-full w-fit ${
+              active
+                ? "text-[#1C52AF] bg-[#E2E8F0]"
+                : "text-gray-400 bg-gray-100"
+            }`}
+          >
+            {active ? active.status || "In Progress" : "No Active Service"}
           </p>
         </div>
 
@@ -75,21 +72,23 @@ const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
               <HiCalendar className="text-[#1C52AF] text-3xl" />
             </div>
             <div>
-              <p className="font-medium text-gray-600">No service currently in progress</p>
+              <p className="font-medium text-gray-600">
+                No service currently in progress
+              </p>
               <p className="text-gray-400 text-sm mt-1">
                 Book a service and it will appear here once it's underway.
               </p>
             </div>
-            
           </div>
         )}
       </div>
 
       {/* ── Upcoming Section ── */}
       <div className="p-4 sm:p-6 bg-white shadow-md rounded-xl space-y-4">
-
         <div className="flex justify-between items-center">
-          <p className="font-semibold text-gray-700 text-sm sm:text-base">Upcoming</p>
+          <p className="font-semibold text-gray-700 text-sm sm:text-base">
+            Upcoming
+          </p>
           {upcomingServices.length > 0 && (
             <p
               onClick={() => navigate("/my-service")}
@@ -102,13 +101,18 @@ const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
 
         {upcomingServices.length > 0 ? (
           upcomingServices.slice(0, 2).map((item, index) => (
-            <div key={item.id || index} className="flex items-center gap-3 sm:gap-4 p-3 bg-gray-50 rounded-lg">
+            <div
+              key={item.id || index}
+              className="flex items-center gap-3 sm:gap-4 p-3 bg-gray-50 rounded-lg"
+            >
               <div className="flex flex-col items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 text-blue-600 rounded-lg">
                 <p className="text-xs sm:text-sm font-bold">{item.day}</p>
                 <p className="text-[10px] sm:text-xs">{item.month}</p>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-sm sm:text-base">{item.serviceType}</p>
+                <p className="font-medium text-sm sm:text-base">
+                  {item.serviceType}
+                </p>
                 <p className="text-gray-500 text-xs sm:text-sm">
                   {item.vehicleName} • {item.time}
                 </p>
@@ -125,7 +129,9 @@ const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
               <HiCalendar className="text-gray-300 text-3xl" />
             </div>
             <div>
-              <p className="text-gray-500 text-sm font-medium">No upcoming appointments</p>
+              <p className="text-gray-500 text-sm font-medium">
+                No upcoming appointments
+              </p>
               <p className="text-gray-400 text-xs mt-1">
                 Your scheduled services will show up here.
               </p>
@@ -139,7 +145,6 @@ const ActiveService = ({ activeServices = [], upcomingServices = [] }) => {
           </div>
         )}
       </div>
-
     </div>
   );
 };

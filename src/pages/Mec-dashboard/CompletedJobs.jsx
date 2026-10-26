@@ -97,6 +97,8 @@ export default function CompletedJobs() {
     queryKey: ["jobsCompleted", currentPage],
     queryFn: async () => {
       const res = await api.get(`/jobs/status/COMPLETED?page=${currentPage}&limit=10`);
+      console.log("[Mechanic Completed] raw response:", res.data);
+      console.log("[Mechanic Completed] Job IDs:", (res.data?.data || []).map((j) => j.id));
       return res.data;
     },
     keepPreviousData: true,

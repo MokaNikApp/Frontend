@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
  * Animated launch splash. Shows once per app launch (session), then fades out.
  * Props: minDuration (ms the splash stays visible), onDone (optional callback).
  */
-export default function SplashScreen({ minDuration = 2200, onDone }) {
+export default function SplashScreen({ minDuration = 7200, onDone }) {
   const [visible, setVisible] = useState(() => {
     try {
       return !sessionStorage.getItem("mokanik_splash_seen");

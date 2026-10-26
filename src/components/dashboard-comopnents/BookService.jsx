@@ -213,6 +213,8 @@ const BookService = () => {
       setBookingLoading(true);
       const response = await api.post("/bookings", bookingPayload);
       const bookingData = response.data?.data || response.data;
+      console.log("[BookService] Booking response:", bookingData);
+      console.log("[BookService] booking id:", bookingData?.id, "| jobId:", bookingData?.jobId ?? bookingData?.job?.id);
       
       toast.success("Booking submitted! Finding the best mechanic for you...");
       
