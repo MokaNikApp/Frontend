@@ -31,7 +31,12 @@ export function useFcmToken() {
       setError(null);
 
       if (!("Notification" in window)) {
-        setError("This browser does not support notifications.");
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        setError(
+          isIOS
+            ? "On iPhone, tap Share → Add to Home Screen, then open the app from your home screen to enable notifications."
+            : "This browser does not support notifications."
+        );
         return;
       }
 
@@ -43,15 +48,15 @@ export function useFcmToken() {
         return;
       }
 
+      const messaging = await getFirebaseMessaging();
+      if (!messaging) {
+        setError("Push notifications aren't supported on this device/browser.");
+        return;
+      }
+
       const registration = await navigator.serviceWorker.register(
         "/firebase-messaging-sw.js"
       );
-
-      const messaging = getFirebaseMessaging();
-      if (!messaging) {
-        setError("Firebase messaging is not supported in this browser.");
-        return;
-      }
 
       const fcmToken = await getToken(messaging, {
         vapidKey: VAPID_KEY,
@@ -70,15 +75,20 @@ export function useFcmToken() {
 
   // Listen for foreground messages
   useEffect(() => {
-    const messaging = getFirebaseMessaging();
-    if (!messaging) return;
-
-    const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Foreground push received:", payload);
-      setLastMessage(normalizeFcmPayload(payload));
-    });
-
-    return () => unsubscribe();
+    let unsubscribe = null;
+    let cancelled = false;
+    (async () => {
+      const messaging = await getFirebaseMessaging();
+      if (!messaging || cancelled) return;
+      unsubscribe = onMessage(messaging, (payload) => {
+        console.log("Foreground push received:", payload);
+        setLastMessage(normalizeFcmPayload(payload));
+      });
+    })();
+    return () => {
+      cancelled = true;
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   // Auto-restore token if permission was already granted on a previous visit

@@ -25,16 +25,22 @@ registerRoute(({ request }) => request.destination === "font" || request.destina
 // API requests (cross-origin backend) are intentionally NOT cached: data stays live.
 
 // ---- Firebase push ----
-const messaging = getMessaging(initializeApp(firebaseConfig));
-onBackgroundMessage(messaging, (payload) => {
-  const title = payload.notification?.title || payload.data?.title || "Mokanik";
-  self.registration.showNotification(title, {
-    body: payload.notification?.body || payload.data?.body || "",
-    icon: "/icons/icon-192.png",
-    badge: "/icons/icon-192.png",
-    data: payload.data || {},
+// getMessaging() throws on iOS versions/contexts without Web Push; if that happens
+// uncaught, the WHOLE service worker fails (no offline cache). Guard it.
+try {
+  const messaging = getMessaging(initializeApp(firebaseConfig));
+  onBackgroundMessage(messaging, (payload) => {
+    const title = payload.notification?.title || payload.data?.title || "Mokanik";
+    self.registration.showNotification(title, {
+      body: payload.notification?.body || payload.data?.body || "",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      data: payload.data || {},
+    });
   });
-});
+} catch (err) {
+  console.warn("[SW] Firebase messaging unavailable:", err);
+}
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
