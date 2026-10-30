@@ -38,7 +38,11 @@ import {
   HiOutlineRefresh,
   HiOutlineChevronRight,
 } from "react-icons/hi";
+import { useQueryClient } from "@tanstack/react-query";
 import api from "../../api/axios";
+import PayMethodSheet from "../wallet/PayMethodSheet";
+import { WALLET_KEY } from "../../hooks/useWallet";
+import { newIdempotencyKey, getApiError } from "../../lib/utils/apiHelpers";
 
 // ─── Design Tokens ───
 const STATUS_MAP = {
@@ -1419,6 +1423,14 @@ const ActiveServices = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [payingJobId, setPayingJobId] = useState(null);
+  // "How do you want to pay?" sheet (wallet or card)
+  const queryClient = useQueryClient();
+  const [payModal, setPayModal] = useState({ open: false, job: null });
+  const [payMethodBusy, setPayMethodBusy] = useState(null); // "card" | "wallet" | null
+  const [payError, setPayError] = useState("");
+  const [payInsufficient, setPayInsufficient] = useState(false);
+  // One Idempotency-Key per user action: reused when the SAME job+method is retried.
+  const payKeyRef = React.useRef({ id: null, key: null });
   const [currentPage, setCurrentPage] = useState(1);
   const [toast, setToast] = useState(null);
 
@@ -1549,23 +1561,40 @@ const ActiveServices = () => {
     );
   };
 
+  // "Pay Now" opens the method picker (wallet / card) instead of going straight to Paystack.
+  const openPayModal = useCallback((job) => {
+    setPayError("");
+    setPayInsufficient(false);
+    setPayModal({ open: true, job });
+  }, []);
+
+  const closePayModal = useCallback(() => {
+    setPayModal({ open: false, job: null });
+    setPayError("");
+    setPayInsufficient(false);
+  }, []);
+
   const handlePayNow = useCallback(
-    async (job) => {
+    async (job, method = "card") => {
       setPayingJobId(job.id);
+      setPayMethodBusy(method);
+      setPayError("");
+      setPayInsufficient(false);
       try {
         // Payments API contract: { jobId, method, metaData }. The amount, fees and the
         // Paystack return URL are decided by the server, so they are not sent from here.
         const payload = {
           jobId: job.id,
-          method: "card",
+          method, // "card" | "wallet"
           metaData: { source: "web", jobTitle: job.title },
         };
-        // One key per click: a double click or network retry can never create a second payment.
-        const key =
-          (typeof crypto !== "undefined" &&
-            crypto.randomUUID &&
-            crypto.randomUUID()) ||
-          `pay-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+        // One key per user action: a double click or network retry can never create a second payment.
+        // The same job+method reuses its key; choosing a different method gets a new one.
+        const keyId = `${job.id}:${method}`;
+        if (payKeyRef.current.id !== keyId) {
+          payKeyRef.current = { id: keyId, key: newIdempotencyKey() };
+        }
+        const key = payKeyRef.current.key;
         const res = await api.post("/payments/initialize", payload, {
           headers: { "Idempotency-Key": key },
         });
@@ -1581,7 +1610,16 @@ const ActiveServices = () => {
           (res.data?.data?.status || res.data?.status) === "success";
         if (!authUrl && paidAlready && reference) {
           // Wallet payment: completed immediately, there is no gateway redirect.
-          window.location.href = `/payment/verify?reference=${encodeURIComponent(reference)}&jobId=${encodeURIComponent(job.id)}`;
+          // Refresh the balance and the paid badges, then show the receipt.
+          payKeyRef.current = { id: null, key: null };
+          queryClient.invalidateQueries({ queryKey: WALLET_KEY });
+          setJobs((prev) =>
+            prev.map((j) => (j.id === job.id ? { ...j, isPaid: true } : j)),
+          );
+          setPayModal({ open: false, job: null });
+          navigate(
+            `/payment/verify?reference=${encodeURIComponent(reference)}&jobId=${encodeURIComponent(job.id)}`,
+          );
           return;
         }
         if (!authUrl) throw new Error("No payment URL received");
@@ -1592,21 +1630,29 @@ const ActiveServices = () => {
         window.location.href = authUrl;
       } catch (err) {
         const status = err.response?.status;
-        let msg =
-          err.response?.data?.message || err.message || "Payment failed";
-        if (Array.isArray(msg)) msg = msg.join(". ");
+        let msg = getApiError(err, err.message || "Payment failed");
         if (status === 403 && !/your own jobs/i.test(msg)) {
           msg =
             "This account can't pay for this job. Make sure you're logged in as the customer who booked it, then log out and back in.";
         } else if (status === 401) {
           msg = "Your session has expired. Please log in again.";
+        } else if (status === 422 && /insufficient wallet balance/i.test(msg)) {
+          // Wallet is short: keep the sheet open and offer a top-up.
+          setPayInsufficient(true);
+          msg = "Your wallet balance isn't enough for this payment. Add money or pay with card.";
+          queryClient.invalidateQueries({ queryKey: WALLET_KEY });
+        } else if (status === 409 && /already (been )?paid|successful payment already/i.test(msg)) {
+          fetchJobs(true);
         }
-        showToast(msg, "error");
+        setPayError(msg);
+        // Without the sheet open (shouldn't happen) still tell the user.
+        if (!payModal.open) showToast(msg, "error");
       } finally {
         setPayingJobId(null);
+        setPayMethodBusy(null);
       }
     },
-    [showToast],
+    [showToast, navigate, queryClient, fetchJobs, payModal.open],
   );
 
   const tabConfig = TABS.find((t) => t.key === activeTab);
@@ -1793,7 +1839,7 @@ const ActiveServices = () => {
                     images: job.images || [],
                   })
                 }
-                onPayNow={handlePayNow}
+                onPayNow={openPayModal}
               />
             ))}
         </div>
@@ -1811,6 +1857,16 @@ const ActiveServices = () => {
       </div>
 
       {/* Modals */}
+      <PayMethodSheet
+        open={payModal.open}
+        job={payModal.job}
+        onClose={closePayModal}
+        busyMethod={payMethodBusy}
+        error={payError}
+        insufficient={payInsufficient}
+        onPay={(method) => payModal.job && handlePayNow(payModal.job, method)}
+        onTopUp={() => navigate("/wallet")}
+      />
       <JobDetailModal
         open={detailModal.open}
         job={detailModal.job}

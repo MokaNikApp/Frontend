@@ -513,7 +513,7 @@ const PaymentCallback = () => {
 
   const handleGoToJobDetail = () => {
     if (jobId) {
-      navigate(`/services?highlight=${jobId}`);
+      navigate(`/my-services?highlight=${jobId}`);
     } else {
       handleGoToJobs();
     }
