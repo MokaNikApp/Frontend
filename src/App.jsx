@@ -1,7 +1,3 @@
-
-
-
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -54,7 +50,7 @@ import Payments from "./pages/Mec-dashboard/Payments";
 import Schedule from "./pages/Mec-dashboard/Schedule";
 import { JobsProvider } from "./context/JobsContext";
 import Profile from "./pages/Mec-dashboard/Profile";
-import MecSettings from "./pages/Mec-dashboard/MecSettings"
+import MecSettings from "./pages/Mec-dashboard/MecSettings";
 import MecWallet from "./pages/Mec-dashboard/MecWallet";
 
 // ADMIN
@@ -67,151 +63,181 @@ import AdminNotificationPage from "./pages/Users-admin-pages/NotificationPage";
 import DisputeSupport from "./pages/Users-admin-pages/DisputeSupport";
 import WalletPage from "./pages/Users-admin-pages/WalletPage";
 import MechanicApprovalPage from "./pages/Users-admin-pages/MechanicApprovalPage";
+import AdminRoutes from "./routes/AdminRoutes";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <div className="bg-gray-100">
-        <ScrollToTop />
+    return (
+        <QueryClientProvider client={queryClient}>
+            <div className="bg-gray-100">
+                <ScrollToTop />
 
-        <Routes>
-          {/* HOME */}
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
+                <Routes>
+                    {/* HOME */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/home" element={<Home />} />
 
-          {/* AUTH */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/verify" element={<VerifyPage />} />
-          <Route path="/verify2" element={<Verifypage2 />} />
-          <Route path="/verified" element={<VerifiedPage />} />
-          <Route path="/forgot-password" element={<ForgetPage />} />
-          <Route path="/reset-password" element={<ResetPage />} />
+                    {/* AUTH */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignupPage />} />
+                    <Route path="/verify" element={<VerifyPage />} />
+                    <Route path="/verify2" element={<Verifypage2 />} />
+                    <Route path="/verified" element={<VerifiedPage />} />
+                    <Route path="/forgot-password" element={<ForgetPage />} />
+                    <Route path="/reset-password" element={<ResetPage />} />
 
-          {/* SERVICES */}
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/:id" element={<ServiceDetail />} />
-          <Route path="/providers" element={<Providers />} />
+                    <Route path="/admin/*" element={<AdminRoutes />} />
 
-          {/* CONTACT */}
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/terms" element={<TermPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
+                    {/* SERVICES */}
+                    <Route path="/services" element={<Services />} />
+                    <Route path="/services/:id" element={<ServiceDetail />} />
+                    <Route path="/providers" element={<Providers />} />
 
-          {/* BOOKING */}
-          <Route path="/car-model" element={<CarModelPage />} />
-          <Route path="/booking/:step" element={<BookingPageA />} />
+                    {/* CONTACT */}
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route path="/terms" element={<TermPage />} />
+                    <Route path="/privacy" element={<PrivacyPage />} />
 
-          {/* USER DASHBOARD */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/book-service" element={<BookServicePage />} />
-          <Route path="/my-service" element={<MyServicePage />} />
-          <Route path="/service-history" element={<ServiceHistoryPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          {/* Paystack returns here after a job card payment: /payment/verify?reference=... */}
-          <Route path="/payment/verify" element={<PaymentPage />} />
-          <Route path="/wallet" element={<CustomerWalletPage />} />
-          {/* Paystack returns here after a wallet top-up: /wallet/top-up/verify?reference=... */}
-          <Route path="/wallet/top-up/verify" element={<WalletTopUpVerifyPage />} />
-          <Route path="/notify" element={<NotificationPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/vehicles" element={<VechiclePage />} />         
-          <Route path="/payment-history" element={<PaymentHistoryPage />} />
-          <Route path="/settings" element={<UserSettingsPage />} />
-          {/* ONBOARDING */}
-          <Route path="/onboarding" element={<Onboarding />} />
+                    {/* BOOKING */}
+                    <Route path="/car-model" element={<CarModelPage />} />
+                    <Route path="/booking/:step" element={<BookingPageA />} />
 
-          {/* ADMIN */}
-          <Route path="/admin-dashboard" element={<UserDashboardPage />} />
-          <Route path="/admin-mechanics" element={<UserMechanicPage />} />
-          <Route path="/customer-management" element={<CustomerPage />} />
-          <Route path="/admin-booking" element={<UserBookingPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/notifications" element={<AdminNotificationPage />} />
-          <Route path="/disputes" element={<DisputeSupport />} />
-          <Route path="/wallet-payments" element={<WalletPage />} />
-          <Route path="/mechanic-approval/:id" element={<MechanicApprovalPage />} />
+                    {/* USER DASHBOARD */}
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/book-service" element={<BookServicePage />} />
+                    <Route path="/my-service" element={<MyServicePage />} />
+                    <Route
+                        path="/service-history"
+                        element={<ServiceHistoryPage />}
+                    />
+                    <Route path="/payment" element={<PaymentPage />} />
+                    {/* Paystack returns here after a job card payment: /payment/verify?reference=... */}
+                    <Route path="/payment/verify" element={<PaymentPage />} />
+                    <Route path="/wallet" element={<CustomerWalletPage />} />
+                    {/* Paystack returns here after a wallet top-up: /wallet/top-up/verify?reference=... */}
+                    <Route
+                        path="/wallet/top-up/verify"
+                        element={<WalletTopUpVerifyPage />}
+                    />
+                    <Route path="/notify" element={<NotificationPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/vehicles" element={<VechiclePage />} />
+                    <Route
+                        path="/payment-history"
+                        element={<PaymentHistoryPage />}
+                    />
+                    <Route path="/settings" element={<UserSettingsPage />} />
+                    {/* ONBOARDING */}
+                    <Route path="/onboarding" element={<Onboarding />} />
 
-          {/* MEC DASHBOARD */}
-          <Route
-            path="/mec-dashboard"
-            element={
-              <JobsProvider>
-                <Overview />
-              </JobsProvider>
-            }
-          />
-          <Route
-            path="/mec-dashboard/job-requests"
-            element={
-              <JobsProvider>
-                <JobRequests />
-              </JobsProvider>
-            }
-          />
-          <Route
-            path="/mec-dashboard/active-jobs"
-            element={
-              <JobsProvider>
-                <ActiveJobs />
-              </JobsProvider>
-            }
-          />
+                    {/* ADMIN */}
+                    <Route
+                        path="/admin-dashboard"
+                        element={<UserDashboardPage />}
+                    />
+                    <Route
+                        path="/admin-mechanics"
+                        element={<UserMechanicPage />}
+                    />
+                    <Route
+                        path="/customer-management"
+                        element={<CustomerPage />}
+                    />
+                    <Route
+                        path="/admin-booking"
+                        element={<UserBookingPage />}
+                    />
+                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route
+                        path="/notifications"
+                        element={<AdminNotificationPage />}
+                    />
+                    <Route path="/disputes" element={<DisputeSupport />} />
+                    <Route path="/wallet-payments" element={<WalletPage />} />
+                    <Route
+                        path="/mechanic-approval/:id"
+                        element={<MechanicApprovalPage />}
+                    />
 
-          <Route
-            path="/mec-dashboard/mec-settings"
-            element={
-              <JobsProvider>
-                <MecSettings/>
-              </JobsProvider>
-            }
-          />
-          <Route
-            path="/mec-dashboard/completed-jobs"
-            element={
-              <JobsProvider>
-                <CompletedJobs />
-              </JobsProvider>
-            }
-          />
-          <Route
-            path="/mec-dashboard/mec-payments"
-            element={
-              <JobsProvider>
-                <Payments />
-              </JobsProvider>
-            }
-          />
-          <Route
-            path="/mec-dashboard/schedule"
-            element={
-              <JobsProvider>
-                <Schedule />
-              </JobsProvider>
-            }
-          />
-          <Route
-            path="/mec-dashboard/wallet"
-            element={
-              <JobsProvider>
-                <MecWallet />
-              </JobsProvider>
-            }
-          />
-           <Route
-            path="/mec-dashboard/profile"
-            element={
-              <JobsProvider>
-                <Profile />
-              </JobsProvider>
-            }
-          />
-        </Routes>
-      </div>
-    </QueryClientProvider>
-  );
+                    {/* MEC DASHBOARD */}
+                    <Route
+                        path="/mec-dashboard"
+                        element={
+                            <JobsProvider>
+                                <Overview />
+                            </JobsProvider>
+                        }
+                    />
+                    <Route
+                        path="/mec-dashboard/job-requests"
+                        element={
+                            <JobsProvider>
+                                <JobRequests />
+                            </JobsProvider>
+                        }
+                    />
+                    <Route
+                        path="/mec-dashboard/active-jobs"
+                        element={
+                            <JobsProvider>
+                                <ActiveJobs />
+                            </JobsProvider>
+                        }
+                    />
+
+                    <Route
+                        path="/mec-dashboard/mec-settings"
+                        element={
+                            <JobsProvider>
+                                <MecSettings />
+                            </JobsProvider>
+                        }
+                    />
+                    <Route
+                        path="/mec-dashboard/completed-jobs"
+                        element={
+                            <JobsProvider>
+                                <CompletedJobs />
+                            </JobsProvider>
+                        }
+                    />
+                    <Route
+                        path="/mec-dashboard/mec-payments"
+                        element={
+                            <JobsProvider>
+                                <Payments />
+                            </JobsProvider>
+                        }
+                    />
+                    <Route
+                        path="/mec-dashboard/schedule"
+                        element={
+                            <JobsProvider>
+                                <Schedule />
+                            </JobsProvider>
+                        }
+                    />
+                    <Route
+                        path="/mec-dashboard/wallet"
+                        element={
+                            <JobsProvider>
+                                <MecWallet />
+                            </JobsProvider>
+                        }
+                    />
+                    <Route
+                        path="/mec-dashboard/profile"
+                        element={
+                            <JobsProvider>
+                                <Profile />
+                            </JobsProvider>
+                        }
+                    />
+                </Routes>
+            </div>
+        </QueryClientProvider>
+    );
 };
 
 export default App;
